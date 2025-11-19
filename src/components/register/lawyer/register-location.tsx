@@ -1,0 +1,217 @@
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+	Card,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardPanel,
+	CardTitle,
+} from "@/components/ui/card";
+import {
+	CheckIcon,
+	Code2Icon,
+	GlobeIcon,
+	LayersIcon,
+	PlusIcon,
+	ZapIcon,
+} from "lucide-react";
+import {
+	Select,
+	SelectTrigger,
+	SelectValue,
+	SelectIcon,
+	SelectPopup,
+	SelectList,
+	SelectItem,
+	SelectItemText,
+	SelectItemIndicator,
+} from "@/components/ui/select/index";
+
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import { Form } from "@/components/ui/form";
+
+const countries = [
+	{
+		label: "Argentina",
+		value: "argentina",
+		flag: "https://flagcdn.com/ar.svg",
+	},
+	{
+		label: "Venezuela",
+		value: "venezuela",
+		flag: "https://flagcdn.com/ve.svg",
+	},
+	{
+		label: "Brazil",
+		value: "brazil",
+		flag: "https://flagcdn.com/br.svg",
+	},
+	{
+		label: "Switzerland",
+		value: "switzerland",
+		flag: "https://flagcdn.com/ch.svg",
+	},
+	{
+		label: "Germany",
+		value: "germany",
+		flag: "https://flagcdn.com/de.svg",
+	},
+	{
+		label: "Spain",
+		value: "spain",
+		flag: "https://flagcdn.com/es.svg",
+	},
+	{
+		label: "France",
+		value: "france",
+		flag: "https://flagcdn.com/fr.svg",
+	},
+	{
+		label: "Italy",
+		value: "italy",
+		flag: "https://flagcdn.com/it.svg",
+	},
+	{
+		label: "Mexico",
+		value: "mexico",
+		flag: "https://flagcdn.com/mx.svg",
+	},
+];
+
+export default function RegisterLocation() {
+	return (
+		<div className="grid">
+			<Card className="w-full border-0 before:shadow-none shadow-none ring-0">
+				<CardHeader className="text-center">
+					<CardTitle className="text-xl/snug font-medium">
+						Where are you from?
+					</CardTitle>
+					<CardDescription> Select your location </CardDescription>
+				</CardHeader>
+				<Form>
+					<CardPanel>
+						<div className="flex flex-col gap-6">
+							<Field>
+								<FieldLabel>Select a Country</FieldLabel>
+								<Select items={countries}>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="Select a country">
+											{(value: string) => {
+												const country = countries.find(
+													(country) => country.value === value,
+												);
+
+												if (!country) return null;
+
+												return (
+													<span className="flex items-center gap-2">
+														<img
+															src={country?.flag}
+															alt={country?.label}
+															className="size-5.5 rounded-full object-cover"
+														/>
+														{country?.label}
+													</span>
+												);
+											}}
+										</SelectValue>
+										<SelectIcon>
+											<PlusIcon className="size-4" />
+										</SelectIcon>
+									</SelectTrigger>
+									<SelectPopup>
+										<SelectList>
+											{countries.map(({ label, value, flag }) => {
+												return (
+													<SelectItem
+														key={value}
+														value={value}
+														className="h-fit"
+													>
+														<img
+															src={flag}
+															alt={label}
+															className="size-5.5 rounded-full object-cover"
+														/>
+														<SelectItemText>{label}</SelectItemText>
+														<SelectItemIndicator>
+															<CheckIcon className="size-3" />
+														</SelectItemIndicator>
+													</SelectItem>
+												);
+											})}
+										</SelectList>
+									</SelectPopup>
+								</Select>
+							</Field>
+							<Field>
+								<FieldLabel>Select a State</FieldLabel>
+								<Select items={countries}>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="Select a state">
+											{(value: string) => {
+												const country = countries.find(
+													(country) => country.value === value,
+												);
+
+												if (!country) return null;
+
+												return (
+													<span className="flex items-center gap-2">
+														<img
+															src={country?.flag}
+															alt={country?.label}
+															className="size-5.5 rounded-full object-cover"
+														/>
+														{country?.label}
+													</span>
+												);
+											}}
+										</SelectValue>
+										<SelectIcon>
+											<PlusIcon className="size-4" />
+										</SelectIcon>
+									</SelectTrigger>
+									<SelectPopup>
+										<SelectList>
+											{countries.map(({ label, value, flag }) => {
+												return (
+													<SelectItem
+														key={value}
+														value={value}
+														className="h-fit"
+													>
+														<img
+															src={flag}
+															alt={label}
+															className="size-5.5 rounded-full object-cover"
+														/>
+														<SelectItemText>{label}</SelectItemText>
+														<SelectItemIndicator>
+															<CheckIcon className="size-3" />
+														</SelectItemIndicator>
+													</SelectItem>
+												);
+											})}
+										</SelectList>
+									</SelectPopup>
+								</Select>
+							</Field>
+						</div>
+					</CardPanel>
+					<CardFooter>
+						<Button
+							size={"lg"}
+							variant="default"
+							type="submit"
+							className="w-full text-white bg-[#19603E] hover:bg-[#19603E]/80"
+						>
+							Next
+						</Button>
+					</CardFooter>
+				</Form>
+			</Card>
+		</div>
+	);
+}
