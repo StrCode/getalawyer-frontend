@@ -8,7 +8,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import Header from "../components/Header";
 
-import StoreDevtools from "../lib/demo-store-devtools";
+import StoreDevtools from "../lib/store-devtools";
 
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 

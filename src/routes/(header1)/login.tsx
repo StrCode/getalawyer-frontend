@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { GalleryHorizontalEndIcon } from "lucide-react";
 import { Login } from "@/components/register/lawyer/login";
 
-export const Route = createFileRoute("/(auth)/login")({
+export const Route = createFileRoute("/(header1)/login")({
   component: RouteComponent,
 });
 
