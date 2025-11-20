@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
 import { GalleryHorizontalEndIcon } from "lucide-react";
@@ -23,9 +23,7 @@ function RouteComponent() {
 						<span className="text-sm/loose text-zinc-600">
 							Don't have an account?
 						</span>
-						<Button variant="outline" className="text-sm" size="default">
-							Register
-						</Button>
+						<Link to="/dashboard">Register</Link>
 					</div>
 				</div>
 				<div className="flex flex-1 items-center justify-center">
@@ -42,5 +40,5 @@ function RouteComponent() {
 				/>
 			</div>
 		</div>
-	)
+	);
 }
