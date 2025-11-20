@@ -7,18 +7,18 @@
 body {
   @apply m-0;
   font-family:
-    "Geist", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    "Geist Sans", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-@supports
- (corner-shape: squircle) {
-*:not([class*='rounded-full']) {
-corner-shape: squircle;
-}
-}
+/* @supports */
+/*  (corner-shape: squircle) { */
+/* *:not([class*='rounded-full']) { */
+/* corner-shape: squircle; */
+/* } */
+/* } */
 
 code {
   font-family: "Inter", source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;

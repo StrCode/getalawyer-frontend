@@ -17,14 +17,14 @@ import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as DemoStoreRouteImport } from './routes/demo/store'
 import { Route as DemoDbChatApiRouteImport } from './routes/demo/db-chat-api'
 import { Route as DemoDbChatRouteImport } from './routes/demo/db-chat'
-import { Route as header1RegisterRouteImport } from './routes/(header1)/register'
-import { Route as header1LoginRouteImport } from './routes/(header1)/login'
-import { Route as authVerifyOtpRouteImport } from './routes/(auth)/verify-otp'
-import { Route as authResetPasswordRouteImport } from './routes/(auth)/reset-password'
-import { Route as authRegisterPasswordRouteImport } from './routes/(auth)/register-password'
-import { Route as authRegisterAreasRouteImport } from './routes/(auth)/register-areas'
-import { Route as authNewPasswordRouteImport } from './routes/(auth)/new-password'
-import { Route as authLocationRouteImport } from './routes/(auth)/location'
+import { Route as header1VerifyOtpRouteImport } from './routes/(header1)/verify-otp'
+import { Route as header1RegisterPasswordRouteImport } from './routes/(header1)/register-password'
+import { Route as header1RegisterAreasRouteImport } from './routes/(header1)/register-areas'
+import { Route as header1NewPasswordRouteImport } from './routes/(header1)/new-password'
+import { Route as header1LocationRouteImport } from './routes/(header1)/location'
+import { Route as authRegisterRouteImport } from './routes/(auth)/register'
+import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
@@ -75,44 +75,44 @@ const DemoDbChatRoute = DemoDbChatRouteImport.update({
   path: '/demo/db-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const header1RegisterRoute = header1RegisterRouteImport.update({
-  id: '/(header1)/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const header1LoginRoute = header1LoginRouteImport.update({
-  id: '/(header1)/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const authVerifyOtpRoute = authVerifyOtpRouteImport.update({
-  id: '/verify-otp',
+const header1VerifyOtpRoute = header1VerifyOtpRouteImport.update({
+  id: '/(header1)/verify-otp',
   path: '/verify-otp',
-  getParentRoute: () => authRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const authResetPasswordRoute = authResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => authRouteRoute,
-} as any)
-const authRegisterPasswordRoute = authRegisterPasswordRouteImport.update({
-  id: '/register-password',
+const header1RegisterPasswordRoute = header1RegisterPasswordRouteImport.update({
+  id: '/(header1)/register-password',
   path: '/register-password',
-  getParentRoute: () => authRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const authRegisterAreasRoute = authRegisterAreasRouteImport.update({
-  id: '/register-areas',
+const header1RegisterAreasRoute = header1RegisterAreasRouteImport.update({
+  id: '/(header1)/register-areas',
   path: '/register-areas',
-  getParentRoute: () => authRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const authNewPasswordRoute = authNewPasswordRouteImport.update({
-  id: '/new-password',
+const header1NewPasswordRoute = header1NewPasswordRouteImport.update({
+  id: '/(header1)/new-password',
   path: '/new-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const header1LocationRoute = header1LocationRouteImport.update({
+  id: '/(header1)/location',
+  path: '/location',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authRegisterRoute = authRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => authRouteRoute,
 } as any)
-const authLocationRoute = authLocationRouteImport.update({
-  id: '/location',
-  path: '/location',
+const authLoginRoute = authLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const authForgotPasswordRoute = authForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => authRouteRoute,
 } as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
@@ -169,14 +169,14 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/location': typeof authLocationRoute
-  '/new-password': typeof authNewPasswordRoute
-  '/register-areas': typeof authRegisterAreasRoute
-  '/register-password': typeof authRegisterPasswordRoute
-  '/reset-password': typeof authResetPasswordRoute
-  '/verify-otp': typeof authVerifyOtpRoute
-  '/login': typeof header1LoginRoute
-  '/register': typeof header1RegisterRoute
+  '/forgot-password': typeof authForgotPasswordRoute
+  '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
+  '/location': typeof header1LocationRoute
+  '/new-password': typeof header1NewPasswordRoute
+  '/register-areas': typeof header1RegisterAreasRoute
+  '/register-password': typeof header1RegisterPasswordRoute
+  '/verify-otp': typeof header1VerifyOtpRoute
   '/demo/db-chat': typeof DemoDbChatRoute
   '/demo/db-chat-api': typeof DemoDbChatApiRoute
   '/demo/store': typeof DemoStoreRoute
@@ -196,14 +196,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/location': typeof authLocationRoute
-  '/new-password': typeof authNewPasswordRoute
-  '/register-areas': typeof authRegisterAreasRoute
-  '/register-password': typeof authRegisterPasswordRoute
-  '/reset-password': typeof authResetPasswordRoute
-  '/verify-otp': typeof authVerifyOtpRoute
-  '/login': typeof header1LoginRoute
-  '/register': typeof header1RegisterRoute
+  '/forgot-password': typeof authForgotPasswordRoute
+  '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
+  '/location': typeof header1LocationRoute
+  '/new-password': typeof header1NewPasswordRoute
+  '/register-areas': typeof header1RegisterAreasRoute
+  '/register-password': typeof header1RegisterPasswordRoute
+  '/verify-otp': typeof header1VerifyOtpRoute
   '/demo/db-chat': typeof DemoDbChatRoute
   '/demo/db-chat-api': typeof DemoDbChatApiRoute
   '/demo/store': typeof DemoStoreRoute
@@ -225,14 +225,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
   '/dashboard': typeof DashboardRoute
-  '/(auth)/location': typeof authLocationRoute
-  '/(auth)/new-password': typeof authNewPasswordRoute
-  '/(auth)/register-areas': typeof authRegisterAreasRoute
-  '/(auth)/register-password': typeof authRegisterPasswordRoute
-  '/(auth)/reset-password': typeof authResetPasswordRoute
-  '/(auth)/verify-otp': typeof authVerifyOtpRoute
-  '/(header1)/login': typeof header1LoginRoute
-  '/(header1)/register': typeof header1RegisterRoute
+  '/(auth)/forgot-password': typeof authForgotPasswordRoute
+  '/(auth)/login': typeof authLoginRoute
+  '/(auth)/register': typeof authRegisterRoute
+  '/(header1)/location': typeof header1LocationRoute
+  '/(header1)/new-password': typeof header1NewPasswordRoute
+  '/(header1)/register-areas': typeof header1RegisterAreasRoute
+  '/(header1)/register-password': typeof header1RegisterPasswordRoute
+  '/(header1)/verify-otp': typeof header1VerifyOtpRoute
   '/demo/db-chat': typeof DemoDbChatRoute
   '/demo/db-chat-api': typeof DemoDbChatApiRoute
   '/demo/store': typeof DemoStoreRoute
@@ -254,14 +254,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/forgot-password'
+    | '/login'
+    | '/register'
     | '/location'
     | '/new-password'
     | '/register-areas'
     | '/register-password'
-    | '/reset-password'
     | '/verify-otp'
-    | '/login'
-    | '/register'
     | '/demo/db-chat'
     | '/demo/db-chat-api'
     | '/demo/store'
@@ -281,14 +281,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
+    | '/forgot-password'
+    | '/login'
+    | '/register'
     | '/location'
     | '/new-password'
     | '/register-areas'
     | '/register-password'
-    | '/reset-password'
     | '/verify-otp'
-    | '/login'
-    | '/register'
     | '/demo/db-chat'
     | '/demo/db-chat-api'
     | '/demo/store'
@@ -309,14 +309,14 @@ export interface FileRouteTypes {
     | '/'
     | '/(auth)'
     | '/dashboard'
-    | '/(auth)/location'
-    | '/(auth)/new-password'
-    | '/(auth)/register-areas'
-    | '/(auth)/register-password'
-    | '/(auth)/reset-password'
-    | '/(auth)/verify-otp'
-    | '/(header1)/login'
-    | '/(header1)/register'
+    | '/(auth)/forgot-password'
+    | '/(auth)/login'
+    | '/(auth)/register'
+    | '/(header1)/location'
+    | '/(header1)/new-password'
+    | '/(header1)/register-areas'
+    | '/(header1)/register-password'
+    | '/(header1)/verify-otp'
     | '/demo/db-chat'
     | '/demo/db-chat-api'
     | '/demo/store'
@@ -338,8 +338,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authRouteRoute: typeof authRouteRouteWithChildren
   DashboardRoute: typeof DashboardRoute
-  header1LoginRoute: typeof header1LoginRoute
-  header1RegisterRoute: typeof header1RegisterRoute
+  header1LocationRoute: typeof header1LocationRoute
+  header1NewPasswordRoute: typeof header1NewPasswordRoute
+  header1RegisterAreasRoute: typeof header1RegisterAreasRoute
+  header1RegisterPasswordRoute: typeof header1RegisterPasswordRoute
+  header1VerifyOtpRoute: typeof header1VerifyOtpRoute
   DemoDbChatRoute: typeof DemoDbChatRoute
   DemoDbChatApiRoute: typeof DemoDbChatApiRoute
   DemoStoreRoute: typeof DemoStoreRoute
@@ -415,60 +418,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoDbChatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(header1)/register': {
-      id: '/(header1)/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof header1RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(header1)/login': {
-      id: '/(header1)/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof header1LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(auth)/verify-otp': {
-      id: '/(auth)/verify-otp'
+    '/(header1)/verify-otp': {
+      id: '/(header1)/verify-otp'
       path: '/verify-otp'
       fullPath: '/verify-otp'
-      preLoaderRoute: typeof authVerifyOtpRouteImport
-      parentRoute: typeof authRouteRoute
+      preLoaderRoute: typeof header1VerifyOtpRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/(auth)/reset-password': {
-      id: '/(auth)/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof authResetPasswordRouteImport
-      parentRoute: typeof authRouteRoute
-    }
-    '/(auth)/register-password': {
-      id: '/(auth)/register-password'
+    '/(header1)/register-password': {
+      id: '/(header1)/register-password'
       path: '/register-password'
       fullPath: '/register-password'
-      preLoaderRoute: typeof authRegisterPasswordRouteImport
-      parentRoute: typeof authRouteRoute
+      preLoaderRoute: typeof header1RegisterPasswordRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/(auth)/register-areas': {
-      id: '/(auth)/register-areas'
+    '/(header1)/register-areas': {
+      id: '/(header1)/register-areas'
       path: '/register-areas'
       fullPath: '/register-areas'
-      preLoaderRoute: typeof authRegisterAreasRouteImport
-      parentRoute: typeof authRouteRoute
+      preLoaderRoute: typeof header1RegisterAreasRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/(auth)/new-password': {
-      id: '/(auth)/new-password'
+    '/(header1)/new-password': {
+      id: '/(header1)/new-password'
       path: '/new-password'
       fullPath: '/new-password'
-      preLoaderRoute: typeof authNewPasswordRouteImport
-      parentRoute: typeof authRouteRoute
+      preLoaderRoute: typeof header1NewPasswordRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/(auth)/location': {
-      id: '/(auth)/location'
+    '/(header1)/location': {
+      id: '/(header1)/location'
       path: '/location'
       fullPath: '/location'
-      preLoaderRoute: typeof authLocationRouteImport
+      preLoaderRoute: typeof header1LocationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/register': {
+      id: '/(auth)/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof authRegisterRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/(auth)/forgot-password': {
+      id: '/(auth)/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof authForgotPasswordRouteImport
       parentRoute: typeof authRouteRoute
     }
     '/demo/start/server-funcs': {
@@ -545,21 +548,15 @@ declare module '@tanstack/react-router' {
 }
 
 interface authRouteRouteChildren {
-  authLocationRoute: typeof authLocationRoute
-  authNewPasswordRoute: typeof authNewPasswordRoute
-  authRegisterAreasRoute: typeof authRegisterAreasRoute
-  authRegisterPasswordRoute: typeof authRegisterPasswordRoute
-  authResetPasswordRoute: typeof authResetPasswordRoute
-  authVerifyOtpRoute: typeof authVerifyOtpRoute
+  authForgotPasswordRoute: typeof authForgotPasswordRoute
+  authLoginRoute: typeof authLoginRoute
+  authRegisterRoute: typeof authRegisterRoute
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
-  authLocationRoute: authLocationRoute,
-  authNewPasswordRoute: authNewPasswordRoute,
-  authRegisterAreasRoute: authRegisterAreasRoute,
-  authRegisterPasswordRoute: authRegisterPasswordRoute,
-  authResetPasswordRoute: authResetPasswordRoute,
-  authVerifyOtpRoute: authVerifyOtpRoute,
+  authForgotPasswordRoute: authForgotPasswordRoute,
+  authLoginRoute: authLoginRoute,
+  authRegisterRoute: authRegisterRoute,
 }
 
 const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
@@ -570,8 +567,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authRouteRoute: authRouteRouteWithChildren,
   DashboardRoute: DashboardRoute,
-  header1LoginRoute: header1LoginRoute,
-  header1RegisterRoute: header1RegisterRoute,
+  header1LocationRoute: header1LocationRoute,
+  header1NewPasswordRoute: header1NewPasswordRoute,
+  header1RegisterAreasRoute: header1RegisterAreasRoute,
+  header1RegisterPasswordRoute: header1RegisterPasswordRoute,
+  header1VerifyOtpRoute: header1VerifyOtpRoute,
   DemoDbChatRoute: DemoDbChatRoute,
   DemoDbChatApiRoute: DemoDbChatApiRoute,
   DemoStoreRoute: DemoStoreRoute,

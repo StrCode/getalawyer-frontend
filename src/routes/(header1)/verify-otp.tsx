@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { VerifyOTP } from "@/components/register/lawyer/verify-otp";
 
-export const Route = createFileRoute("/(auth)/verify-otp")({
+export const Route = createFileRoute("/(header1)/verify-otp")({
 	component: RouteComponent,
 });
 
@@ -12,5 +12,5 @@ function RouteComponent() {
 				<VerifyOTP />
 			</div>
 		</div>
-	);
+	)
 }

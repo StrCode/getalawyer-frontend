@@ -1,160 +1,198 @@
-import { useStore } from '@tanstack/react-form'
-
-import { useFieldContext, useFormContext } from '@/hooks/form-context'
-
-import { CalendarIcon, EyeIcon, EyeOffIcon } from "lucide-react";
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { useStore } from "@tanstack/react-form";
+import { useFieldContext, useFormContext } from "@/hooks/form-context";
+import { LucideIcon, EyeIcon, EyeOffIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
 } from "@/components/ui/input-group";
-import { Field, FieldError, FieldDescription, FieldLabel } from "@/components/ui/field";
-import { Label } from '@/components/ui/label'
-import { useState } from 'react'
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { Checkbox } from "./ui/checkbox";
 
 export function SubscribeButton({ label }: { label: string }) {
-  const form = useFormContext()
-  return (
-    <form.Subscribe selector={(state) => state.isSubmitting}>
-      {(isSubmitting) => (
-        <Button type="submit" disabled={isSubmitting}>
-          {label}
-        </Button>
-      )}
-    </form.Subscribe>
-  )
+	const form = useFormContext();
+	return (
+		<form.Subscribe selector={(state) => state.isSubmitting}>
+			{(isSubmitting) => (
+				<Button type="submit" disabled={isSubmitting}>
+					{label}
+				</Button>
+			)}
+		</form.Subscribe>
+	);
 }
 
 export function TextField({
-  label,
-  placeholder,
+	label,
+	placeholder,
+	startIcon: StartIcon,
 }: {
-  label: string;
-  placeholder?: string;
+	label: string;
+	placeholder?: string;
+	startIcon?: LucideIcon;
 }) {
-  const field = useFieldContext<string>();
-  const errors = useStore(field.store, (state) => state.meta.errors);
+	const field = useFieldContext<string>();
+	const errors = useStore(field.store, (state) => state.meta.errors);
 
-  return (
-    <Field>
-      <FieldLabel htmlFor={label}>{label}</FieldLabel>
-      <InputGroup>
-        <InputGroupInput
-          size={"lg"}
-          className={"text-sm placeholder:text-sm"}
-          aria-label="h"
-          type="text"
-          value={field.state.value}
-          placeholder={placeholder}
-          onBlur={field.handleBlur}
-          onChange={(e) => field.handleChange(e.target.value)}
-        />
-        <InputGroupAddon>
-        </InputGroupAddon>
-      </InputGroup>
-      <FieldError>
-        {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-      </FieldError>
-    </Field>
-  );
+	return (
+		<Field>
+			<FieldLabel htmlFor={label}>{label}</FieldLabel>
+			<InputGroup>
+				<InputGroupInput
+					size={"default"}
+					className={"placeholder:text-base"}
+					aria-label="h"
+					type="text"
+					value={field.state.value}
+					placeholder={placeholder}
+					onBlur={field.handleBlur}
+					onChange={(e) => field.handleChange(e.target.value)}
+				/>
+				{StartIcon && (
+					<InputGroupAddon>
+						<StartIcon />
+					</InputGroupAddon>
+				)}
+			</InputGroup>
+			<FieldError>
+				{field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+			</FieldError>
+		</Field>
+	);
 }
 
 export function PasswordField({
-  label,
-  placeholder,
+	label,
+	placeholder,
 }: {
-  label: string;
-  placeholder: string;
+	label: string;
+	placeholder: string;
 }) {
-  const field = useFieldContext<string>();
-  const errors = useStore(field.store, (state) => state.meta.errors);
+	const field = useFieldContext<string>();
+	const errors = useStore(field.store, (state) => state.meta.errors);
 
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  const toggleVisibility = () => setIsVisible((prevState) => !prevState);
+	const [isVisible, setIsVisible] = useState<boolean>(false);
+	const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
-  return (
-    <div className="gap-3 grid">
-      <Label htmlFor={label}>{label}</Label>
-      <div className="relative">
-        <Input
-          id={label}
-          className="pe-9"
-          placeholder={placeholder}
-          value={field.state.value}
-          type={isVisible ? "text" : "password"}
-          onBlur={field.handleBlur}
-          onChange={(e) => field.handleChange(e.target.value)}
-        />
-        <button
-          className="focus:z-10 absolute inset-y-0 flex justify-center items-center disabled:opacity-50 focus-visible:border-ring rounded-e-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 w-9 h-full text-muted-foreground/80 hover:text-foreground transition-[color,box-shadow] disabled:cursor-not-allowed disabled:pointer-events-none end-0"
-          type="button"
-          onClick={toggleVisibility}
-          aria-label={isVisible ? "Hide password" : "Show password"}
-          aria-pressed={isVisible}
-          aria-controls="password"
-        >
-          {isVisible ? (
-            <EyeOffIcon size={16} aria-hidden="true" />
-          ) : (
-            <EyeIcon size={16} aria-hidden="true" />
-          )}
-        </button>
-      </div>
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-    </div>
-  );
+	return (
+		<div className="gap-3 grid">
+			<Label htmlFor={label}>{label}</Label>
+			<div className="relative">
+				<Input
+					id={label}
+					className="pe-9"
+					placeholder={placeholder}
+					value={field.state.value}
+					type={isVisible ? "text" : "password"}
+					onBlur={field.handleBlur}
+					onChange={(e) => field.handleChange(e.target.value)}
+				/>
+				<button
+					className="focus:z-10 absolute inset-y-0 flex justify-center items-center disabled:opacity-50 focus-visible:border-ring rounded-e-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 w-9 h-full text-muted-foreground/80 hover:text-foreground transition-[color,box-shadow] disabled:cursor-not-allowed disabled:pointer-events-none end-0"
+					type="button"
+					onClick={toggleVisibility}
+					aria-label={isVisible ? "Hide password" : "Show password"}
+					aria-pressed={isVisible}
+					aria-controls="password"
+				>
+					{isVisible ? (
+						<EyeOffIcon size={16} aria-hidden="true" />
+					) : (
+						<EyeIcon size={16} aria-hidden="true" />
+					)}
+				</button>
+			</div>
+			{field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+		</div>
+	);
+}
+
+export function CheckboxField({
+	label,
+	description,
+}: {
+	label: string;
+	description?: string;
+}) {
+	const field = useFieldContext<boolean>();
+	const errors = useStore(field.store, (state) => state.meta.errors);
+
+	return (
+		<Field>
+			<div className="flex justify-center items-center gap-2">
+				<Checkbox
+					name={label}
+					onBlur={field.handleBlur}
+					id={field.name}
+					checked={field.state.value}
+					onCheckedChange={(checked) => field.handleChange(checked)}
+				/>
+				<div className="flex-1">
+					<FieldLabel htmlFor={label} className="cursor-pointer">
+						{label}
+					</FieldLabel>
+					{description && (
+						<p className="text-sm text-gray-500 mt-0.5">{description}</p>
+					)}
+				</div>
+			</div>
+			<FieldError>
+				{field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+			</FieldError>
+		</Field>
+	);
 }
 
 export function TimeField({
-  label,
-  placeholder,
+	label,
+	placeholder,
 }: {
-  label: string;
-  placeholder?: string;
+	label: string;
+	placeholder?: string;
 }) {
-  const field = useFieldContext<string>();
-  const errors = useStore(field.store, (state) => state.meta.errors);
+	const field = useFieldContext<string>();
+	const errors = useStore(field.store, (state) => state.meta.errors);
 
-  return (
-    <div className="gap-3 grid">
-      <Label htmlFor={label}>{label}</Label>
-      <div className="relative">
-        <Input
-          type="time"
-          step="1"
-          value={field.state.value}
-          placeholder={placeholder}
-          onBlur={field.handleBlur}
-          onChange={(e) => field.handleChange(e.target.value)}
-          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-        />
-      </div>
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-    </div>
-  );
+	return (
+		<div className="gap-3 grid">
+			<Label htmlFor={label}>{label}</Label>
+			<div className="relative">
+				<Input
+					type="time"
+					step="1"
+					value={field.state.value}
+					placeholder={placeholder}
+					onBlur={field.handleBlur}
+					onChange={(e) => field.handleChange(e.target.value)}
+					className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+				/>
+			</div>
+			{field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+		</div>
+	);
 }
 
-
-
 function ErrorMessages({
-  errors,
+	errors,
 }: {
-  errors: Array<string | { message: string }>
+	errors: Array<string | { message: string }>;
 }) {
-  return (
-    <>
-      {errors.map((error) => (
-        <div
-          key={typeof error === 'string' ? error : error.message}
-          className="text-red-500 mt-1 font-bold"
-        >
-          {typeof error === 'string' ? error : error.message}
-        </div>
-      ))}
-    </>
-  )
+	return (
+		<>
+			{errors.map((error) => (
+				<div
+					key={typeof error === "string" ? error : error.message}
+					className="text-red-500 mt-1 font-bold"
+				>
+					{typeof error === "string" ? error : error.message}
+				</div>
+			))}
+		</>
+	);
 }
 
 // export function TextField({

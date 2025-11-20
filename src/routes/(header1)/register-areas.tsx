@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { RegisterAreas } from "@/components/register/lawyer/register-areas";
 
-export const Route = createFileRoute("/(auth)/register-areas")({
+export const Route = createFileRoute("/(header1)/register-areas")({
 	component: RouteComponent,
 });
 
@@ -21,5 +21,5 @@ function RouteComponent() {
 			</div>
 			<RegisterAreas />
 		</div>
-	);
+	)
 }

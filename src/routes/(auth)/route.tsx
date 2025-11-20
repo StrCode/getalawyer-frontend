@@ -11,5 +11,5 @@ function AppLayoutComponent() {
 			<Header />
 			<Outlet />
 		</div>
-	);
+	)
 }

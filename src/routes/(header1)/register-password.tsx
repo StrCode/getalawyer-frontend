@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { RegisterPassword } from "@/components/register/lawyer/register-password";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 
-export const Route = createFileRoute("/(auth)/register-password")({
+export const Route = createFileRoute("/(header1)/register-password")({
 	component: RouteComponent,
 });
 
@@ -13,5 +13,5 @@ function RouteComponent() {
 				<RegisterPassword />
 			</div>
 		</div>
-	);
+	)
 }
