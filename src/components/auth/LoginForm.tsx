@@ -22,8 +22,8 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 
 	const form = useAppForm({
 		defaultValues: {
-			email: "",
-			password: "",
+			email: "test@test.com",
+			password: "password123",
 			rememberMe: false,
 		},
 		validators: {

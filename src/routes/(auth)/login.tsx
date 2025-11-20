@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
 import { GalleryHorizontalEndIcon } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { requireAuth, requireGuest } from "@/lib/auth-guard";
 
 export const Route = createFileRoute("/(auth)/login")({
 	component: RouteComponent,
@@ -23,7 +24,9 @@ function RouteComponent() {
 						<span className="text-sm/loose text-zinc-600">
 							Don't have an account?
 						</span>
-						<Link to="/dashboard">Register</Link>
+						<Button variant="outline" className="text-sm" size="default">
+							Register
+						</Button>
 					</div>
 				</div>
 				<div className="flex flex-1 items-center justify-center">
