@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
-import { FacebookIcon } from "lucide-react";
 
 export default function FacebookLoginButton() {
 	const signIn = async () => {
 		const data = await authClient.signIn.social({
 			provider: "facebook",
 		});
+		console.log(data);
 	};
 
 	return (
