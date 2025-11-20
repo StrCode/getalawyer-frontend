@@ -17,7 +17,7 @@ function RouteComponent() {
 			await authClient.signOut({
 				fetchOptions: {
 					onSuccess: () => {
-						router.navigate({ to: "/" });
+						router.navigate({ to: "/login" });
 					},
 				},
 			});

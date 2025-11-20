@@ -13,12 +13,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* @supports */
-/*  (corner-shape: squircle) { */
-/* *:not([class*='rounded-full']) { */
-/* corner-shape: squircle; */
-/* } */
-/* } */
+@supports
+ (corner-shape: squircle) {
+*:not([class*='rounded-full']) {
+corner-shape: squircle;
+}
+}
 
 code {
   font-family: "Inter", source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;

@@ -3,6 +3,7 @@ import { createFormHook } from "@tanstack/react-form";
 import {
 	CheckboxField,
 	PasswordField,
+	PasswordPassField,
 	SubscribeButton,
 	TextField,
 } from "../components/FormComponents";
@@ -13,6 +14,7 @@ export const { useAppForm } = createFormHook({
 		CheckboxField,
 		TextField,
 		PasswordField,
+		PasswordPassField,
 	},
 	formComponents: {
 		SubscribeButton,

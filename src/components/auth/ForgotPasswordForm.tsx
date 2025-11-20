@@ -1,8 +1,8 @@
 import { useAppForm } from "@/hooks/form";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
 import * as z from "zod/v4";
-import { LockKeyholeIcon, MailIcon } from "lucide-react";
+import { ArrowLeftIcon, LockKeyholeIcon, MailIcon } from "lucide-react";
 import { AuthCardHeader } from "./AuthCardHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardPanel } from "@/components/ui/card";
@@ -11,8 +11,6 @@ import { Form } from "@/components/ui/form";
 const forgotPasswordSchema = z.object({
 	email: z.email().min(1, { error: "Please enter an email address" }),
 });
-
-// type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
 
 export function ForgotPasswordForm({
 	...props
@@ -27,7 +25,8 @@ export function ForgotPasswordForm({
 			onBlur: forgotPasswordSchema,
 		},
 		onSubmit: async ({ value }) => {
-			await authClient.forgetPassword(
+			console.log(value.email);
+			await authClient.forgetPassword.emailOtp(
 				{
 					email: value.email,
 				},
@@ -36,11 +35,8 @@ export function ForgotPasswordForm({
 						navigate({
 							to: "/verify-otp",
 						});
-						// toast.success("Sign in successful");
 					},
-					onError: (error) => {
-						// toast.error(error.error.message || error.error.statusText);
-					},
+					onError: (error) => {},
 				},
 			);
 		},
@@ -56,8 +52,14 @@ export function ForgotPasswordForm({
 				description="Enter your email to reset your password."
 				showSeparator={true}
 			/>
-			<CardPanel>
-				<Form>
+			<form
+				onSubmit={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					form.handleSubmit();
+				}}
+			>
+				<CardPanel>
 					<form.AppField name="email">
 						{(field) => (
 							<field.TextField
@@ -67,28 +69,25 @@ export function ForgotPasswordForm({
 							/>
 						)}
 					</form.AppField>
-				</Form>
-			</CardPanel>
-			<CardFooter className="flex flex-col gap-4">
-				<Button
-					size={"lg"}
-					variant="default"
-					type="submit"
-					className="w-full text-sm text-white bg-[#19603E]"
-				>
-					Reset Password
-				</Button>
-				<div className="text-center">
-					<p className="text-gray-600 text-xs">Don't have access anymore?</p>
+				</CardPanel>
+				<CardFooter className="flex mt-4 flex-col gap-4">
 					<Button
 						disabled={isSubmitting}
-						variant="link"
-						className="text-xs text-stone-950 underline"
+						size={"lg"}
+						variant="default"
+						type="submit"
+						className="w-full text-sm text-white bg-[#19603E]"
 					>
-						Try another method
+						Reset Password
 					</Button>
-				</div>
-			</CardFooter>
+					<Link className="text-sm" to={"/login"}>
+						<div className="text-center flex gap-2 items-center flex-row">
+							<ArrowLeftIcon size={"14"} />
+							Back to Login
+						</div>
+					</Link>
+				</CardFooter>
+			</form>
 		</Card>
 	);
 }

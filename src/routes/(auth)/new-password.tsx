@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { NewPassword } from "@/components/register/lawyer/new-password";
-import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
+import { NewPassword } from "@/components/auth/NewPassword";
 
-export const Route = createFileRoute("/(header1)/new-password")({
+export const Route = createFileRoute("/(auth)/new-password")({
 	component: RouteComponent,
 });
 
@@ -13,5 +12,5 @@ function RouteComponent() {
 				<NewPassword />
 			</div>
 		</div>
-	)
+	);
 }
