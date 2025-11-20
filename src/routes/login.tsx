@@ -5,7 +5,7 @@ import { GalleryHorizontalEndIcon } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { requireAuth, requireGuest } from "@/lib/auth-guard";
 
-export const Route = createFileRoute("/(auth)/login")({
+export const Route = createFileRoute("/login")({
 	component: RouteComponent,
 });
 
@@ -43,5 +43,5 @@ function RouteComponent() {
 				/>
 			</div>
 		</div>
-	);
+	)
 }
