@@ -1,30 +1,19 @@
-import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useAppForm } from "@/hooks/form";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-	Card,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardPanel,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardPanel } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
-import { Facebook, UserCheck2Icon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import * as z from "zod/v4";
+import { Field } from "@/components/ui/field";
+import { UserCheck2Icon } from "lucide-react";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import FacebookLoginButton from "@/components/auth/FacebookLoginButton";
 import { AuthButton } from "./AuthButton";
 import { AuthCardHeader } from "./AuthCardHeader";
 
-export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
-	const navigate = useNavigate({ from: "/" });
+import * as z from "zod/v4";
 
+export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
+	const navigate = useNavigate();
 	const loginSchema = z.object({
 		email: z.email("Invalid email address"),
 		password: z.string("Please enter your password"),
@@ -33,15 +22,14 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 
 	const form = useAppForm({
 		defaultValues: {
-			email: "bellos@yahoo.com",
-			password: "denmark12345",
+			email: "",
+			password: "",
 			rememberMe: false,
 		},
 		validators: {
 			onBlur: loginSchema,
 		},
 		onSubmit: async ({ value }) => {
-			console.log(value);
 			await authClient.signIn.email(
 				{
 					email: value.email,
@@ -62,7 +50,6 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 			);
 		},
 	});
-
 	return (
 		<Card className="w-full border-0 before:shadow-none shadow-none ring-0">
 			<AuthCardHeader

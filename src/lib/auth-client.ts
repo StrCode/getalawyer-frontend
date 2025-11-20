@@ -1,8 +1,6 @@
 import { createAuthClient } from "better-auth/react";
+
+// If you want to export the entire auth client object as well
 export const authClient = createAuthClient({
-	/** The base URL of the server (optional if you're using the same domain) */
-	// baseURL: "http://localhost:3000",
 	baseURL: "https://getalawyer-backend-production.up.railway.app",
 });
-
-export const { signIn, signUp, useSession } = createAuthClient();

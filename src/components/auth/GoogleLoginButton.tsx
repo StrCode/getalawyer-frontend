@@ -5,12 +5,13 @@ import { authClient } from "@/lib/auth-client";
 export default function GoogleLoginButton() {
 	const [isLoading, setIsLoading] = useState(false);
 
+	//TODO: Handle loading and error state
 	const signIn = async () => {
 		try {
 			setIsLoading(true);
 			await authClient.signIn.social({
 				provider: "google",
-				callbackURL: "/dashboard",
+				callbackURL: "/",
 			});
 		} catch (error) {
 			console.error("Google sign-in error:", error);
