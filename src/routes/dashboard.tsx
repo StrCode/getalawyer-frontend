@@ -6,21 +6,14 @@ import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard")({
 	component: RouteComponent,
-	beforeLoad: async () => {
-		const session = await getUser();
-		console.log(session);
-		return { session };
-	},
-	loader: async ({ context }) => {
-		console.log(context.session);
-		if (!context.session) {
-		}
-	},
 });
 
 function RouteComponent() {
-	const { session } = Route.useRouteContext();
 	const router = useRouter();
+	const { data: session, error, isPending } = authClient.useSession();
+	if (!isPending && error) {
+		router.navigate({ to: "/login" });
+	}
 
 	const handleSignOut = async () => {
 		try {
