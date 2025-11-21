@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
-import { GalleryHorizontalEndIcon } from "lucide-react";
+import { GalleryHorizontalEndIcon, Link } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { requireAuth, requireGuest } from "@/lib/auth-guard";
+import { GalleryVerticalEnd } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
 	component: RouteComponent,
@@ -43,5 +44,5 @@ function RouteComponent() {
 				/>
 			</div>
 		</div>
-	)
+	);
 }

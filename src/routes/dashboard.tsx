@@ -6,10 +6,20 @@ import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/dashboard")({
 	component: RouteComponent,
+	beforeLoad: async () => {
+		const session = await getUser();
+		console.log(session);
+		return { session };
+	},
+	loader: async ({ context }) => {
+		console.log(context.session);
+		if (!context.session) {
+		}
+	},
 });
 
 function RouteComponent() {
-	const { data: session, isPending } = authClient.useSession();
+	const { session } = Route.useRouteContext();
 	const router = useRouter();
 
 	const handleSignOut = async () => {
@@ -25,10 +35,6 @@ function RouteComponent() {
 			console.error("Sign out failed:", error);
 		}
 	};
-
-	if (isPending) {
-		return <div>Loading...</div>;
-	}
 
 	return (
 		<div>

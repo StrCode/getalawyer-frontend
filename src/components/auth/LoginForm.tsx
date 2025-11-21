@@ -9,17 +9,22 @@ import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import FacebookLoginButton from "@/components/auth/FacebookLoginButton";
 import { AuthButton } from "./AuthButton";
 import { AuthCardHeader } from "./AuthCardHeader";
+import { toastManager } from "@/components/ui/toast";
 
 import * as z from "zod/v4";
+import Loader from "./loader";
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
-	const navigate = useNavigate();
+	const navigate = useNavigate({
+		from: "/",
+	});
+	const { isPending } = authClient.useSession();
+
 	const loginSchema = z.object({
 		email: z.email("Invalid email address"),
 		password: z.string("Please enter your password"),
 		rememberMe: z.boolean(),
 	});
-
 	const form = useAppForm({
 		defaultValues: {
 			email: "test@test.com",
@@ -41,15 +46,27 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 						navigate({
 							to: "/dashboard",
 						});
-						// toast.success("Sign in successful");
+						toastManager.add({
+							title: "Sign in successful",
+							type: "success",
+						});
 					},
 					onError: (error) => {
-						// toast.error(error.error.message || error.error.statusText);
+						toastManager.add({
+							description: "There was a problem with your request.",
+							title: "Uh oh! Something went wrong.",
+							type: "error",
+						});
 					},
 				},
 			);
 		},
 	});
+
+	if (isPending) {
+		return <Loader />;
+	}
+
 	return (
 		<Card className="w-full border-0 before:shadow-none shadow-none ring-0">
 			<AuthCardHeader
@@ -102,19 +119,18 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 						<AuthButton isLoading={form.state.isSubmitting}>Login</AuthButton>
 					</div>
 				</CardPanel>
-				<CardFooter>
-					<div className="flex flex-col mt-8 gap-4">
-						<div className="w-full relative flex flex-row items-center justify-center">
-							<Separator className={"my-2"} orientation="horizontal" />
-							<p className="absolute px-4 bg-white text-xs text-[#868C98]">
-								Or continue with
-							</p>
-						</div>
+				<CardFooter className="flex flex-col">
+					<div className="my-6 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+						<hr className="border-dashed" />
+						<span className="text-muted-foreground text-xs">
+							Or continue With
+						</span>
+						<hr className="border-dashed" />
+					</div>
 
-						<Field className="grid gap-4 sm:grid-cols-2">
-							<GoogleLoginButton />
-							<FacebookLoginButton />
-						</Field>
+					<div className="w-full grid grid-cols-2 gap-3">
+						<GoogleLoginButton />
+						<FacebookLoginButton />
 					</div>
 				</CardFooter>
 			</form>
