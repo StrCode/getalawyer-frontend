@@ -9,6 +9,7 @@ export const authMiddleware = createMiddleware().server(
 				throw: true,
 			},
 		});
+		console.log("this is", session);
 		return next({
 			context: { session },
 		});
