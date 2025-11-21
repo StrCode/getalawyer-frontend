@@ -27,8 +27,8 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 	});
 	const form = useAppForm({
 		defaultValues: {
-			email: "test@test.com",
-			password: "password123",
+			email: "bellos@yahoo.com",
+			password: "Denmark/12345",
 		},
 		validators: {
 			onBlur: loginSchema,
