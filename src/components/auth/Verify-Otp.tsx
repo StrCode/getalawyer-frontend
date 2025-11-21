@@ -27,7 +27,7 @@ interface VerifyOTPProps extends React.ComponentProps<typeof Card> {
 }
 
 export function VerifyOTP({
-	email = "user@example.com",
+	email = "",
 	type = "forget-password",
 	...props
 }: VerifyOTPProps) {

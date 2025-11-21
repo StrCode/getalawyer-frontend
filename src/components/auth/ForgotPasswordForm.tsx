@@ -15,7 +15,7 @@ const forgotPasswordSchema = z.object({
 export function ForgotPasswordForm({
 	...props
 }: React.ComponentProps<typeof Card>) {
-	const navigate = useNavigate({ from: "/forgot-password" });
+	const navigate = useNavigate();
 
 	const form = useAppForm({
 		defaultValues: {
@@ -25,7 +25,6 @@ export function ForgotPasswordForm({
 			onBlur: forgotPasswordSchema,
 		},
 		onSubmit: async ({ value }) => {
-			console.log(value.email);
 			await authClient.forgetPassword.emailOtp(
 				{
 					email: value.email,
@@ -34,6 +33,9 @@ export function ForgotPasswordForm({
 					onSuccess: () => {
 						navigate({
 							to: "/verify-otp",
+							search: {
+								email: form.state.values.email,
+							},
 						});
 					},
 					onError: (error) => {},
