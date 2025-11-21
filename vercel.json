@@ -1,0 +1,7 @@
+{
+  "buildCommand": "bun build src/index.ts --outdir ./dist --target bun",
+  "outputDirectory": "dist",
+  "installCommand": "bun install",
+  "devCommand": "bun run dev",
+  "framework": null
+}

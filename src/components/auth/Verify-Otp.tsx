@@ -14,6 +14,7 @@ import * as z from "zod";
 import { useAppForm } from "@/hooks/form";
 import { authClient } from "@/lib/auth-client";
 import { useState, useEffect } from "react";
+import { toastManager } from "../ui/toast";
 
 const otpSchema = z.object({
 	pin: z.string().min(6, {
@@ -92,6 +93,7 @@ export function VerifyOTP({
 			onBlur: otpSchema,
 		},
 		onSubmit: async ({ value }) => {
+			console.log(value);
 			await authClient.emailOtp.checkVerificationOtp(
 				{
 					email: email,
@@ -101,11 +103,16 @@ export function VerifyOTP({
 				{
 					onSuccess: () => {
 						// Handle success (e.g., navigate to next page)
+						toastManager.add({
+							title: error.error.message,
+							type: "error",
+						});
 					},
 					onError: (error) => {
 						// toast.error(error.error.message || error.error.statusText);
-						form.setErrorMap({
-							onSubmit: error.error.message || error.error.statusText,
+						toastManager.add({
+							title: error.error.message,
+							type: "error",
 						});
 					},
 				},
