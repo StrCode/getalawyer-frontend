@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bun build --outdir ./dist --target bun",
+  "buildCommand": "bun build",
   "outputDirectory": "dist",
   "installCommand": "bun install",
   "devCommand": "bun run dev",
