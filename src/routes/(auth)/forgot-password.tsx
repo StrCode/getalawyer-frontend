@@ -8,7 +8,7 @@ export const Route = createFileRoute("/(auth)/forgot-password")({
 
 function RouteComponent() {
 	return (
-		<div className="flex pt-16 justify-center items-center px-4">
+		<div className="flex pt-8 justify-center items-center px-4">
 			<div className="w-full max-w-sm">
 				<ForgotPasswordForm />
 			</div>

@@ -26,7 +26,7 @@ export const Route = createFileRoute("/(auth)/verify-otp")({
 function RouteComponent() {
 	const { email } = Route.useSearch();
 	return (
-		<div className="flex pt-16 justify-center items-center px-4">
+		<div className="flex pt-8 justify-center items-center px-4">
 			<div className="w-full max-w-sm">
 				<VerifyOTP email={email} />
 			</div>
