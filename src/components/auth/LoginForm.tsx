@@ -27,8 +27,8 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 	});
 	const form = useAppForm({
 		defaultValues: {
-			email: "bellos@yahoo.com",
-			password: "Denmark/12345",
+			email: "",
+			password: "",
 			rememberMe: false,
 		},
 		validators: {
@@ -53,8 +53,8 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 					},
 					onError: (error) => {
 						toastManager.add({
-							description: "There was a problem with your request.",
-							title: "Uh oh! Something went wrong.",
+							description: error.error.message,
+							title: "Login unsuccessful",
 							type: "error",
 						});
 					},

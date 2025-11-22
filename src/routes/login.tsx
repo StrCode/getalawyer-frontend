@@ -13,12 +13,12 @@ function RouteComponent() {
 		<div className="grid min-h-svh lg:grid-cols-2">
 			<div className="flex flex-col gap-4 p-6 md:p-10">
 				<div className="flex gap-2 justify-between">
-					<a href="#" className="flex items-center gap-2 font-medium">
+					<Link to="/login" className="flex items-center gap-2 font-medium">
 						<div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
 							<GalleryHorizontalEndIcon className="size-4" />
 						</div>
 						GetaLawyer Inc.
-					</a>
+					</Link>
 					<div className="flex items-center gap-4">
 						<span className="text-sm/loose text-zinc-600">
 							Don't have an account?
