@@ -7,6 +7,9 @@ import { AuthCardHeader } from "./AuthCardHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardPanel } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
+import { toastManager } from "../ui/toast";
+import { useState } from "react";
+import { APIError } from "better-auth";
 
 const forgotPasswordSchema = z.object({
 	email: z.email().min(1, { error: "Please enter an email address" }),
@@ -16,6 +19,7 @@ export function ForgotPasswordForm({
 	...props
 }: React.ComponentProps<typeof Card>) {
 	const navigate = useNavigate();
+	const [isLoading, setIsLoading] = useState(false);
 
 	const form = useAppForm({
 		defaultValues: {
@@ -25,29 +29,46 @@ export function ForgotPasswordForm({
 			onBlur: forgotPasswordSchema,
 		},
 		onSubmit: async ({ value }) => {
-			await authClient.forgetPassword.emailOtp(
-				{
-					email: value.email,
-				},
-				{
-					onSuccess: () => {
-						navigate({
-							to: "/verify-otp",
-							search: {
-								email: form.state.values.email,
-							},
-						});
+			setIsLoading(true);
+
+			try {
+				await authClient.forgetPassword.emailOtp(
+					{
+						email: value.email,
 					},
-					onError: (error) => {},
-				},
-			);
+					{
+						onSuccess: () => {
+							toastManager.add({
+								description: `We've sent a verification code to ${value.email}`,
+								title: "Check your email",
+								type: "success",
+							});
+
+							navigate({
+								to: "/verify-otp",
+								search: {
+									email: value.email,
+								},
+							});
+						},
+						onError: (error) => {
+							toastManager.add({
+								title: error.error.message,
+								type: "error",
+							});
+						},
+					},
+				);
+			} finally {
+				setIsLoading(false);
+			}
 		},
 	});
 
 	const { isSubmitting } = form.state;
-
+	const isDisabled = isSubmitting || isLoading;
 	return (
-		<Card>
+		<Card {...props}>
 			<AuthCardHeader
 				icon={LockKeyholeIcon}
 				title="Forgot your Password?"
@@ -66,7 +87,7 @@ export function ForgotPasswordForm({
 						{(field) => (
 							<field.TextField
 								label="Email Address"
-								placeholder="Enter the email address"
+								placeholder="Enter your email address"
 								startIcon={MailIcon}
 							/>
 						)}
@@ -74,17 +95,17 @@ export function ForgotPasswordForm({
 				</CardPanel>
 				<CardFooter className="flex mt-4 flex-col gap-4">
 					<Button
-						disabled={isSubmitting}
+						disabled={isDisabled}
 						size={"lg"}
 						variant="default"
 						type="submit"
-						className="w-full text-sm text-white bg-[#19603E]"
+						className="w-full text-sm text-white bg-[#19603E] hover:bg-[#19603E]/90"
 					>
-						Reset Password
+						{isDisabled ? "Sending code..." : "Reset Password"}
 					</Button>
 					<Link className="text-sm" to={"/login"}>
-						<div className="text-center flex gap-2 items-center flex-row">
-							<ArrowLeftIcon size={"14"} />
+						<div className="text-center flex gap-2 items-center flex-row hover:underline">
+							<ArrowLeftIcon size={14} />
 							Back to Login
 						</div>
 					</Link>

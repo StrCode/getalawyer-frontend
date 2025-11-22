@@ -50,7 +50,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body>
-				<ToastProvider>
+				<ToastProvider position="top-right">
 					<main>{children}</main>
 				</ToastProvider>
 				<TanStackDevtools
