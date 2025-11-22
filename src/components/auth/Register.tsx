@@ -129,7 +129,6 @@ export function Register({ ...props }: React.ComponentProps<typeof Card>) {
 					name: registrationData.name,
 					email: registrationData.email,
 					password: value.password,
-					role: "user",
 					callbackURL: "/dashboard",
 				},
 				{
