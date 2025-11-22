@@ -1,37 +1,41 @@
-import { useId, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardPanel } from "@/components/ui/card";
-import * as z from "zod"; // Standard import
 import { useAppForm } from "@/hooks/form";
 import { authClient } from "@/lib/auth-client";
 import { AuthCardHeader } from "./AuthCardHeader";
 import { LockKeyholeIcon } from "lucide-react";
+import * as z from "zod";
+import { toastManager } from "../ui/toast";
 
-interface NewPasswordProps {
-	email?: string;
-	otp?: string;
-	onSuccess?: () => void;
+interface NewPasswordComponentProps {
+	email: string;
+	otp: string;
+	onSuccess: () => void;
 }
 
-export function NewPassword({ email, otp, onSuccess }: NewPasswordProps) {
-	// 1. Fix: Align Schema with UI (only 2 fields needed)
-	const passwordSchema = z
-		.object({
-			password: z
-				.string({ error: "Please enter a password" })
-				.min(8, "Password must be at least 8 characters")
-				.regex(/\d/, "Password must contain at least one number")
-				.regex(/[a-z]/, "Password must contain at least one lowercase letter")
-				.regex(/[A-Z]/, "Password must contain at least one uppercase letter"),
-			confirmPassword: z.string({
-				error: "Please confirm your password",
-			}),
-		})
-		.refine((data) => data.password === data.confirmPassword, {
-			message: "Passwords do not match",
-			path: ["confirmPassword"],
-		});
+const passwordSchema = z
+	.object({
+		password: z
+			.string({ message: "Please enter a password" })
+			.min(8, "Password must be at least 8 characters")
+			.regex(/\d/, "Password must contain at least one number")
+			.regex(/[a-z]/, "Password must contain at least one lowercase letter")
+			.regex(/[A-Z]/, "Password must contain at least one uppercase letter"),
+		confirmPassword: z.string({
+			message: "Please confirm your password",
+		}),
+	})
+	.refine((data) => data.password === data.confirmPassword, {
+		message: "Passwords do not match",
+		path: ["confirmPassword"],
+	});
 
+export function NewPassword({
+	email,
+	otp,
+	onSuccess,
+}: NewPasswordComponentProps) {
 	const form = useAppForm({
 		defaultValues: {
 			password: "",
@@ -39,33 +43,44 @@ export function NewPassword({ email, otp, onSuccess }: NewPasswordProps) {
 		},
 		validators: {
 			onBlur: passwordSchema,
-			// You usually also want onChange or onSubmit validation
 			onSubmit: passwordSchema,
 		},
 		onSubmit: async ({ value }) => {
-			if (!email || !otp) {
-				// handle missing credentials
-				//TODO: check this error issues
-				return;
+			try {
+				await authClient.emailOtp.resetPassword(
+					{
+						password: value.password,
+						otp: otp,
+						email: email,
+					},
+					{
+						onSuccess: () => {
+							toastManager.add({
+								title: "Password reset successful",
+								description:
+									"Your password has been changed. Please login with your new password.",
+								type: "success",
+							});
+							onSuccess();
+						},
+						onError: (error) => {
+							toastManager.add({
+								title: "Failed to reset password",
+								description:
+									error.error.message ||
+									"An error occurred while resetting your password. Please try again.",
+								type: "error",
+							});
+						},
+					},
+				);
+			} catch (error) {
+				toastManager.add({
+					title: "Error",
+					description: "An unexpected error occurred. Please try again.",
+					type: "error",
+				});
 			}
-
-			await authClient.emailOtp.resetPassword(
-				{
-					password: value.password,
-					otp: otp,
-					email: email,
-				},
-				{
-					onSuccess: () => {
-						onSuccess?.();
-					},
-					onError: (error) => {
-						form.setErrorMap({
-							onSubmit: error.error.message || "Failed to reset password",
-						});
-					},
-				},
-			);
 		},
 	});
 
@@ -93,21 +108,19 @@ export function NewPassword({ email, otp, onSuccess }: NewPasswordProps) {
 							/>
 						)}
 					</form.AppField>
-
 					<form.AppField name="confirmPassword">
-						{(field) => <field.PasswordPassField label="New Password" />}
+						{(field) => <field.PasswordPassField label="Confirm Password" />}
 					</form.AppField>
 				</CardPanel>
 				<CardFooter className="mt-6">
 					<Button
-						size={"lg"}
-						variant={"default"}
+						size="lg"
+						variant="default"
 						className="w-full"
 						type="submit"
-						// Optional: Disable if password isn't strong enough or loading
-						// disabled={form.isSubmitting || strengthScore < 3}
+						disabled={form.state.isSubmitting}
 					>
-						Submit
+						{form.state.isSubmitting ? "Resetting..." : "Reset Password"}
 					</Button>
 				</CardFooter>
 			</form>

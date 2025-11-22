@@ -15,6 +15,7 @@ import { useAppForm } from "@/hooks/form";
 import { authClient } from "@/lib/auth-client";
 import { useState, useEffect } from "react";
 import { toastManager } from "../ui/toast";
+import { useNavigate } from "@tanstack/react-router";
 
 const otpSchema = z.object({
 	pin: z.string().min(6, {
@@ -36,6 +37,7 @@ export function VerifyOTP({
 	const [isResending, setIsResending] = useState(false);
 	const [resendAttempts, setResendAttempts] = useState(0);
 	const MAX_RESEND_ATTEMPTS = 5;
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (timeLeft <= 0) return;
@@ -93,7 +95,6 @@ export function VerifyOTP({
 			onBlur: otpSchema,
 		},
 		onSubmit: async ({ value }) => {
-			console.log(value);
 			await authClient.emailOtp.checkVerificationOtp(
 				{
 					email: email,
@@ -102,14 +103,18 @@ export function VerifyOTP({
 				},
 				{
 					onSuccess: () => {
-						// Handle success (e.g., navigate to next page)
+						// Store email and otp in session storage
+						sessionStorage.setItem("reset_email", email);
+						sessionStorage.setItem("reset_otp", value.pin);
+
 						toastManager.add({
-							title: error.error.message,
-							type: "error",
+							title: "Verification successful",
+							description: "Please proceed to set your new password.",
+							type: "success",
 						});
+						navigate({ to: "/new-password" });
 					},
 					onError: (error) => {
-						// toast.error(error.error.message || error.error.statusText);
 						toastManager.add({
 							title: error.error.message,
 							type: "error",

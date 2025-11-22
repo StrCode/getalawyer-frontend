@@ -1,5 +1,5 @@
-import { createAuthClient } from "better-auth/react";
 import { emailOTPClient } from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/react";
 
 // If you want to export the entire auth client object as well
 export const authClient = createAuthClient({
