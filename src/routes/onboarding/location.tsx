@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import RegisterLocation from "@/components/register/lawyer/register-location";
 
-export const Route = createFileRoute("/(header1)/location")({
+export const Route = createFileRoute("/onboarding/location")({
 	component: RouteComponent,
 });
 

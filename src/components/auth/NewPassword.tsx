@@ -43,7 +43,6 @@ export function NewPassword({ email, otp, onSuccess }: NewPasswordProps) {
 			onSubmit: passwordSchema,
 		},
 		onSubmit: async ({ value }) => {
-			console.log(value);
 			if (!email || !otp) {
 				// handle missing credentials
 				//TODO: check this error issues

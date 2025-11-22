@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import { GalleryHorizontalEndIcon } from "lucide-react";
 
-export const Route = createFileRoute("/register")({
+export const Route = createFileRoute("/(auth)/register")({
 	component: RouteComponent,
 });
 
@@ -43,5 +43,5 @@ function RouteComponent() {
 				/>
 			</div>
 		</div>
-	);
+	)
 }

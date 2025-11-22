@@ -8,9 +8,9 @@ async function request<T>(
 		...options,
 		headers: {
 			"Content-Type": "application/json",
+			Accept: "application/json",
 			...options.headers,
 		},
-		credentials: options.credentials,
 	});
 
 	if (!response.ok) {

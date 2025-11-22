@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { RegisterAreas } from "@/components/register/lawyer/register-areas";
 
-export const Route = createFileRoute("/(header1)/register-areas")({
+export const Route = createFileRoute("/onboarding/register-areas")({
 	component: RouteComponent,
 });
 
