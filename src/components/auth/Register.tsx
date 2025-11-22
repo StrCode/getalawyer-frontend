@@ -124,12 +124,12 @@ export function Register({ ...props }: React.ComponentProps<typeof Card>) {
 		},
 		onSubmit: async ({ value }) => {
 			setIsLoading(true);
-
 			await authClient.signUp.email(
 				{
 					name: registrationData.name,
 					email: registrationData.email,
 					password: value.password,
+					role: "user",
 					callbackURL: "/dashboard",
 				},
 				{

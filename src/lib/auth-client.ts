@@ -1,5 +1,6 @@
-import { emailOTPClient } from "better-auth/client/plugins";
+import { adminClient, emailOTPClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
+import { inferAdditionalFields } from "better-auth/client/plugins";
 
 // If you want to export the entire auth client object as well
 export const authClient = createAuthClient({
@@ -7,5 +8,27 @@ export const authClient = createAuthClient({
 	fetchOptions: {
 		credentials: "include", // ← Make sure this is set
 	},
-	plugins: [emailOTPClient()],
+	plugins: [
+		inferAdditionalFields({
+			user: {
+				role: {
+					type: "string",
+				},
+			},
+		}),
+		adminClient(),
+		emailOTPClient(),
+	],
 });
+
+export const {
+	useSession,
+	signIn,
+	signUp,
+	signOut,
+	forgetPassword,
+	resetPassword,
+} = authClient;
+
+export type Session = typeof authClient.$Infer.Session;
+export type User = typeof authClient.$Infer.Session.user;
