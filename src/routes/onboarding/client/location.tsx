@@ -23,11 +23,11 @@ function OnboardingStep1() {
 
 		if (Object.keys(newErrors).length > 0) {
 			setErrors(newErrors);
-			return
+			return;
 		}
 
-		router.navigate({ to: "/onboarding/specialization" });
-	}
+		router.navigate({ to: "/onboarding/client/specialization" });
+	};
 
 	return (
 		<div className="space-y-6">
@@ -109,5 +109,5 @@ function OnboardingStep1() {
 				Continue to Specializations →
 			</Button>
 		</div>
-	)
+	);
 }
