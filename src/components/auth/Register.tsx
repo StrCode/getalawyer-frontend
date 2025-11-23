@@ -129,17 +129,17 @@ export function Register({ ...props }: React.ComponentProps<typeof Card>) {
 					name: registrationData.name,
 					email: registrationData.email,
 					password: value.password,
-					callbackURL: "/onboarding/location",
+					callbackURL: "/dashboard",
 				},
 				{
 					onSuccess: () => {
 						setIsLoading(false);
 						toastManager.add({
-							title: "Account created successfully",
-							description: "Welcome! Redirecting to dashboard...",
+							title: "Thank you for signing up",
+							description: "",
 							type: "success",
 						});
-						navigate({ to: "/onboarding/location" });
+						navigate({ to: "/dashboard" });
 					},
 					onError: (error) => {
 						setIsLoading(false);
