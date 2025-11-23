@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
 	Card,
 	CardDescription,
@@ -8,14 +7,7 @@ import {
 	CardPanel,
 	CardTitle,
 } from "@/components/ui/card";
-import {
-	CheckIcon,
-	Code2Icon,
-	GlobeIcon,
-	LayersIcon,
-	PlusIcon,
-	ZapIcon,
-} from "lucide-react";
+import { CheckIcon, PlusIcon } from "lucide-react";
 import {
 	Select,
 	SelectTrigger,
@@ -28,7 +20,7 @@ import {
 	SelectItemIndicator,
 } from "@/components/ui/select/index";
 
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Form } from "@/components/ui/form";
 
 const countries = [
@@ -79,7 +71,7 @@ const countries = [
 	},
 ];
 
-export default function RegisterLocation() {
+export default function Location() {
 	return (
 		<div className="grid">
 			<Card className="w-full border-0 before:shadow-none shadow-none ring-0">

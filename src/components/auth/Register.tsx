@@ -129,7 +129,7 @@ export function Register({ ...props }: React.ComponentProps<typeof Card>) {
 					name: registrationData.name,
 					email: registrationData.email,
 					password: value.password,
-					callbackURL: "/dashboard",
+					callbackURL: "/onboarding/location",
 				},
 				{
 					onSuccess: () => {
@@ -139,7 +139,7 @@ export function Register({ ...props }: React.ComponentProps<typeof Card>) {
 							description: "Welcome! Redirecting to dashboard...",
 							type: "success",
 						});
-						navigate({ to: "/dashboard" });
+						navigate({ to: "/onboarding/location" });
 					},
 					onError: (error) => {
 						setIsLoading(false);

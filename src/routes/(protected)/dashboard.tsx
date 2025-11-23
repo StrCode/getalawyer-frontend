@@ -1,26 +1,40 @@
 import { Button } from "@/components/ui/button";
-import { getUser } from "@/functions/get-user";
+import { getCurrentUser } from "@/hooks/use-auth";
+import { useOnboardingStatus } from "@/hooks/use-boarding";
 import { authClient } from "@/lib/auth-client";
-import { requireAuth } from "@/lib/auth-guard";
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	redirect,
+	useNavigate,
+	useRouter,
+} from "@tanstack/react-router";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/(protected)/dashboard")({
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const router = useRouter();
+	const navigate = useNavigate();
 	const { data: session, error, isPending } = authClient.useSession();
 	if (!isPending && error) {
-		router.navigate({ to: "/login" });
+		navigate({ to: "/login" });
 	}
+
+	const { data, isLoading } = useOnboardingStatus();
+
+	useEffect(() => {
+		if (!isLoading && data && !data.onboarding_completed) {
+			navigate({ to: "/onboarding/location" });
+		}
+	}, [data, isLoading, navigate]);
 
 	const handleSignOut = async () => {
 		try {
 			await authClient.signOut({
 				fetchOptions: {
 					onSuccess: () => {
-						router.navigate({ to: "/login" });
+						navigate({ to: "/login" });
 					},
 				},
 			});

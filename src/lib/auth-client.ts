@@ -15,6 +15,9 @@ export const authClient = createAuthClient({
 					type: "string",
 					required: false,
 				},
+				onboarding_completed: {
+					type: "boolean",
+				},
 			},
 		}),
 		adminClient(),
@@ -23,6 +26,7 @@ export const authClient = createAuthClient({
 });
 
 export const {
+	getSession,
 	useSession,
 	signIn,
 	signUp,
