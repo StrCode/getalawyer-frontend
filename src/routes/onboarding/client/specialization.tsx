@@ -8,10 +8,10 @@ import { RegisterSpecializations } from "@/components/onboarding/client/Speciali
 import {
 	api,
 	OnBoardingRequest,
-	OnboardingStatusResponse,
+	type OnboardingStatusResponse,
 } from "@/lib/api/client";
 
-export const Route = createFileRoute("/onboarding/specialization")({
+export const Route = createFileRoute("/onboarding/client/specialization")({
 	component: RouteComponent,
 });
 

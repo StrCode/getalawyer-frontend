@@ -10,25 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as OnboardingRouteRouteImport } from './routes/onboarding/route'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as OnboardingSpecializationRouteImport } from './routes/onboarding/specialization'
-import { Route as OnboardingLocationRouteImport } from './routes/onboarding/location'
 import { Route as protectedDashboardRouteImport } from './routes/(protected)/dashboard'
 import { Route as authVerifyOtpRouteImport } from './routes/(auth)/verify-otp'
-import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authNewPasswordRouteImport } from './routes/(auth)/new-password'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
+import { Route as OnboardingLawyerRouteRouteImport } from './routes/onboarding/lawyer/route'
+import { Route as OnboardingClientRouteRouteImport } from './routes/onboarding/client/route'
+import { Route as authRegisterIndexRouteImport } from './routes/(auth)/register/index'
+import { Route as OnboardingLawyerLocationRouteImport } from './routes/onboarding/lawyer/location'
+import { Route as OnboardingClientSpecializationRouteImport } from './routes/onboarding/client/specialization'
+import { Route as OnboardingClientLocationRouteImport } from './routes/onboarding/client/location'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRouteRoute = OnboardingRouteRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const authRouteRoute = authRouteRouteImport.update({
@@ -40,17 +37,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OnboardingSpecializationRoute =
-  OnboardingSpecializationRouteImport.update({
-    id: '/specialization',
-    path: '/specialization',
-    getParentRoute: () => OnboardingRouteRoute,
-  } as any)
-const OnboardingLocationRoute = OnboardingLocationRouteImport.update({
-  id: '/location',
-  path: '/location',
-  getParentRoute: () => OnboardingRouteRoute,
-} as any)
 const protectedDashboardRoute = protectedDashboardRouteImport.update({
   id: '/(protected)/dashboard',
   path: '/dashboard',
@@ -59,11 +45,6 @@ const protectedDashboardRoute = protectedDashboardRouteImport.update({
 const authVerifyOtpRoute = authVerifyOtpRouteImport.update({
   id: '/verify-otp',
   path: '/verify-otp',
-  getParentRoute: () => authRouteRoute,
-} as any)
-const authRegisterRoute = authRegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
   getParentRoute: () => authRouteRoute,
 } as any)
 const authNewPasswordRoute = authNewPasswordRouteImport.update({
@@ -76,90 +57,136 @@ const authForgotPasswordRoute = authForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => authRouteRoute,
 } as any)
+const OnboardingLawyerRouteRoute = OnboardingLawyerRouteRouteImport.update({
+  id: '/onboarding/lawyer',
+  path: '/onboarding/lawyer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingClientRouteRoute = OnboardingClientRouteRouteImport.update({
+  id: '/onboarding/client',
+  path: '/onboarding/client',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authRegisterIndexRoute = authRegisterIndexRouteImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => authRouteRoute,
+} as any)
+const OnboardingLawyerLocationRoute =
+  OnboardingLawyerLocationRouteImport.update({
+    id: '/location',
+    path: '/location',
+    getParentRoute: () => OnboardingLawyerRouteRoute,
+  } as any)
+const OnboardingClientSpecializationRoute =
+  OnboardingClientSpecializationRouteImport.update({
+    id: '/specialization',
+    path: '/specialization',
+    getParentRoute: () => OnboardingClientRouteRoute,
+  } as any)
+const OnboardingClientLocationRoute =
+  OnboardingClientLocationRouteImport.update({
+    id: '/location',
+    path: '/location',
+    getParentRoute: () => OnboardingClientRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/onboarding': typeof OnboardingRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/onboarding/client': typeof OnboardingClientRouteRouteWithChildren
+  '/onboarding/lawyer': typeof OnboardingLawyerRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
   '/new-password': typeof authNewPasswordRoute
-  '/register': typeof authRegisterRoute
   '/verify-otp': typeof authVerifyOtpRoute
   '/dashboard': typeof protectedDashboardRoute
-  '/onboarding/location': typeof OnboardingLocationRoute
-  '/onboarding/specialization': typeof OnboardingSpecializationRoute
+  '/onboarding/client/location': typeof OnboardingClientLocationRoute
+  '/onboarding/client/specialization': typeof OnboardingClientSpecializationRoute
+  '/onboarding/lawyer/location': typeof OnboardingLawyerLocationRoute
+  '/register': typeof authRegisterIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/onboarding': typeof OnboardingRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/onboarding/client': typeof OnboardingClientRouteRouteWithChildren
+  '/onboarding/lawyer': typeof OnboardingLawyerRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
   '/new-password': typeof authNewPasswordRoute
-  '/register': typeof authRegisterRoute
   '/verify-otp': typeof authVerifyOtpRoute
   '/dashboard': typeof protectedDashboardRoute
-  '/onboarding/location': typeof OnboardingLocationRoute
-  '/onboarding/specialization': typeof OnboardingSpecializationRoute
+  '/onboarding/client/location': typeof OnboardingClientLocationRoute
+  '/onboarding/client/specialization': typeof OnboardingClientSpecializationRoute
+  '/onboarding/lawyer/location': typeof OnboardingLawyerLocationRoute
+  '/register': typeof authRegisterIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
-  '/onboarding': typeof OnboardingRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/onboarding/client': typeof OnboardingClientRouteRouteWithChildren
+  '/onboarding/lawyer': typeof OnboardingLawyerRouteRouteWithChildren
   '/(auth)/forgot-password': typeof authForgotPasswordRoute
   '/(auth)/new-password': typeof authNewPasswordRoute
-  '/(auth)/register': typeof authRegisterRoute
   '/(auth)/verify-otp': typeof authVerifyOtpRoute
   '/(protected)/dashboard': typeof protectedDashboardRoute
-  '/onboarding/location': typeof OnboardingLocationRoute
-  '/onboarding/specialization': typeof OnboardingSpecializationRoute
+  '/onboarding/client/location': typeof OnboardingClientLocationRoute
+  '/onboarding/client/specialization': typeof OnboardingClientSpecializationRoute
+  '/onboarding/lawyer/location': typeof OnboardingLawyerLocationRoute
+  '/(auth)/register/': typeof authRegisterIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/onboarding'
     | '/login'
+    | '/onboarding/client'
+    | '/onboarding/lawyer'
     | '/forgot-password'
     | '/new-password'
-    | '/register'
     | '/verify-otp'
     | '/dashboard'
-    | '/onboarding/location'
-    | '/onboarding/specialization'
+    | '/onboarding/client/location'
+    | '/onboarding/client/specialization'
+    | '/onboarding/lawyer/location'
+    | '/register'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/onboarding'
     | '/login'
+    | '/onboarding/client'
+    | '/onboarding/lawyer'
     | '/forgot-password'
     | '/new-password'
-    | '/register'
     | '/verify-otp'
     | '/dashboard'
-    | '/onboarding/location'
-    | '/onboarding/specialization'
+    | '/onboarding/client/location'
+    | '/onboarding/client/specialization'
+    | '/onboarding/lawyer/location'
+    | '/register'
   id:
     | '__root__'
     | '/'
     | '/(auth)'
-    | '/onboarding'
     | '/login'
+    | '/onboarding/client'
+    | '/onboarding/lawyer'
     | '/(auth)/forgot-password'
     | '/(auth)/new-password'
-    | '/(auth)/register'
     | '/(auth)/verify-otp'
     | '/(protected)/dashboard'
-    | '/onboarding/location'
-    | '/onboarding/specialization'
+    | '/onboarding/client/location'
+    | '/onboarding/client/specialization'
+    | '/onboarding/lawyer/location'
+    | '/(auth)/register/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authRouteRoute: typeof authRouteRouteWithChildren
-  OnboardingRouteRoute: typeof OnboardingRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
+  OnboardingClientRouteRoute: typeof OnboardingClientRouteRouteWithChildren
+  OnboardingLawyerRouteRoute: typeof OnboardingLawyerRouteRouteWithChildren
   protectedDashboardRoute: typeof protectedDashboardRoute
 }
 
@@ -170,13 +197,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)': {
@@ -193,20 +213,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/onboarding/specialization': {
-      id: '/onboarding/specialization'
-      path: '/specialization'
-      fullPath: '/onboarding/specialization'
-      preLoaderRoute: typeof OnboardingSpecializationRouteImport
-      parentRoute: typeof OnboardingRouteRoute
-    }
-    '/onboarding/location': {
-      id: '/onboarding/location'
-      path: '/location'
-      fullPath: '/onboarding/location'
-      preLoaderRoute: typeof OnboardingLocationRouteImport
-      parentRoute: typeof OnboardingRouteRoute
-    }
     '/(protected)/dashboard': {
       id: '/(protected)/dashboard'
       path: '/dashboard'
@@ -219,13 +225,6 @@ declare module '@tanstack/react-router' {
       path: '/verify-otp'
       fullPath: '/verify-otp'
       preLoaderRoute: typeof authVerifyOtpRouteImport
-      parentRoute: typeof authRouteRoute
-    }
-    '/(auth)/register': {
-      id: '/(auth)/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof authRegisterRouteImport
       parentRoute: typeof authRouteRoute
     }
     '/(auth)/new-password': {
@@ -242,46 +241,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authForgotPasswordRouteImport
       parentRoute: typeof authRouteRoute
     }
+    '/onboarding/lawyer': {
+      id: '/onboarding/lawyer'
+      path: '/onboarding/lawyer'
+      fullPath: '/onboarding/lawyer'
+      preLoaderRoute: typeof OnboardingLawyerRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/client': {
+      id: '/onboarding/client'
+      path: '/onboarding/client'
+      fullPath: '/onboarding/client'
+      preLoaderRoute: typeof OnboardingClientRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/register/': {
+      id: '/(auth)/register/'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof authRegisterIndexRouteImport
+      parentRoute: typeof authRouteRoute
+    }
+    '/onboarding/lawyer/location': {
+      id: '/onboarding/lawyer/location'
+      path: '/location'
+      fullPath: '/onboarding/lawyer/location'
+      preLoaderRoute: typeof OnboardingLawyerLocationRouteImport
+      parentRoute: typeof OnboardingLawyerRouteRoute
+    }
+    '/onboarding/client/specialization': {
+      id: '/onboarding/client/specialization'
+      path: '/specialization'
+      fullPath: '/onboarding/client/specialization'
+      preLoaderRoute: typeof OnboardingClientSpecializationRouteImport
+      parentRoute: typeof OnboardingClientRouteRoute
+    }
+    '/onboarding/client/location': {
+      id: '/onboarding/client/location'
+      path: '/location'
+      fullPath: '/onboarding/client/location'
+      preLoaderRoute: typeof OnboardingClientLocationRouteImport
+      parentRoute: typeof OnboardingClientRouteRoute
+    }
   }
 }
 
 interface authRouteRouteChildren {
   authForgotPasswordRoute: typeof authForgotPasswordRoute
   authNewPasswordRoute: typeof authNewPasswordRoute
-  authRegisterRoute: typeof authRegisterRoute
   authVerifyOtpRoute: typeof authVerifyOtpRoute
+  authRegisterIndexRoute: typeof authRegisterIndexRoute
 }
 
 const authRouteRouteChildren: authRouteRouteChildren = {
   authForgotPasswordRoute: authForgotPasswordRoute,
   authNewPasswordRoute: authNewPasswordRoute,
-  authRegisterRoute: authRegisterRoute,
   authVerifyOtpRoute: authVerifyOtpRoute,
+  authRegisterIndexRoute: authRegisterIndexRoute,
 }
 
 const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
 )
 
-interface OnboardingRouteRouteChildren {
-  OnboardingLocationRoute: typeof OnboardingLocationRoute
-  OnboardingSpecializationRoute: typeof OnboardingSpecializationRoute
+interface OnboardingClientRouteRouteChildren {
+  OnboardingClientLocationRoute: typeof OnboardingClientLocationRoute
+  OnboardingClientSpecializationRoute: typeof OnboardingClientSpecializationRoute
 }
 
-const OnboardingRouteRouteChildren: OnboardingRouteRouteChildren = {
-  OnboardingLocationRoute: OnboardingLocationRoute,
-  OnboardingSpecializationRoute: OnboardingSpecializationRoute,
+const OnboardingClientRouteRouteChildren: OnboardingClientRouteRouteChildren = {
+  OnboardingClientLocationRoute: OnboardingClientLocationRoute,
+  OnboardingClientSpecializationRoute: OnboardingClientSpecializationRoute,
 }
 
-const OnboardingRouteRouteWithChildren = OnboardingRouteRoute._addFileChildren(
-  OnboardingRouteRouteChildren,
-)
+const OnboardingClientRouteRouteWithChildren =
+  OnboardingClientRouteRoute._addFileChildren(
+    OnboardingClientRouteRouteChildren,
+  )
+
+interface OnboardingLawyerRouteRouteChildren {
+  OnboardingLawyerLocationRoute: typeof OnboardingLawyerLocationRoute
+}
+
+const OnboardingLawyerRouteRouteChildren: OnboardingLawyerRouteRouteChildren = {
+  OnboardingLawyerLocationRoute: OnboardingLawyerLocationRoute,
+}
+
+const OnboardingLawyerRouteRouteWithChildren =
+  OnboardingLawyerRouteRoute._addFileChildren(
+    OnboardingLawyerRouteRouteChildren,
+  )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authRouteRoute: authRouteRouteWithChildren,
-  OnboardingRouteRoute: OnboardingRouteRouteWithChildren,
   LoginRoute: LoginRoute,
+  OnboardingClientRouteRoute: OnboardingClientRouteRouteWithChildren,
+  OnboardingLawyerRouteRoute: OnboardingLawyerRouteRouteWithChildren,
   protectedDashboardRoute: protectedDashboardRoute,
 }
 export const routeTree = rootRouteImport

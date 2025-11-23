@@ -4,7 +4,7 @@ import { COUNTRIES, STATES_BY_COUNTRY } from "@/data/location";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/onboarding/location")({
+export const Route = createFileRoute("/onboarding/lawyer/location")({
 	component: OnboardingStep1,
 });
 

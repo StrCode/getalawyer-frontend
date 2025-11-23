@@ -1,8 +1,7 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
-import { useOnboardingStatus } from "@/hooks/use-boarding";
 
-export const Route = createFileRoute("/onboarding")({
+export const Route = createFileRoute("/onboarding/lawyer")({
 	component: RouteComponent,
 });
 

@@ -18,6 +18,8 @@ function RouteComponent() {
 	const { data: session, error, isPending } = authClient.useSession();
 	if (!isPending && error) {
 		router.navigate({ to: "/login" });
+	} else if (session) {
+		router.navigate({ to: "/dashboard" });
 	}
 
 	return (

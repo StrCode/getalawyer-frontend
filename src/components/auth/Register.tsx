@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAppForm } from "@/hooks/form";
 import { authClient } from "@/lib/auth-client";
 import { toastManager } from "@/components/ui/toast";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { httpClient } from "@/lib/api/client";
@@ -50,7 +50,7 @@ const passwordSchema = z
 
 type Step = "email" | "password";
 
-export function Register({ ...props }: React.ComponentProps<typeof Card>) {
+export function Register({ userType }: { userType: "client" | "lawyer" }) {
 	const navigate = useNavigate();
 	const [step, setStep] = useState<Step>("email");
 	const [isLoading, setIsLoading] = useState(false);
@@ -76,6 +76,14 @@ export function Register({ ...props }: React.ComponentProps<typeof Card>) {
 			});
 		},
 	});
+
+	const handleRegistrationComplete = (userType: "client" | "lawyer") => {
+		if (userType === "client") {
+			navigate({ to: "/onboarding/client" });
+		} else {
+			navigate({ to: "/onboarding/lawyer" });
+		}
+	};
 
 	// Email form (Step 1)
 	const emailForm = useAppForm({
@@ -139,7 +147,8 @@ export function Register({ ...props }: React.ComponentProps<typeof Card>) {
 							description: "",
 							type: "success",
 						});
-						navigate({ to: "/dashboard" });
+
+						handleRegistrationComplete(userType);
 					},
 					onError: (error) => {
 						setIsLoading(false);
@@ -177,7 +186,7 @@ export function Register({ ...props }: React.ComponentProps<typeof Card>) {
 	const passwordFormIsDisabled = passwordForm.state.isSubmitting || isLoading;
 
 	return (
-		<Card {...props} className="border-0 shadow-none">
+		<Card className="border-0 shadow-none">
 			{step === "email" ? (
 				<>
 					{/* Step 1: Email and Name */}

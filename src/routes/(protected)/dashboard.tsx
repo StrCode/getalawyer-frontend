@@ -1,13 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { getCurrentUser } from "@/hooks/use-auth";
 import { useOnboardingStatus } from "@/hooks/use-boarding";
 import { authClient } from "@/lib/auth-client";
-import {
-	createFileRoute,
-	redirect,
-	useNavigate,
-	useRouter,
-} from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/(protected)/dashboard")({
