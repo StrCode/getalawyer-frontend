@@ -19,7 +19,7 @@ function RouteComponent() {
 
 	useEffect(() => {
 		if (!isLoading && data && !data.onboarding_completed) {
-			navigate({ to: "/onboarding/location" });
+			navigate({ to: "/onboarding/client/location" });
 		}
 	}, [data, isLoading, navigate]);
 
