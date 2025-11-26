@@ -5,45 +5,39 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/(protected)/dashboard")({
-	component: RouteComponent,
+  component: RouteComponent,
 });
 
 function RouteComponent() {
-	const navigate = useNavigate();
-	const { data: session, error, isPending } = authClient.useSession();
-	if (!isPending && error) {
-		navigate({ to: "/login" });
-	}
+  const navigate = useNavigate();
+  const { data: session, error, isPending } = authClient.useSession();
+  if (!isPending && error) {
+    navigate({ to: "/login" });
+  } else if (session?.user && !session?.user.onboarding_completed) {
+    navigate({ to: "/onboarding/client/location" });
+  }
 
-	const { data, isLoading } = useOnboardingStatus();
+  const handleSignOut = async () => {
+    try {
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            navigate({ to: "/login" });
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Sign out failed:", error);
+    }
+  };
 
-	useEffect(() => {
-		if (!isLoading && data && !data.onboarding_completed) {
-			navigate({ to: "/onboarding/client/location" });
-		}
-	}, [data, isLoading, navigate]);
-
-	const handleSignOut = async () => {
-		try {
-			await authClient.signOut({
-				fetchOptions: {
-					onSuccess: () => {
-						navigate({ to: "/login" });
-					},
-				},
-			});
-		} catch (error) {
-			console.error("Sign out failed:", error);
-		}
-	};
-
-	return (
-		<div>
-			<h1>Dashboard</h1>
-			<p>Welcome {session?.user.name}</p>
-			<Button size="lg" variant="destructive" onClick={handleSignOut}>
-				Sign Out
-			</Button>
-		</div>
-	);
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <p>Welcome {session?.user.name}</p>
+      <Button size="lg" variant="destructive" onClick={handleSignOut}>
+        Sign Out
+      </Button>
+    </div>
+  );
 }
