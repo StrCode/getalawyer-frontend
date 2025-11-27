@@ -26,9 +26,6 @@ export function RegisterSpecializations() {
 	const [specializations, setSpecializations] =
 		useState<string[]>(storeSpecializations);
 
-	console.log("local state:", specializations);
-	console.log("store state:", storeSpecializations);
-
 	// Sync local state with store on mount
 	useEffect(() => {
 		setSpecializations(storeSpecializations);
@@ -45,7 +42,6 @@ export function RegisterSpecializations() {
 		})) ?? [];
 
 	const handleValuesChange = (values: string[]) => {
-		console.log("handleValuesChange:", values);
 		// Limit to 3 selections
 		if (values.length <= 3) {
 			setSpecializations(values); // Update local state
@@ -54,14 +50,12 @@ export function RegisterSpecializations() {
 	};
 
 	const handleRemoveSpecialization = (value: string) => {
-		console.log("Removing:", value);
 		const newValues = specializations.filter((id) => id !== value);
 		setSpecializations(newValues); // Update local state
 		setStoreSpecializations(newValues); // Update store
 	};
 
 	const handleQuickSelect = (value: string) => {
-		console.log("Quick select:", value);
 		if (specializations.length < 3 && !specializations.includes(value)) {
 			const newValues = [...specializations, value];
 			setSpecializations(newValues); // Update local state

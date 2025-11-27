@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { CheckIcon, PlusIcon } from "lucide-react";
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectIcon,
-  SelectPopup,
-  SelectList,
-  SelectItem,
-  SelectItemText,
-  SelectItemIndicator,
+	Select,
+	SelectTrigger,
+	SelectValue,
+	SelectIcon,
+	SelectPopup,
+	SelectList,
+	SelectItem,
+	SelectItemText,
+	SelectItemIndicator,
 } from "@/components/ui/select/index";
 
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -17,182 +17,166 @@ import { Form } from "@/components/ui/form";
 import { useCountriesWithStates } from "@/hooks/use-countries";
 
 const countries = [
-  {
-    label: "Argentina",
-    value: "argentina",
-    flag: "https://flagcdn.com/ar.svg",
-  },
-  {
-    label: "Venezuela",
-    value: "venezuela",
-    flag: "https://flagcdn.com/ve.svg",
-  },
-  {
-    label: "Brazil",
-    value: "brazil",
-    flag: "https://flagcdn.com/br.svg",
-  },
-  {
-    label: "Switzerland",
-    value: "switzerland",
-    flag: "https://flagcdn.com/ch.svg",
-  },
-  {
-    label: "Germany",
-    value: "germany",
-    flag: "https://flagcdn.com/de.svg",
-  },
-  {
-    label: "Spain",
-    value: "spain",
-    flag: "https://flagcdn.com/es.svg",
-  },
-  {
-    label: "France",
-    value: "france",
-    flag: "https://flagcdn.com/fr.svg",
-  },
-  {
-    label: "Italy",
-    value: "italy",
-    flag: "https://flagcdn.com/it.svg",
-  },
-  {
-    label: "Mexico",
-    value: "mexico",
-    flag: "https://flagcdn.com/mx.svg",
-  },
+	{
+		label: "Argentina",
+		value: "argentina",
+		flag: "https://flagcdn.com/ar.svg",
+	},
+	{
+		label: "Venezuela",
+		value: "venezuela",
+		flag: "https://flagcdn.com/ve.svg",
+	},
+	{
+		label: "Brazil",
+		value: "brazil",
+		flag: "https://flagcdn.com/br.svg",
+	},
+	{
+		label: "Switzerland",
+		value: "switzerland",
+		flag: "https://flagcdn.com/ch.svg",
+	},
+	{
+		label: "Germany",
+		value: "germany",
+		flag: "https://flagcdn.com/de.svg",
+	},
+	{
+		label: "Spain",
+		value: "spain",
+		flag: "https://flagcdn.com/es.svg",
+	},
+	{
+		label: "France",
+		value: "france",
+		flag: "https://flagcdn.com/fr.svg",
+	},
+	{
+		label: "Italy",
+		value: "italy",
+		flag: "https://flagcdn.com/it.svg",
+	},
+	{
+		label: "Mexico",
+		value: "mexico",
+		flag: "https://flagcdn.com/mx.svg",
+	},
 ];
 
-
 export default function Location() {
-  // 1. Fetch data using the custom hook
-  const { data, isLoading, isError } = useCountriesWithStates();
+	const { data, isLoading, isError } = useCountriesWithStates();
 
-  // 2. Safely access the transformed data
-  // const COUNTRIES = data?.countries || [];
-  // const STATES_BY_COUNTRY = data?.statesByCountry || {};
-  // const availableStates = country ? STATES_BY_COUNTRY[country] || [] : [];
+	return (
+		<Form>
+			<div className="flex flex-col gap-6">
+				<Field>
+					<FieldLabel>Select a Country</FieldLabel>
+					<Select items={countries}>
+						<SelectTrigger className="w-full">
+							<SelectValue placeholder="Select a country">
+								{(value: string) => {
+									const country = countries.find(
+										(country) => country.value === value,
+									);
 
+									if (!country) return null;
 
-  return (
-    <Form>
-      <div className="flex flex-col gap-6">
-        <Field>
-          <FieldLabel>Select a Country</FieldLabel>
-          <Select items={countries}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a country">
-                {(value: string) => {
-                  const country = countries.find(
-                    (country) => country.value === value,
-                  );
+									return (
+										<span className="flex items-center gap-2">
+											<img
+												src={country?.flag}
+												alt={country?.label}
+												className="size-5.5 rounded-full object-cover"
+											/>
+											{country?.label}
+										</span>
+									);
+								}}
+							</SelectValue>
+							<SelectIcon>
+								<PlusIcon className="size-4" />
+							</SelectIcon>
+						</SelectTrigger>
+						<SelectPopup>
+							<SelectList>
+								{countries.map(({ label, value, flag }) => {
+									return (
+										<SelectItem key={value} value={value} className="h-fit">
+											<img
+												src={flag}
+												alt={label}
+												className="size-5.5 rounded-full object-cover"
+											/>
+											<SelectItemText>{label}</SelectItemText>
+											<SelectItemIndicator>
+												<CheckIcon className="size-3" />
+											</SelectItemIndicator>
+										</SelectItem>
+									);
+								})}
+							</SelectList>
+						</SelectPopup>
+					</Select>
+				</Field>
+				<Field>
+					<FieldLabel>Select a State</FieldLabel>
+					<Select items={countries}>
+						<SelectTrigger className="w-full">
+							<SelectValue placeholder="Select a state">
+								{(value: string) => {
+									const country = countries.find(
+										(country) => country.value === value,
+									);
 
-                  if (!country) return null;
+									if (!country) return null;
 
-                  return (
-                    <span className="flex items-center gap-2">
-                      <img
-                        src={country?.flag}
-                        alt={country?.label}
-                        className="size-5.5 rounded-full object-cover"
-                      />
-                      {country?.label}
-                    </span>
-                  );
-                }}
-              </SelectValue>
-              <SelectIcon>
-                <PlusIcon className="size-4" />
-              </SelectIcon>
-            </SelectTrigger>
-            <SelectPopup>
-              <SelectList>
-                {countries.map(({ label, value, flag }) => {
-                  return (
-                    <SelectItem
-                      key={value}
-                      value={value}
-                      className="h-fit"
-                    >
-                      <img
-                        src={flag}
-                        alt={label}
-                        className="size-5.5 rounded-full object-cover"
-                      />
-                      <SelectItemText>{label}</SelectItemText>
-                      <SelectItemIndicator>
-                        <CheckIcon className="size-3" />
-                      </SelectItemIndicator>
-                    </SelectItem>
-                  );
-                })}
-              </SelectList>
-            </SelectPopup>
-          </Select>
-        </Field>
-        <Field>
-          <FieldLabel>Select a State</FieldLabel>
-          <Select items={countries}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a state">
-                {(value: string) => {
-                  const country = countries.find(
-                    (country) => country.value === value,
-                  );
-
-                  if (!country) return null;
-
-                  return (
-                    <span className="flex items-center gap-2">
-                      <img
-                        src={country?.flag}
-                        alt={country?.label}
-                        className="size-5.5 rounded-full object-cover"
-                      />
-                      {country?.label}
-                    </span>
-                  );
-                }}
-              </SelectValue>
-              <SelectIcon>
-                <PlusIcon className="size-4" />
-              </SelectIcon>
-            </SelectTrigger>
-            <SelectPopup>
-              <SelectList>
-                {countries.map(({ label, value, flag }) => {
-                  return (
-                    <SelectItem
-                      key={value}
-                      value={value}
-                      className="h-fit"
-                    >
-                      <img
-                        src={flag}
-                        alt={label}
-                        className="size-5.5 rounded-full object-cover"
-                      />
-                      <SelectItemText>{label}</SelectItemText>
-                      <SelectItemIndicator>
-                        <CheckIcon className="size-3" />
-                      </SelectItemIndicator>
-                    </SelectItem>
-                  );
-                })}
-              </SelectList>
-            </SelectPopup>
-          </Select>
-        </Field>
-      </div>
-      <Button
-        size={"lg"}
-        variant="default"
-        type="submit"
-        className="w-full text-white bg-[#19603E] hover:bg-[#19603E]/80"
-      >
-        Next
-      </Button>
-    </Form>
-  )
+									return (
+										<span className="flex items-center gap-2">
+											<img
+												src={country?.flag}
+												alt={country?.label}
+												className="size-5.5 rounded-full object-cover"
+											/>
+											{country?.label}
+										</span>
+									);
+								}}
+							</SelectValue>
+							<SelectIcon>
+								<PlusIcon className="size-4" />
+							</SelectIcon>
+						</SelectTrigger>
+						<SelectPopup>
+							<SelectList>
+								{countries.map(({ label, value, flag }) => {
+									return (
+										<SelectItem key={value} value={value} className="h-fit">
+											<img
+												src={flag}
+												alt={label}
+												className="size-5.5 rounded-full object-cover"
+											/>
+											<SelectItemText>{label}</SelectItemText>
+											<SelectItemIndicator>
+												<CheckIcon className="size-3" />
+											</SelectItemIndicator>
+										</SelectItem>
+									);
+								})}
+							</SelectList>
+						</SelectPopup>
+					</Select>
+				</Field>
+			</div>
+			<Button
+				size={"lg"}
+				variant="default"
+				type="submit"
+				className="w-full text-white bg-[#19603E] hover:bg-[#19603E]/80"
+			>
+				Next
+			</Button>
+		</Form>
+	);
 }

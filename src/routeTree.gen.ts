@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as protectedDashboardRouteImport } from './routes/(protected)/dashboard'
 import { Route as authVerifyOtpRouteImport } from './routes/(auth)/verify-otp'
@@ -30,10 +29,6 @@ import { Route as OnboardingClientLocationRouteImport } from './routes/onboardin
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const authRouteRoute = authRouteRouteImport.update({
-  id: '/(auth)',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -152,7 +147,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/(auth)': typeof authRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding/client': typeof OnboardingClientRouteRouteWithChildren
   '/onboarding/lawyer': typeof OnboardingLawyerRouteRouteWithChildren
@@ -208,7 +202,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/(auth)'
     | '/login'
     | '/onboarding/client'
     | '/onboarding/lawyer'
@@ -228,7 +221,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  authRouteRoute: typeof authRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   OnboardingClientRouteRoute: typeof OnboardingClientRouteRouteWithChildren
   OnboardingLawyerRouteRoute: typeof OnboardingLawyerRouteRouteWithChildren
@@ -242,13 +234,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(auth)': {
-      id: '/(auth)'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof authRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -359,24 +344,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface authRouteRouteChildren {
-  authForgotPasswordRoute: typeof authForgotPasswordRoute
-  authNewPasswordRoute: typeof authNewPasswordRoute
-  authVerifyOtpRoute: typeof authVerifyOtpRoute
-  authRegisterIndexRoute: typeof authRegisterIndexRoute
-}
-
-const authRouteRouteChildren: authRouteRouteChildren = {
-  authForgotPasswordRoute: authForgotPasswordRoute,
-  authNewPasswordRoute: authNewPasswordRoute,
-  authVerifyOtpRoute: authVerifyOtpRoute,
-  authRegisterIndexRoute: authRegisterIndexRoute,
-}
-
-const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
-  authRouteRouteChildren,
-)
-
 interface OnboardingClientRouteRouteChildren {
   OnboardingClientLocationRoute: typeof OnboardingClientLocationRoute
   OnboardingClientSpecializationRoute: typeof OnboardingClientSpecializationRoute
@@ -415,7 +382,6 @@ const OnboardingLawyerRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  authRouteRoute: authRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   OnboardingClientRouteRoute: OnboardingClientRouteRouteWithChildren,
   OnboardingLawyerRouteRoute: OnboardingLawyerRouteRouteWithChildren,

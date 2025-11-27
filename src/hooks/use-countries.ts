@@ -1,63 +1,43 @@
-//
-
-import { api } from "@/lib/api/client";
 import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api/client";
 
-// Define the shape of your data
-interface State {
-  value: string;
-  label: string;
-}
-
-interface Country {
-  value: string;
-  label: string;
-  states_data: State[]; // This comes from your PostgreSQL JSONB column
-}
-
-// Data is considered fresh for 1 year and is never garbage collected
 const STATIC_CONFIG = {
-  staleTime: 1000 * 60 * 60 * 24 * 365,
-  gcTime: Infinity,
+	staleTime: 1000 * 60 * 60 * 24 * 365,
+	gcTime: Infinity,
 };
 
-// Fetches the list of all countries
-const useCountries = () => useQuery({
-  queryKey: ['countries'],
-  queryFn: () => api.countries.getCountries(),
-  ...STATIC_CONFIG,
-});
-
 export function useCountriesWithStates() {
-  return useQuery({
-    queryKey: ['onboarding-location-data'],
+	return useQuery({
+		queryKey: ["countries"],
+		queryFn: () => api.countries.getCountries(),
+		select: (data) => {
+			// Transform countries for select
+			const countries = [
+				{ label: "Select a country", value: "" },
+				...data.data.map((country) => ({
+					label: country.name,
+					value: country.code3,
+				})),
+			];
 
-    queryFn: () => api.countries.getCountries(),
-    // The 'select' function transforms the raw data for easier use in the component
-    select: (data) => {
-      const countries: Country[] = [];
-      console.log(data)
-    },
-    ...STATIC_CONFIG,
-  });
+			// Create states map by country code
+			const statesByCountry: Record<
+				string,
+				Array<{ label: string; value: string }>
+			> = {};
+
+			data.data.forEach((country) => {
+				statesByCountry[country.code3] = [
+					{ label: "Select a state/region", value: "" },
+					...(country.states || []).map((state) => ({
+						label: state.name,
+						value: state.code,
+					})),
+				];
+			});
+
+			return { countries, statesByCountry };
+		},
+		...STATIC_CONFIG,
+	});
 }
-
-// Fetches the list of all countries, including their JSONB states data
-// const useCountriesWithStates = () => useQuery({
-//   queryKey: ['countriesWithStates'],
-//   queryFn: async () => {
-//     // API endpoint returns: [{ id: 1, name: 'US', states_data: [...] }, ...]
-//     const response = await fetch('/api/countries-with-states');
-//     if (!response.ok) throw new Error('Failed to fetch data');
-//     return response.json();
-//   },
-//   ...STATIC_CONFIG,
-// });
-
-// Fetches states for a *specific* country ID
-const useStates = (countryCode: string) => useQuery({
-  queryKey: ['states', countryCode],
-  queryFn: () => api.countries.getStatesbyCountry(countryCode),
-  enabled: !!countryCode, // Only run the query if a country is selected
-  ...STATIC_CONFIG,
-});
