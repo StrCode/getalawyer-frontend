@@ -42,19 +42,19 @@ const protectedDashboardRoute = protectedDashboardRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const authVerifyOtpRoute = authVerifyOtpRouteImport.update({
-  id: '/verify-otp',
+  id: '/(auth)/verify-otp',
   path: '/verify-otp',
-  getParentRoute: () => authRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const authNewPasswordRoute = authNewPasswordRouteImport.update({
-  id: '/new-password',
+  id: '/(auth)/new-password',
   path: '/new-password',
-  getParentRoute: () => authRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const authForgotPasswordRoute = authForgotPasswordRouteImport.update({
-  id: '/forgot-password',
+  id: '/(auth)/forgot-password',
   path: '/forgot-password',
-  getParentRoute: () => authRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingLawyerRouteRoute = OnboardingLawyerRouteRouteImport.update({
   id: '/onboarding/lawyer',
@@ -72,9 +72,9 @@ const OnboardingLawyerIndexRoute = OnboardingLawyerIndexRouteImport.update({
   getParentRoute: () => OnboardingLawyerRouteRoute,
 } as any)
 const authRegisterIndexRoute = authRegisterIndexRouteImport.update({
-  id: '/register/',
+  id: '/(auth)/register/',
   path: '/register/',
-  getParentRoute: () => authRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingLawyerStep4Route = OnboardingLawyerStep4RouteImport.update({
   id: '/step-4',
@@ -224,7 +224,11 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   OnboardingClientRouteRoute: typeof OnboardingClientRouteRouteWithChildren
   OnboardingLawyerRouteRoute: typeof OnboardingLawyerRouteRouteWithChildren
+  authForgotPasswordRoute: typeof authForgotPasswordRoute
+  authNewPasswordRoute: typeof authNewPasswordRoute
+  authVerifyOtpRoute: typeof authVerifyOtpRoute
   protectedDashboardRoute: typeof protectedDashboardRoute
+  authRegisterIndexRoute: typeof authRegisterIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -255,21 +259,21 @@ declare module '@tanstack/react-router' {
       path: '/verify-otp'
       fullPath: '/verify-otp'
       preLoaderRoute: typeof authVerifyOtpRouteImport
-      parentRoute: typeof authRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/(auth)/new-password': {
       id: '/(auth)/new-password'
       path: '/new-password'
       fullPath: '/new-password'
       preLoaderRoute: typeof authNewPasswordRouteImport
-      parentRoute: typeof authRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/(auth)/forgot-password': {
       id: '/(auth)/forgot-password'
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof authForgotPasswordRouteImport
-      parentRoute: typeof authRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/onboarding/lawyer': {
       id: '/onboarding/lawyer'
@@ -297,7 +301,7 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof authRegisterIndexRouteImport
-      parentRoute: typeof authRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/onboarding/lawyer/step-4': {
       id: '/onboarding/lawyer/step-4'
@@ -385,7 +389,11 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   OnboardingClientRouteRoute: OnboardingClientRouteRouteWithChildren,
   OnboardingLawyerRouteRoute: OnboardingLawyerRouteRouteWithChildren,
+  authForgotPasswordRoute: authForgotPasswordRoute,
+  authNewPasswordRoute: authNewPasswordRoute,
+  authVerifyOtpRoute: authVerifyOtpRoute,
   protectedDashboardRoute: protectedDashboardRoute,
+  authRegisterIndexRoute: authRegisterIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
