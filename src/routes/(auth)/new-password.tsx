@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { NewPassword } from "@/components/auth/NewPassword";
 import { toastManager } from "@/components/ui/toast";
 
@@ -35,7 +35,7 @@ function RouteComponent() {
 		// Clear session storage after successful reset
 		sessionStorage.removeItem("reset_email");
 		sessionStorage.removeItem("reset_otp");
-		navigate({ to: "/login" });
+		navigate({ to: "/dashboard" });
 	};
 
 	if (!credentials) {
