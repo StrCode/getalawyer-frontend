@@ -337,20 +337,22 @@ export function PasswordPassField({
 
 				<InputGroupAddon align="inline-end">
 					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon-xs"
-								type="button" // Important: prevents form submit
-								onClick={() => setShowPassword(!showPassword)}
-								aria-label={showPassword ? "Hide password" : "Show password"}
-							>
-								{showPassword ? <EyeOffIcon /> : <EyeIcon />}
-							</Button>
+						<TooltipTrigger
+							render={
+								<Button
+									variant="ghost"
+									size="icon-xs"
+									type="button" // Important: prevents form submit
+									onClick={() => setShowPassword(!showPassword)}
+									aria-label={showPassword ? "Hide password" : "Show password"}
+								>
+									{showPassword ? <EyeOffIcon /> : <EyeIcon />}
+								</Button>
+							}
+						>
+							Hover me
 						</TooltipTrigger>
-						<TooltipPopup>
-							{showPassword ? "Hide password" : "Show password"}
-						</TooltipPopup>
+						<TooltipPopup>Helpful hint</TooltipPopup>
 					</Tooltip>
 				</InputGroupAddon>
 			</InputGroup>

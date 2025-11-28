@@ -9,9 +9,9 @@ export const Route = createFileRoute("/(protected)/dashboard")({
 function RouteComponent() {
 	const navigate = useNavigate();
 	const { data: session, error, isPending } = authClient.useSession();
-	if (!isPending && error) {
-		// navigate({ to: "/login" });
-		redirect({ to: "/login" });
+	console.log(session, error, isPending);
+	if ((!isPending && error) || session == null) {
+		navigate({ to: "/login" });
 	} else if (session?.user && !session?.user.onboarding_completed) {
 		redirect({ to: "/onboarding/client/location" });
 	}

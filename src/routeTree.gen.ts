@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as protectedRouteRouteImport } from './routes/(protected)/route'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as protectedDashboardRouteImport } from './routes/(protected)/dashboard'
@@ -32,6 +33,10 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const protectedRouteRoute = protectedRouteRouteImport.update({
+  id: '/(protected)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
   getParentRoute: () => rootRouteImport,
@@ -42,9 +47,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const protectedDashboardRoute = protectedDashboardRouteImport.update({
-  id: '/(protected)/dashboard',
+  id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => protectedRouteRoute,
 } as any)
 const authVerifyOtpRoute = authVerifyOtpRouteImport.update({
   id: '/verify-otp',
@@ -153,6 +158,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
+  '/(protected)': typeof protectedRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding/client': typeof OnboardingClientRouteRouteWithChildren
   '/onboarding/lawyer': typeof OnboardingLawyerRouteRouteWithChildren
@@ -209,6 +215,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/(auth)'
+    | '/(protected)'
     | '/login'
     | '/onboarding/client'
     | '/onboarding/lawyer'
@@ -229,10 +236,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authRouteRoute: typeof authRouteRouteWithChildren
+  protectedRouteRoute: typeof protectedRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   OnboardingClientRouteRoute: typeof OnboardingClientRouteRouteWithChildren
   OnboardingLawyerRouteRoute: typeof OnboardingLawyerRouteRouteWithChildren
-  protectedDashboardRoute: typeof protectedDashboardRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -242,6 +249,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(protected)': {
+      id: '/(protected)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof protectedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(auth)': {
@@ -263,7 +277,7 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof protectedDashboardRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof protectedRouteRoute
     }
     '/(auth)/verify-otp': {
       id: '/(auth)/verify-otp'
@@ -377,6 +391,18 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
 )
 
+interface protectedRouteRouteChildren {
+  protectedDashboardRoute: typeof protectedDashboardRoute
+}
+
+const protectedRouteRouteChildren: protectedRouteRouteChildren = {
+  protectedDashboardRoute: protectedDashboardRoute,
+}
+
+const protectedRouteRouteWithChildren = protectedRouteRoute._addFileChildren(
+  protectedRouteRouteChildren,
+)
+
 interface OnboardingClientRouteRouteChildren {
   OnboardingClientLocationRoute: typeof OnboardingClientLocationRoute
   OnboardingClientSpecializationRoute: typeof OnboardingClientSpecializationRoute
@@ -416,10 +442,10 @@ const OnboardingLawyerRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authRouteRoute: authRouteRouteWithChildren,
+  protectedRouteRoute: protectedRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   OnboardingClientRouteRoute: OnboardingClientRouteRouteWithChildren,
   OnboardingLawyerRouteRoute: OnboardingLawyerRouteRouteWithChildren,
-  protectedDashboardRoute: protectedDashboardRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -7,13 +7,6 @@ export const Route = createFileRoute("/(auth)")({
 });
 
 function RouteComponent() {
-	const navigate = useNavigate();
-	const { data: session, error, isPending } = authClient.useSession();
-	if (!isPending && error) {
-		navigate({ to: "/login" });
-	} else if (session?.user) {
-		navigate({ to: "/dashboard" });
-	}
 	return (
 		<div>
 			<Header />

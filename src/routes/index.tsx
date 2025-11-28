@@ -6,14 +6,6 @@ import { Route as RouteIcon } from "lucide-react";
 export const Route = createFileRoute("/")({ component: App });
 
 function App() {
-	const router = useRouter();
-	const { data: session, error, isPending } = authClient.useSession();
-	if (!isPending && error) {
-		router.navigate({ to: "/login" });
-	} else if (session) {
-		router.navigate({ to: "/dashboard" });
-	}
-
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
 			<div className="max-w-6xl mx-auto px-4 py-16">

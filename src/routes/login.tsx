@@ -1,24 +1,13 @@
 import { GalleryHorizontalEndIcon } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { Button } from "@/components/ui/button";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { authClient } from "@/lib/auth-client";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/login")({
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const navigate = useNavigate();
-	const { data: session, error, isPending } = authClient.useSession();
-	if (!isPending && error) {
-		navigate({ to: "/login" });
-	} else if (session && !session.user.onboarding_completed) {
-		navigate({ to: "/onboarding/client/location" });
-	} else {
-		navigate({ to: "/dashboard" });
-	}
-
 	return (
 		<div className="grid min-h-svh lg:grid-cols-2">
 			<div className="flex flex-col gap-4 p-6 md:p-10">
