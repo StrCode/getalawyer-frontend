@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as protectedDashboardRouteImport } from './routes/(protected)/dashboard'
 import { Route as authVerifyOtpRouteImport } from './routes/(auth)/verify-otp'
@@ -31,6 +32,10 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authRouteRoute = authRouteRouteImport.update({
+  id: '/(auth)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -42,19 +47,19 @@ const protectedDashboardRoute = protectedDashboardRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const authVerifyOtpRoute = authVerifyOtpRouteImport.update({
-  id: '/(auth)/verify-otp',
+  id: '/verify-otp',
   path: '/verify-otp',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authNewPasswordRoute = authNewPasswordRouteImport.update({
-  id: '/(auth)/new-password',
+  id: '/new-password',
   path: '/new-password',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authForgotPasswordRoute = authForgotPasswordRouteImport.update({
-  id: '/(auth)/forgot-password',
+  id: '/forgot-password',
   path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
 const OnboardingLawyerRouteRoute = OnboardingLawyerRouteRouteImport.update({
   id: '/onboarding/lawyer',
@@ -72,9 +77,9 @@ const OnboardingLawyerIndexRoute = OnboardingLawyerIndexRouteImport.update({
   getParentRoute: () => OnboardingLawyerRouteRoute,
 } as any)
 const authRegisterIndexRoute = authRegisterIndexRouteImport.update({
-  id: '/(auth)/register/',
+  id: '/register/',
   path: '/register/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
 const OnboardingLawyerStep4Route = OnboardingLawyerStep4RouteImport.update({
   id: '/step-4',
@@ -147,6 +152,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/(auth)': typeof authRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding/client': typeof OnboardingClientRouteRouteWithChildren
   '/onboarding/lawyer': typeof OnboardingLawyerRouteRouteWithChildren
@@ -202,6 +208,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/(auth)'
     | '/login'
     | '/onboarding/client'
     | '/onboarding/lawyer'
@@ -221,14 +228,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  authRouteRoute: typeof authRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   OnboardingClientRouteRoute: typeof OnboardingClientRouteRouteWithChildren
   OnboardingLawyerRouteRoute: typeof OnboardingLawyerRouteRouteWithChildren
-  authForgotPasswordRoute: typeof authForgotPasswordRoute
-  authNewPasswordRoute: typeof authNewPasswordRoute
-  authVerifyOtpRoute: typeof authVerifyOtpRoute
   protectedDashboardRoute: typeof protectedDashboardRoute
-  authRegisterIndexRoute: typeof authRegisterIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -238,6 +242,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)': {
+      id: '/(auth)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -259,21 +270,21 @@ declare module '@tanstack/react-router' {
       path: '/verify-otp'
       fullPath: '/verify-otp'
       preLoaderRoute: typeof authVerifyOtpRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/(auth)/new-password': {
       id: '/(auth)/new-password'
       path: '/new-password'
       fullPath: '/new-password'
       preLoaderRoute: typeof authNewPasswordRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/(auth)/forgot-password': {
       id: '/(auth)/forgot-password'
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof authForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/onboarding/lawyer': {
       id: '/onboarding/lawyer'
@@ -301,7 +312,7 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof authRegisterIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/onboarding/lawyer/step-4': {
       id: '/onboarding/lawyer/step-4'
@@ -348,6 +359,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface authRouteRouteChildren {
+  authForgotPasswordRoute: typeof authForgotPasswordRoute
+  authNewPasswordRoute: typeof authNewPasswordRoute
+  authVerifyOtpRoute: typeof authVerifyOtpRoute
+  authRegisterIndexRoute: typeof authRegisterIndexRoute
+}
+
+const authRouteRouteChildren: authRouteRouteChildren = {
+  authForgotPasswordRoute: authForgotPasswordRoute,
+  authNewPasswordRoute: authNewPasswordRoute,
+  authVerifyOtpRoute: authVerifyOtpRoute,
+  authRegisterIndexRoute: authRegisterIndexRoute,
+}
+
+const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
+  authRouteRouteChildren,
+)
+
 interface OnboardingClientRouteRouteChildren {
   OnboardingClientLocationRoute: typeof OnboardingClientLocationRoute
   OnboardingClientSpecializationRoute: typeof OnboardingClientSpecializationRoute
@@ -386,14 +415,11 @@ const OnboardingLawyerRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  authRouteRoute: authRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   OnboardingClientRouteRoute: OnboardingClientRouteRouteWithChildren,
   OnboardingLawyerRouteRoute: OnboardingLawyerRouteRouteWithChildren,
-  authForgotPasswordRoute: authForgotPasswordRoute,
-  authNewPasswordRoute: authNewPasswordRoute,
-  authVerifyOtpRoute: authVerifyOtpRoute,
   protectedDashboardRoute: protectedDashboardRoute,
-  authRegisterIndexRoute: authRegisterIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
