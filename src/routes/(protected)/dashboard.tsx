@@ -16,6 +16,17 @@ function RouteComponent() {
 		redirect({ to: "/onboarding/client/location" });
 	}
 
+	const verifyEmail = async (email: string) => {
+		try {
+			await authClient.sendVerificationEmail({
+				email: email,
+				callbackURL: "/dashboard",
+			});
+		} catch (error) {
+			console.error("Sign out failed:", error);
+		}
+	};
+
 	const handleSignOut = async () => {
 		try {
 			await authClient.signOut({
@@ -37,6 +48,15 @@ function RouteComponent() {
 			<Button size="lg" variant="destructive" onClick={handleSignOut}>
 				Sign Out
 			</Button>
+			<div>
+				The email is {session?.user.emailVerified ? "Verified" : "Not Verified"}
+				<Button
+					variant={"secondary"}
+					onClick={verifyEmail(session?.user.email)}
+				>
+					Verify Email Address
+				</Button>
+			</div>
 		</div>
 	);
 }

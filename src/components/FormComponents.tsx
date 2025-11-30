@@ -320,8 +320,6 @@ export function PasswordPassField({
 			<InputGroup>
 				<InputGroupInput
 					id={field.name}
-					size={"lg"}
-					className="text-sm placeholder:text-sm"
 					type={showPassword ? "text" : "password"}
 					placeholder={placeholder}
 					// Form Binding
