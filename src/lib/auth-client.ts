@@ -4,7 +4,7 @@ import { inferAdditionalFields } from "better-auth/client/plugins";
 
 // If you want to export the entire auth client object as well
 export const authClient = createAuthClient({
-	baseURL: "https://law-backend-production.up.railway.app",
+	baseURL: import.meta.env.VITE_API_URL,
 	fetchOptions: {
 		credentials: "include", // ← Make sure this is set
 	},

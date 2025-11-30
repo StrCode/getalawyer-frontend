@@ -9,9 +9,8 @@ export const Route = createFileRoute("/(protected)/dashboard")({
 function RouteComponent() {
 	const navigate = useNavigate();
 	const { data: session, error, isPending } = authClient.useSession();
-	console.log(session, error, isPending);
-	if ((!isPending && error) || session == null) {
-		navigate({ to: "/login" });
+	if (!isPending && error) {
+		redirect({ to: "/login" });
 	} else if (session?.user && !session?.user.onboarding_completed) {
 		redirect({ to: "/onboarding/client/location" });
 	}
@@ -50,12 +49,7 @@ function RouteComponent() {
 			</Button>
 			<div>
 				The email is {session?.user.emailVerified ? "Verified" : "Not Verified"}
-				<Button
-					variant={"secondary"}
-					onClick={verifyEmail(session?.user.email)}
-				>
-					Verify Email Address
-				</Button>
+				{/* <Button variant={"secondary"}>Verify Email Address</Button> */}
 			</div>
 		</div>
 	);
