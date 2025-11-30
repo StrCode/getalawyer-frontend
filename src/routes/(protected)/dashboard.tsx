@@ -39,7 +39,9 @@ function RouteComponent() {
 				fetchOptions: {
 					onSuccess: () => {
 						toastManager.add({
-							title: "check your email to verify",
+							title: "Check your email",
+							description: "We've sent a verification link to your inbox.",
+							type: "success", // Assuming your toast supports types
 						});
 					},
 				},
