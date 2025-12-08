@@ -1,22 +1,46 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
-import { authClient } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { authClient, signOut } from "@/lib/auth-client";
+import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
+import { LogOutIcon } from "lucide-react";
 
 export const Route = createFileRoute("/onboarding/lawyer")({
-	component: RouteComponent,
+  component: RouteComponent,
 });
 
 function RouteComponent() {
-	return (
-		<div className="min-h-screen bg-gray-50">
-			<div className="mx-auto py-12 px-4">
-				<div className="bg-white rounded-lg shadow-lg p-8">
-					<h1 className="text-3xl font-bold mb-2">
-						{/* Welcome, {session?.user.name}! */}
-					</h1>
-					<p className="text-gray-600 mb-8">Let's complete your profile</p>
-					<Outlet />
-				</div>
-			</div>
-		</div>
-	);
+  const navigate = useNavigate()
+  const { data: session } = authClient.useSession();
+  return (
+    <div className="min-h-screen bg-stone-50/10 flex flex-col">
+      <header className="py-3 px-4 md:px-11 md:py-8 flex items-center justify-between">
+        <div className="flex justify-center gap-2 md:justify-start">
+          <Link to="/" className="flex items-center gap-2 font-medium">
+            <img src="/logo.png" alt="GetaLawyer Logo" className="h-6" />
+          </Link>
+        </div>
+        <div className="flex justify-center items-center space-x-2 text-sm text-gray-600">
+          <Button
+            variant="link"
+            onClick={() =>
+              signOut({}, { onSuccess: () => navigate({ to: "/" }) })
+            }
+            className="text-sm text-black pr-0" // Adjusted padding slightly
+          >
+            <LogOutIcon className="w-4 h-4" />
+            Sign out
+          </Button>
+          <span className="text-neutral-500 hidden md:inline">
+            ({session?.user.email})
+          </span>
+        </div>
+      </header>
+
+      <div className="flex justify-center">
+        <main className="w-full max-w-4xl">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+
+  );
 }
