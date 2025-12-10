@@ -6,7 +6,8 @@ import { useCountriesWithStates } from "@/hooks/use-countries";
 import {
 	Select,
 	SelectItem,
-	SelectPopup,
+	SelectPositioner,
+	SelectContent,
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
@@ -106,13 +107,15 @@ function OnboardingStep1() {
 					<SelectTrigger className={errors.country ? "border-red-500" : ""}>
 						<SelectValue />
 					</SelectTrigger>
-					<SelectPopup alignItemWithTrigger={false}>
-						{countries.map(({ label, value }) => (
-							<SelectItem key={value} value={value}>
-								{label}
-							</SelectItem>
-						))}
-					</SelectPopup>
+					<SelectPositioner alignItemWithTrigger={false}>
+						<SelectContent>
+							{countries.map(({ label, value }) => (
+								<SelectItem key={value} value={value}>
+									{label}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</SelectPositioner>
 				</Select>
 				{errors.country && <FieldError>{errors.country}</FieldError>}
 			</Field>
@@ -129,13 +132,15 @@ function OnboardingStep1() {
 						<SelectTrigger className={errors.state ? "border-red-500" : ""}>
 							<SelectValue />
 						</SelectTrigger>
-						<SelectPopup alignItemWithTrigger={false}>
-							{availableStates.map(({ label, value }) => (
-								<SelectItem key={value} value={value}>
-									{label}
-								</SelectItem>
-							))}
-						</SelectPopup>
+						<SelectPositioner alignItemWithTrigger={false}>
+							<SelectContent>
+								{availableStates.map(({ label, value }) => (
+									<SelectItem key={value} value={value}>
+										{label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</SelectPositioner>
 					</Select>
 					{errors.state && <FieldError>{errors.state}</FieldError>}
 				</Field>
