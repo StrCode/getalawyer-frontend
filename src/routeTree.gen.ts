@@ -19,6 +19,7 @@ import { Route as authNewPasswordRouteImport } from './routes/(auth)/new-passwor
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
 import { Route as OnboardingLawyerRouteRouteImport } from './routes/onboarding/lawyer/route'
 import { Route as OnboardingClientRouteRouteImport } from './routes/onboarding/client/route'
+import { Route as protectedDashboardIndexRouteImport } from './routes/(protected)/dashboard/index'
 import { Route as OnboardingLawyerCredentialsRouteImport } from './routes/onboarding/lawyer/credentials'
 import { Route as OnboardingLawyerBasicsRouteImport } from './routes/onboarding/lawyer/basics'
 import { Route as OnboardingClientSpecializationsRouteImport } from './routes/onboarding/client/specializations'
@@ -75,6 +76,11 @@ const OnboardingClientRouteRoute = OnboardingClientRouteRouteImport.update({
   path: '/onboarding/client',
   getParentRoute: () => rootRouteImport,
 } as any)
+const protectedDashboardIndexRoute = protectedDashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => protectedDashboardRoute,
+} as any)
 const OnboardingLawyerCredentialsRoute =
   OnboardingLawyerCredentialsRouteImport.update({
     id: '/credentials',
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
   '/onboarding/lawyer/basics': typeof OnboardingLawyerBasicsRoute
   '/onboarding/lawyer/credentials': typeof OnboardingLawyerCredentialsRoute
+  '/dashboard/': typeof protectedDashboardIndexRoute
   '/dashboard/settings/': typeof protectedDashboardSettingsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -137,11 +144,11 @@ export interface FileRoutesByTo {
   '/new-password': typeof authNewPasswordRoute
   '/register': typeof authRegisterRoute
   '/verify-otp': typeof authVerifyOtpRoute
-  '/dashboard': typeof protectedDashboardRouteWithChildren
   '/onboarding/client/location': typeof OnboardingClientLocationRoute
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
   '/onboarding/lawyer/basics': typeof OnboardingLawyerBasicsRoute
   '/onboarding/lawyer/credentials': typeof OnboardingLawyerCredentialsRoute
+  '/dashboard': typeof protectedDashboardIndexRoute
   '/dashboard/settings': typeof protectedDashboardSettingsIndexRoute
 }
 export interface FileRoutesById {
@@ -161,6 +168,7 @@ export interface FileRoutesById {
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
   '/onboarding/lawyer/basics': typeof OnboardingLawyerBasicsRoute
   '/onboarding/lawyer/credentials': typeof OnboardingLawyerCredentialsRoute
+  '/(protected)/dashboard/': typeof protectedDashboardIndexRoute
   '/(protected)/dashboard/settings/': typeof protectedDashboardSettingsIndexRoute
 }
 export interface FileRouteTypes {
@@ -180,6 +188,7 @@ export interface FileRouteTypes {
     | '/onboarding/client/specializations'
     | '/onboarding/lawyer/basics'
     | '/onboarding/lawyer/credentials'
+    | '/dashboard/'
     | '/dashboard/settings/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -191,11 +200,11 @@ export interface FileRouteTypes {
     | '/new-password'
     | '/register'
     | '/verify-otp'
-    | '/dashboard'
     | '/onboarding/client/location'
     | '/onboarding/client/specializations'
     | '/onboarding/lawyer/basics'
     | '/onboarding/lawyer/credentials'
+    | '/dashboard'
     | '/dashboard/settings'
   id:
     | '__root__'
@@ -214,6 +223,7 @@ export interface FileRouteTypes {
     | '/onboarding/client/specializations'
     | '/onboarding/lawyer/basics'
     | '/onboarding/lawyer/credentials'
+    | '/(protected)/dashboard/'
     | '/(protected)/dashboard/settings/'
   fileRoutesById: FileRoutesById
 }
@@ -297,6 +307,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding/client'
       preLoaderRoute: typeof OnboardingClientRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(protected)/dashboard/': {
+      id: '/(protected)/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof protectedDashboardIndexRouteImport
+      parentRoute: typeof protectedDashboardRoute
     }
     '/onboarding/lawyer/credentials': {
       id: '/onboarding/lawyer/credentials'
@@ -407,11 +424,13 @@ const protectedDashboardSettingsRouteRouteWithChildren =
 
 interface protectedDashboardRouteChildren {
   protectedDashboardSettingsRouteRoute: typeof protectedDashboardSettingsRouteRouteWithChildren
+  protectedDashboardIndexRoute: typeof protectedDashboardIndexRoute
 }
 
 const protectedDashboardRouteChildren: protectedDashboardRouteChildren = {
   protectedDashboardSettingsRouteRoute:
     protectedDashboardSettingsRouteRouteWithChildren,
+  protectedDashboardIndexRoute: protectedDashboardIndexRoute,
 }
 
 const protectedDashboardRouteWithChildren =

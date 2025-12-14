@@ -1,16 +1,23 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import * as z from "zod/v4";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowDataTransferVerticalIcon, Mail02Icon } from "@hugeicons/core-free-icons";
+import {
+  ArrowDataTransferVerticalIcon,
+  Mail02Icon,
+} from "@hugeicons/core-free-icons";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator-extended";
 import type { Card } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 import { useAppForm } from "@/hooks/form";
-import { Field, FieldDescription, FieldGroup, FieldSeparator } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldSeparator,
+} from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import { toastManager } from "@/components/ui/toast";
-
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const navigate = useNavigate({
@@ -78,11 +85,14 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
               className="flex flex-col items-center gap-2 font-medium"
             >
               <div className="flex size-8 items-center justify-center rounded-md">
-                <HugeiconsIcon size={"8"} icon={ArrowDataTransferVerticalIcon} />
+                <HugeiconsIcon
+                  size={"8"}
+                  icon={ArrowDataTransferVerticalIcon}
+                />
               </div>
-              <span className="sr-only">Acme Inc.</span>
+              <span className="sr-only">GetaLawyer.</span>
             </a>
-            <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
+            <h1 className="text-xl font-bold">Welcome to GetaLawyer.</h1>
             <FieldDescription>
               Don&apos;t have an account?
               <Button
@@ -116,8 +126,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 
           <Field className="-mt-2 flex flex-row">
             <form.AppField name="rememberMe">
-              {(field) =>
-                <field.CheckboxField label="Remember me" />}
+              {(field) => <field.CheckboxField label="Remember me" />}
             </form.AppField>
 
             <Link className="text-sm" to={"/forgot-password"}>
@@ -125,11 +134,12 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                 Forgot password?
               </div>
             </Link>
-
           </Field>
 
           <Field>
-            <Button size={"lg"} type="submit">Login</Button>
+            <Button size={"lg"} type="submit">
+              Login
+            </Button>
           </Field>
 
           <div className="full flex items-center justify-center overflow-hidden">
@@ -166,7 +176,6 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
       </FieldDescription>
-    </div >
-
+    </div>
   );
 }
