@@ -143,18 +143,18 @@ export interface OnboardingStatusResponse {
 }
 
 export interface Profile {
-  userId: string
-  name: string
-  email: string
-  image: any
-  role: string
-  onboardingCompleted: boolean
-  clientId: string
-  company: any
-  country: string
-  state: string
-  phoneNumber: any
-  clientCreatedAt: string
+  userId: string;
+  name: string;
+  email: string;
+  image: any;
+  role: string;
+  onboardingCompleted: boolean;
+  clientId: string;
+  company: any;
+  country: string;
+  state: string;
+  phoneNumber: any;
+  clientCreatedAt: string;
 }
 
 export interface ProfileResponse {
@@ -204,8 +204,6 @@ interface OnBoardingLawyerBasics {
   state?: string;
 }
 
-
-
 // API wrapper
 export const api = {
   countries: {
@@ -238,10 +236,12 @@ export const api = {
   },
   client: {
     // Authenticated - requires credentials
-    getProfile: () =>
-      httpClient.getAuth<ProfileResponse>("/api/clients/me"),
-    uploadAvatar: (data: UpdateProfileRequest) =>
-      httpClient.post("/api/clients/upload-image", data),
+    getProfile: () => httpClient.getAuth<ProfileResponse>("/api/clients/me"),
+    uploadAvatar: (file: File) => {
+      const formData = new FormData();
+      formData.append("image", file);
+      return httpClient.post("/api/clients/upload-avatar", formData);
+    },
     updateProfile: (data: UpdateProfileRequest) =>
       httpClient.patch<AuthResponse>("/api/clients/me", data),
     completeOnBoarding: (data: OnBoardingRequest) =>
@@ -250,10 +250,13 @@ export const api = {
   lawyer: {
     getLawyerProfile: () => httpClient.getAuth("/api/lawyers/profile"),
     basicsSetup: (data: OnBoardingLawyerBasics) =>
-      httpClient.patch<AuthResponse>("/api/lawyers/onboarding/practice-info", data),
+      httpClient.patch<AuthResponse>(
+        "/api/lawyers/onboarding/practice-info",
+        data,
+      ),
     // credentialsSetup: (data) =>
     // httpClient.patch<AuthResponse>("/api/lawyers/credentials", data),
-  }
+  },
 };
 
 export { httpClient };

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "@tanstack/react-form";
 import { Camera, Loader2, Save, X } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { UpdateProfileRequest } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 import {
@@ -80,7 +80,7 @@ export default function SettingsProfile() {
       const profileData: UpdateProfileRequest = {
         name: value.name,
         country: value.country,
-        state: value.state
+        state: value.state,
       };
 
       try {
@@ -91,21 +91,24 @@ export default function SettingsProfile() {
         // toast.error(error instanceof Error ? error.message : "Failed to update profile");
       }
     },
-
   });
 
   // Fetch countries with states using the custom hook
-  const { data, isLoading: countriesLoading, isError } = useCountriesWithStates();
+  const {
+    data,
+    isLoading: countriesLoading,
+    isError,
+  } = useCountriesWithStates();
 
   // Safely access the transformed data
   const countries = data?.countries || [];
   const statesByCountry = data?.statesByCountry || {};
-  const availableStates = form.state.values.country ? statesByCountry[form.state.values.country] : [];
-
-
+  const availableStates = form.state.values.country
+    ? statesByCountry[form.state.values.country]
+    : [];
 
   // Update form values when user data loads
-  useState(() => {
+  useEffect(() => {
     if (user) {
       form.setFieldValue("name", user.profile.name);
       form.setFieldValue("country", user.profile.country || "");
@@ -154,10 +157,17 @@ export default function SettingsProfile() {
 
   // Email Change Mutation
   const changeEmailMutation = useMutation({
-    mutationFn: ({ newEmail, currentPassword }: { newEmail: string; currentPassword: string }) =>
-      api.client.changeEmail(newEmail, currentPassword),
+    mutationFn: ({
+      newEmail,
+      currentPassword,
+    }: {
+      newEmail: string;
+      currentPassword: string;
+    }) => api.client.changeEmail(newEmail, currentPassword),
     onSuccess: () => {
-      toast.success("Email changed successfully! Please verify your new email.");
+      toast.success(
+        "Email changed successfully! Please verify your new email.",
+      );
       setEmailChangeData({ newEmail: "", currentPassword: "" });
       setShowEmailChangeForm(false);
       setErrors({});
@@ -191,7 +201,7 @@ export default function SettingsProfile() {
       // Upload immediately
       uploadAvatarMutation.mutate(file);
     },
-    [uploadAvatarMutation]
+    [uploadAvatarMutation],
   );
 
   const handleAvatarClick = () => {
@@ -221,7 +231,7 @@ export default function SettingsProfile() {
         handleAvatarSelect(file);
       }
     },
-    [handleAvatarSelect]
+    [handleAvatarSelect],
   );
 
   const handleFileInputChange = useCallback(
@@ -231,7 +241,7 @@ export default function SettingsProfile() {
         handleAvatarSelect(file);
       }
     },
-    [handleAvatarSelect]
+    [handleAvatarSelect],
   );
 
   const handleEmailChange = async () => {
@@ -331,7 +341,7 @@ export default function SettingsProfile() {
                   "relative flex size-24 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-colors",
                   isUploadingAvatar
                     ? "border-primary bg-primary/5"
-                    : "border-muted bg-muted/30 hover:border-primary/50"
+                    : "border-muted bg-muted/30 hover:border-primary/50",
                 )}
                 onClick={handleAvatarClick}
                 onDragOver={handleDragOver}
@@ -491,7 +501,8 @@ export default function SettingsProfile() {
 
                   <Field>
                     <FieldLabel htmlFor="current-password">
-                      Current Password <span className="text-destructive">*</span>
+                      Current Password{" "}
+                      <span className="text-destructive">*</span>
                     </FieldLabel>
                     <FieldContent>
                       <InputGroup>
@@ -539,11 +550,10 @@ export default function SettingsProfile() {
                 {(field) => (
                   <Field className="animate-fadeIn">
                     <FieldLabel>Country *</FieldLabel>
-                    <Select
-                      value={field.state.value}
-                      items={countries}
-                    >
-                      <SelectTrigger className={errors.country ? "border-red-500" : ""}>
+                    <Select value={field.state.value} items={countries}>
+                      <SelectTrigger
+                        className={errors.country ? "border-red-500" : ""}
+                      >
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -568,7 +578,9 @@ export default function SettingsProfile() {
                         value={form.state.values.state}
                         items={availableStates}
                       >
-                        <SelectTrigger className={errors.state ? "border-red-500" : ""}>
+                        <SelectTrigger
+                          className={errors.state ? "border-red-500" : ""}
+                        >
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
