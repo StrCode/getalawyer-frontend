@@ -1,87 +1,25 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
-import { useEffect } from "react"; // Import useEffect
-import { toastManager } from "@/components/ui/toast";
+import { Link, Outlet, createFileRoute, useLocation } from '@tanstack/react-router'
+import {
+  SidebarProvider,
+} from '@/components/ui/sidebar'
+import { AppSidebar } from '@/components/dashboard/app-sidebar'
+import { Header } from "@/components/dashboard/app-header"
 
-export const Route = createFileRoute("/(protected)/dashboard")({
-	component: RouteComponent,
-});
+export const Route = createFileRoute('/(protected)/dashboard')({
+  component: DashboardLayout
+})
 
-function RouteComponent() {
-	const navigate = useNavigate();
-	const { data: session, error, isPending } = authClient.useSession();
+function DashboardLayout() {
 
-	// 1. Handle redirects inside useEffect
-	useEffect(() => {
-		if (!isPending) {
-			if (error || !session) {
-				navigate({ to: "/login" });
-			} else if (session.user && !session.user.onboarding_completed) {
-				navigate({ to: "/onboarding/client/location" });
-			}
-		}
-	}, [isPending, session, error, navigate]);
-
-	// 2. IMPORTANT: Return a loader while checking auth
-	if (isPending) {
-		return <div>Loading session...</div>;
-	}
-
-	// 3. Safety guard: If no session exists (and redirect hasn't happened yet), return null
-	if (!session?.user) return null;
-
-	const verifyEmail = async (email: string) => {
-		try {
-			await authClient.sendVerificationEmail({
-				email: email,
-				callbackURL: `${import.meta.env.VITE_APP_URL}/dashboard`,
-				fetchOptions: {
-					onSuccess: () => {
-						toastManager.add({
-							title: "Check your email",
-							description: "We've sent a verification link to your inbox.",
-							type: "success", // Assuming your toast supports types
-						});
-					},
-				},
-			});
-		} catch (error) {
-			console.error("Verification failed:", error);
-		}
-	};
-
-	const handleSignOut = async () => {
-		await authClient.signOut({
-			fetchOptions: {
-				onSuccess: () => navigate({ to: "/login" }),
-			},
-		});
-	};
-
-	return (
-		<div className="p-4 space-y-4">
-			<h1 className="text-2xl font-bold">Dashboard</h1>
-			<p>Welcome {session.user.name}</p>
-
-			<Button size="lg" variant="destructive" onClick={handleSignOut}>
-				Sign Out
-			</Button>
-
-			<div className="flex items-center gap-4">
-				<span>
-					The email is{" "}
-					{session.user.emailVerified ? "Verified" : "Not Verified"}
-				</span>
-				{!session.user.emailVerified && (
-					<Button
-						onClick={() => verifyEmail(session.user.email)}
-						variant="secondary"
-					>
-						Verify Email Address
-					</Button>
-				)}
-			</div>
-		</div>
-	);
+  return (
+    <SidebarProvider className="bg-sidebar">
+      <AppSidebar />
+      <div className="h-svh overflow-hidden lg:p-2 w-full">
+        <div className="lg:border lg:rounded-md overflow-hidden flex flex-col justify-start bg-container h-full w-full bg-background">
+          <Header />
+          <Outlet />
+        </div>
+      </div>
+    </SidebarProvider >
+  )
 }

@@ -1,6 +1,16 @@
 "use client"
 
-import { CheckIcon, ChevronsUpDownIcon, XIcon } from "lucide-react"
+import { ArrowDataTransferVerticalIcon, Cancel01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from "react"
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,16 +27,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  type ComponentPropsWithoutRef,
-  type ReactNode,
-} from "react"
 import { Badge } from "@/components/ui/badge"
 
 type MultiSelectContextType = {
@@ -46,9 +46,9 @@ export function MultiSelect({
   onValuesChange,
 }: {
   children: ReactNode
-  values?: string[]
-  defaultValues?: string[]
-  onValuesChange?: (values: string[]) => void
+  values?: Array<string>
+  defaultValues?: Array<string>
+  onValuesChange?: (values: Array<string>) => void
 }) {
   const [open, setOpen] = useState(false)
   const [internalValues, setInternalValues] = useState(
@@ -119,7 +119,8 @@ export function MultiSelectTrigger({
         )}
       >
         {children}
-        <ChevronsUpDownIcon className="size-4 shrink-0 opacity-50" />
+        <HugeiconsIcon icon={ArrowDataTransferVerticalIcon}
+          className="size-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>
   )
@@ -158,7 +159,7 @@ export function MultiSelectValue({
     items.forEach(child => child.style.removeProperty("display"))
     let amount = 0
     for (let i = items.length - 1; i >= 0; i--) {
-      const child = items[i]!
+      const child = items[i]
       if (containerElement.scrollWidth <= containerElement.clientWidth) {
         break
       }
@@ -221,15 +222,16 @@ export function MultiSelectValue({
             onClick={
               clickToRemove
                 ? e => {
-                    e.stopPropagation()
-                    toggleValue(value)
-                  }
+                  e.stopPropagation()
+                  toggleValue(value)
+                }
                 : undefined
             }
           >
             {items.get(value)}
             {clickToRemove && (
-              <XIcon className="size-2 text-muted-foreground group-hover:text-destructive" />
+              <HugeiconsIcon icon={Cancel01Icon}
+                className="size-2 text-muted-foreground group-hover:text-destructive" />
             )}
           </Badge>
         ))}
@@ -313,7 +315,7 @@ export function MultiSelectItem({
         onSelect?.(value)
       }}
     >
-      <CheckIcon
+      <HugeiconsIcon icon={CheckmarkCircle02Icon}
         className={cn("mr-2 size-4", isSelected ? "opacity-100" : "opacity-0")}
       />
       {children}
@@ -343,7 +345,7 @@ function useMultiSelectContext() {
   return context
 }
 
-function debounce<T extends (...args: never[]) => void>(
+function debounce<T extends (...args: Array<never>) => void>(
   func: T,
   wait: number,
 ): (...args: Parameters<T>) => void {

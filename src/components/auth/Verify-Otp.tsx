@@ -1,223 +1,368 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardFooter, CardPanel } from "@/components/ui/card";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+"use client";
+
+import { Loader2, Mail, MessageSquare, Phone, RefreshCw } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/registry/new-york/ui/button";
 import {
-	InputOTP,
-	InputOTPSeparator,
-	InputOTPGroup,
-	InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { Separator } from "@/components/ui/separator";
-import { UserCheck2Icon } from "lucide-react";
-import { AuthCardHeader } from "./AuthCardHeader";
-import * as z from "zod";
-import { useAppForm } from "@/hooks/form";
-import { authClient } from "@/lib/auth-client";
-import { useState, useEffect } from "react";
-import { toastManager } from "../ui/toast";
-import { useNavigate } from "@tanstack/react-router";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/registry/new-york/ui/card";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/registry/new-york/ui/field";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/registry/new-york/ui/input-otp";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/registry/new-york/ui/select";
 
-const otpSchema = z.object({
-	pin: z.string().min(6, {
-		message: "Your one-time password must be 6 characters.",
-	}),
-});
+export type OTPDeliveryMethod = "email" | "sms" | "whatsapp";
 
-interface VerifyOTPProps extends React.ComponentProps<typeof Card> {
-	email?: string;
-	type?: "forget-password" | "email-verification";
+export interface AuthOTPVerifyProps {
+  deliveryMethod?: OTPDeliveryMethod;
+  deliveryAddress?: string;
+  onDeliveryMethodChange?: (method: OTPDeliveryMethod) => void;
+  onSubmit?: (code: string) => void;
+  onResend?: (method: OTPDeliveryMethod) => void;
+  className?: string;
+  isLoading?: boolean;
+  resendCooldown?: number;
+  errors?: {
+    code?: string;
+    general?: string;
+  };
+  autoSubmit?: boolean;
+  codeLength?: number;
+  availableMethods?: Array<OTPDeliveryMethod>;
 }
 
-export function VerifyOTP({
-	email = "",
-	type = "forget-password",
-	...props
-}: VerifyOTPProps) {
-	const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
-	const [isResending, setIsResending] = useState(false);
-	const [resendAttempts, setResendAttempts] = useState(0);
-	const MAX_RESEND_ATTEMPTS = 5;
-	const navigate = useNavigate();
+const DELIVERY_METHOD_CONFIG: Record<
+  OTPDeliveryMethod,
+  { label: string; icon: React.ComponentType<{ className?: string }> }
+> = {
+  email: {
+    label: "Email",
+    icon: Mail,
+  },
+  sms: {
+    label: "SMS",
+    icon: MessageSquare,
+  },
+  whatsapp: {
+    label: "WhatsApp",
+    icon: Phone,
+  },
+};
 
-	useEffect(() => {
-		if (timeLeft <= 0) return;
+function formatDeliveryAddress(
+  address: string | undefined,
+  method: OTPDeliveryMethod
+): string {
+  if (!address) return "";
+  if (method === "email") return address;
+  if (address.length > 4) {
+    const visible = address.slice(-4);
+    const masked = "*".repeat(address.length - 4);
+    return `${masked}${visible}`;
+  }
+  return address;
+}
 
-		const timer = setInterval(() => {
-			setTimeLeft((prev) => prev - 1);
-		}, 1000);
+interface ErrorAlertProps {
+  message: string;
+}
 
-		return () => clearInterval(timer);
-	}, [timeLeft]);
+function ErrorAlert({ message }: ErrorAlertProps) {
+  return (
+    <div
+      aria-live="polite"
+      className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-destructive text-sm"
+      role="alert"
+    >
+      {message}
+    </div>
+  );
+}
 
-	const formatTime = (seconds: number) => {
-		const mins = Math.floor(seconds / 60);
-		const secs = seconds % 60;
-		return `${mins}:${secs.toString().padStart(2, "0")}`;
-	};
+interface DeliveryMethodSelectProps {
+  availableMethods: Array<OTPDeliveryMethod>;
+  deliveryMethod: OTPDeliveryMethod;
+  onDeliveryMethodChange: (method: OTPDeliveryMethod) => void;
+}
 
-	const handleResendCode = async () => {
-		if (resendAttempts >= MAX_RESEND_ATTEMPTS) {
-			// toast.error("Maximum resend attempts reached. Please try again later.");
-			return;
-		}
+function DeliveryMethodSelect({
+  availableMethods,
+  deliveryMethod,
+  onDeliveryMethodChange,
+}: DeliveryMethodSelectProps) {
+  return (
+    <Field>
+      <FieldLabel>Delivery method</FieldLabel>
+      <FieldContent>
+        <Select
+          onValueChange={(value) =>
+            onDeliveryMethodChange(value as OTPDeliveryMethod)
+          }
+          value={deliveryMethod}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {availableMethods.map((method) => {
+              const config = DELIVERY_METHOD_CONFIG[method];
+              const Icon = config.icon;
+              return (
+                <SelectItem key={method} value={method}>
+                  <div className="flex items-center gap-2">
+                    <Icon aria-hidden="true" className="size-4" />
+                    {config.label}
+                  </div>
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
+        <FieldDescription>
+          Choose how you want to receive the verification code
+        </FieldDescription>
+      </FieldContent>
+    </Field>
+  );
+}
 
-		setIsResending(true);
-		try {
-			await authClient.emailOtp.sendVerificationOtp(
-				{
-					email: email,
-					type: type,
-				},
-				{
-					onSuccess: () => {
-						// Reset timer to 5 minutes
-						setTimeLeft(300);
-						setResendAttempts((prev) => prev + 1);
-						// toast.success("Verification code sent successfully!");
-					},
-					onError: (error) => {
-						// toast.error(error.error.message || "Failed to resend code");
-					},
-				},
-			);
-		} catch (error) {
-			console.error("Failed to resend code:", error);
-		} finally {
-			setIsResending(false);
-		}
-	};
+interface ResendButtonProps {
+  cooldown: number;
+  isLoading: boolean;
+  onClick: () => void;
+}
 
-	const form = useAppForm({
-		defaultValues: {
-			pin: "",
-		},
-		validators: {
-			onBlur: otpSchema,
-		},
-		onSubmit: async ({ value }) => {
-			await authClient.emailOtp.checkVerificationOtp(
-				{
-					email: email,
-					type: type,
-					otp: value.pin,
-				},
-				{
-					onSuccess: () => {
-						// Store email and otp in session storage
-						sessionStorage.setItem("reset_email", email);
-						sessionStorage.setItem("reset_otp", value.pin);
+function ResendButton({ cooldown, isLoading, onClick }: ResendButtonProps) {
+  return (
+    <button
+      className="min-h-[32px] touch-manipulation self-start rounded-sm hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:self-auto"
+      disabled={cooldown > 0 || isLoading}
+      onClick={onClick}
+      type="button"
+    >
+      {cooldown > 0 ? (
+        `Resend in ${cooldown}s`
+      ) : (
+        <span className="flex items-center gap-1">
+          <RefreshCw aria-hidden="true" className="size-3" />
+          Resend code
+        </span>
+      )}
+    </button>
+  );
+}
 
-						toastManager.add({
-							title: "Verification successful",
-							description: "Please proceed to set your new password.",
-							type: "success",
-						});
-						navigate({ to: "/new-password" });
-					},
-					onError: (error) => {
-						toastManager.add({
-							title: error.error.message,
-							type: "error",
-						});
-					},
-				},
-			);
-		},
-	});
+interface OTPFieldProps {
+  code: string;
+  codeError?: string;
+  codeLength: number;
+  isLoading: boolean;
+  onCodeChange: (code: string) => void;
+  onResend?: () => void;
+  resendCooldown: number;
+}
 
-	return (
-		<Card {...props}>
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					e.stopPropagation();
-					form.handleSubmit();
-				}}
-			>
-				<AuthCardHeader
-					icon={UserCheck2Icon}
-					title="Enter Verification Code"
-					description={`We've sent a code to ${email}`}
-				/>
-				<CardPanel>
-					<Separator className="my-6" />
-					<form.Field name="pin">
-						{(field) => (
-							<Field>
-								<InputOTP
-									maxLength={6}
-									required
-									containerClassName="gap-4"
-									value={field.state.value}
-									onChange={field.handleChange}
-								>
-									<InputOTPGroup className="gap-2 *:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border *:data-[slot=input-otp-slot]:text-xl">
-										<InputOTPSlot index={0} />
-										<InputOTPSlot index={1} />
-										<InputOTPSlot index={2} />
-									</InputOTPGroup>
-									<InputOTPGroup className="gap-2 *:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-12 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border *:data-[slot=input-otp-slot]:text-xl">
-										<InputOTPSlot index={3} />
-										<InputOTPSlot index={4} />
-										<InputOTPSlot index={5} />
-									</InputOTPGroup>
-								</InputOTP>
-								{field.state.meta.errors.length > 0 && (
-									<p className="text-sm text-red-600 mt-2">
-										{/* {field.state.meta.errors[0]} */}
-									</p>
-								)}
-							</Field>
-						)}
-					</form.Field>
-				</CardPanel>
-				<CardFooter className="flex my-6 flex-col gap-4">
-					<Button
-						size={"lg"}
-						variant="default"
-						type="submit"
-						className="w-full text-white bg-[#19603E]"
-						disabled={form.state.isSubmitting}
-					>
-						{form.state.isSubmitting ? "Verifying..." : "Submit"}
-					</Button>
-					<div className="text-center">
-						<p className="text-gray-600 text-sm">
-							Experiencing issues receiving the code?
-						</p>
-						{resendAttempts >= MAX_RESEND_ATTEMPTS ? (
-							<p className="text-sm text-red-600 mt-1">
-								Maximum resend attempts reached. Please try again later.
-							</p>
-						) : (
-							<>
-								<Button
-									variant="link"
-									className="text-sm text-stone-950 underline"
-									onClick={handleResendCode}
-									disabled={isResending || timeLeft > 0}
-									type="button"
-								>
-									{isResending ? "Sending..." : "Resend"}
-								</Button>
-								{timeLeft > 0 && (
-									<p className="text-sm text-gray-500 mt-1">
-										Available in{" "}
-										<span className="font-semibold text-stone-950">
-											{formatTime(timeLeft)}
-										</span>
-									</p>
-								)}
-								{resendAttempts > 0 && (
-									<p className="text-xs text-gray-400 mt-1">
-										{resendAttempts} of {MAX_RESEND_ATTEMPTS} attempts used
-									</p>
-								)}
-							</>
-						)}
-					</div>
-				</CardFooter>
-			</form>
-		</Card>
-	);
+function OTPField({
+  code,
+  codeError,
+  codeLength,
+  isLoading,
+  onCodeChange,
+  onResend,
+  resendCooldown,
+}: OTPFieldProps) {
+  return (
+    <Field data-invalid={!!codeError}>
+      <FieldLabel htmlFor="otp-code">
+        Verification code
+        <span aria-label="required" className="text-destructive">
+          *
+        </span>
+      </FieldLabel>
+      <FieldContent>
+        <InputOTP
+          aria-describedby={codeError ? "otp-code-error" : undefined}
+          aria-invalid={!!codeError}
+          disabled={isLoading}
+          id="otp-code"
+          maxLength={codeLength}
+          onChange={onCodeChange}
+          value={code}
+        >
+          <InputOTPGroup>
+            {Array.from({ length: codeLength }).map((_, index) => (
+              <InputOTPSlot index={index} key={index} />
+            ))}
+          </InputOTPGroup>
+        </InputOTP>
+        {codeError && <FieldError id="otp-code-error">{codeError}</FieldError>}
+        <div className="flex flex-col gap-2 text-muted-foreground text-xs sm:flex-row sm:items-center sm:justify-between">
+          <span>Enter the {codeLength}-digit code</span>
+          {onResend && (
+            <ResendButton
+              cooldown={resendCooldown}
+              isLoading={isLoading}
+              onClick={onResend}
+            />
+          )}
+        </div>
+      </FieldContent>
+    </Field>
+  );
+}
+
+interface VerifyButtonProps {
+  code: string;
+  codeLength: number;
+  isLoading: boolean;
+  onSubmit: (code: string) => void;
+}
+
+function VerifyButton({
+  code,
+  codeLength,
+  isLoading,
+  onSubmit,
+}: VerifyButtonProps) {
+  return (
+    <Button
+      aria-busy={isLoading}
+      className="min-h-[44px] w-full touch-manipulation"
+      data-loading={isLoading}
+      disabled={isLoading || code.length !== codeLength}
+      onClick={() => onSubmit(code)}
+      type="button"
+    >
+      {isLoading ? (
+        <>
+          <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+          Verifying…
+        </>
+      ) : (
+        "Verify code"
+      )}
+    </Button>
+  );
+}
+
+export default function AuthOTPVerify({
+  deliveryMethod = "email",
+  deliveryAddress,
+  onDeliveryMethodChange,
+  onSubmit,
+  onResend,
+  className,
+  isLoading = false,
+  resendCooldown = 60,
+  errors,
+  autoSubmit = true,
+  codeLength = 6,
+  availableMethods = ["email", "sms"],
+}: AuthOTPVerifyProps) {
+  const [code, setCode] = useState("");
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => {
+        setCooldown((prev) => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldown]);
+
+  useEffect(() => {
+    if (autoSubmit && code.length === codeLength && !isLoading) {
+      onSubmit?.(code);
+    }
+  }, [code, autoSubmit, isLoading, codeLength, onSubmit]);
+
+  const handleResend = useCallback(async () => {
+    if (cooldown > 0) return;
+    await onResend?.(deliveryMethod);
+    setCooldown(resendCooldown);
+  }, [cooldown, onResend, deliveryMethod, resendCooldown]);
+
+  const handleCodeChange = useCallback((newCode: string) => {
+    setCode(newCode);
+  }, []);
+
+  const codeError = errors?.code;
+  const generalError = errors?.general;
+  const methodConfig = DELIVERY_METHOD_CONFIG[deliveryMethod];
+  const MethodIcon = methodConfig.icon;
+  const formattedAddress = formatDeliveryAddress(
+    deliveryAddress,
+    deliveryMethod
+  );
+
+  return (
+    <Card className={cn("w-full max-w-sm shadow-xs", className)}>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          Verify your {methodConfig.label.toLowerCase()}
+        </CardTitle>
+        <CardDescription>
+          We&apos;ve sent a {codeLength}-digit code to{" "}
+          {deliveryAddress ? (
+            <span className="font-medium">{formattedAddress}</span>
+          ) : (
+            "your " + methodConfig.label.toLowerCase()
+          )}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col gap-6">
+          {generalError && <ErrorAlert message={generalError} />}
+
+          {availableMethods.length > 1 && onDeliveryMethodChange && (
+            <DeliveryMethodSelect
+              availableMethods={availableMethods}
+              deliveryMethod={deliveryMethod}
+              onDeliveryMethodChange={onDeliveryMethodChange}
+            />
+          )}
+
+          <OTPField
+            code={code}
+            codeError={codeError}
+            codeLength={codeLength}
+            isLoading={isLoading}
+            onCodeChange={handleCodeChange}
+            onResend={onResend ? handleResend : undefined}
+            resendCooldown={cooldown}
+          />
+
+          {!autoSubmit && (
+            <VerifyButton
+              code={code}
+              codeLength={codeLength}
+              isLoading={isLoading}
+              onSubmit={onSubmit || (() => { })}
+            />
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

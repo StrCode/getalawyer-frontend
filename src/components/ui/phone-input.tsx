@@ -1,9 +1,9 @@
-
 import * as React from "react";
-import { CheckIcon, ChevronsUpDown } from "lucide-react";
 import * as RPNInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowDataTransferVerticalIcon, CheckmarkCircle03Icon } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -76,7 +76,7 @@ type CountryEntry = { label: string; value: RPNInput.Country | undefined };
 type CountrySelectProps = {
   disabled?: boolean;
   value: RPNInput.Country;
-  options: CountryEntry[];
+  options: Array<CountryEntry>;
   onChange: (country: RPNInput.Country) => void;
 };
 
@@ -99,7 +99,7 @@ const CountrySelect = ({
         open && setSearchValue("");
       }}
     >
-      <PopoverTrigger asChild>
+      <PopoverTrigger render={
         <Button
           type="button"
           variant="outline"
@@ -110,13 +110,17 @@ const CountrySelect = ({
             country={selectedCountry}
             countryName={selectedCountry}
           />
-          <ChevronsUpDown
+          <HugeiconsIcon
+            icon={ArrowDataTransferVerticalIcon}
             className={cn(
               "-mr-2 size-4 opacity-50",
               disabled ? "hidden" : "opacity-100",
             )}
           />
         </Button>
+
+
+      } >
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0">
         <Command>
@@ -185,7 +189,8 @@ const CountrySelectOption = ({
       <FlagComponent country={country} countryName={countryName} />
       <span className="flex-1 text-sm">{countryName}</span>
       <span className="text-sm text-foreground/50">{`+${RPNInput.getCountryCallingCode(country)}`}</span>
-      <CheckIcon
+      <HugeiconsIcon
+        icon={CheckmarkCircle03Icon}
         className={`ml-auto size-4 ${country === selectedCountry ? "opacity-100" : "opacity-0"}`}
       />
     </CommandItem>
