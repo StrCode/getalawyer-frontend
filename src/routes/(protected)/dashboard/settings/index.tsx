@@ -104,7 +104,7 @@ export default function SettingsProfile() {
   const countries = data?.countries || [];
   const statesByCountry = data?.statesByCountry || {};
   const availableStates = form.state.values.country
-    ? statesByCountry[form.state.values.country]
+    ? statesByCountry[form.state.values.country] || []
     : [];
 
   // Update form values when user data loads
@@ -199,6 +199,7 @@ export default function SettingsProfile() {
       reader.readAsDataURL(file);
 
       // Upload immediately
+      console.log(file);
       uploadAvatarMutation.mutate(file);
     },
     [uploadAvatarMutation],

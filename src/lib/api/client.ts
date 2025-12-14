@@ -1,5 +1,3 @@
-import { ProfilerOnRenderCallback } from "react";
-
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // Unauthenticated request (no credentials)
@@ -67,6 +65,28 @@ const httpClient = {
       method: "POST",
       body: data ? JSON.stringify(data) : undefined,
     }),
+
+  postFormData: async <T>(
+    endpoint: string,
+    formData: FormData,
+    options?: RequestInit,
+  ): Promise<T> => {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      ...options,
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({
+        message: "An error occurred",
+      }));
+      throw new Error(error.message || `HTTP ${response.status}`);
+    }
+
+    return response.json();
+  },
 
   put: <T>(endpoint: string, data?: unknown, options?: RequestInit) =>
     requestAuth<T>(endpoint, {
@@ -237,10 +257,16 @@ export const api = {
   client: {
     // Authenticated - requires credentials
     getProfile: () => httpClient.getAuth<ProfileResponse>("/api/clients/me"),
-    uploadAvatar: (file: File) => {
+    uploadAvatar: async (file: File): Promise<string> => {
       const formData = new FormData();
       formData.append("image", file);
-      return httpClient.post("/api/clients/upload-avatar", formData);
+
+      const response = await httpClient.postFormData<{
+        success: boolean;
+        imageUrl: string;
+      }>("/api/clients/upload-avatar", formData);
+
+      return response.imageUrl;
     },
     updateProfile: (data: UpdateProfileRequest) =>
       httpClient.patch<AuthResponse>("/api/clients/me", data),

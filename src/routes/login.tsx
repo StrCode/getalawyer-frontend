@@ -1,11 +1,11 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
-import { Logo } from '@/components/logo';
-import { LoginForm } from '@/components/auth/LoginForm';
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/logo";
+import { LoginForm } from "@/components/auth/LoginForm";
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute("/login")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   return (

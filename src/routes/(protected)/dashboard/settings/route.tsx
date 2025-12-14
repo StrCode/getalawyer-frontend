@@ -1,10 +1,10 @@
-import { Outlet, createFileRoute } from '@tanstack/react-router'
-import { AnimatePresence, motion } from "motion/react"
-import { AccountSidebarNav } from '@/components/settings/settings-nav'
+import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "motion/react";
+import { AccountSidebarNav } from "@/components/settings/settings-nav";
 
-export const Route = createFileRoute('/(protected)/dashboard/settings')({
+export const Route = createFileRoute("/(protected)/dashboard/settings")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   return (
@@ -15,7 +15,11 @@ function RouteComponent() {
         </aside>
         <div className="flex-1 rounded-l-lg lg:max-w-2xl min-w-0 px-4 py-6 lg:px-4 lg:py-3">
           <AnimatePresence>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
               <div className="space-y-4">
                 <Outlet />
               </div>
@@ -23,6 +27,6 @@ function RouteComponent() {
           </AnimatePresence>
         </div>
       </div>
-    </div >
-  )
+    </div>
+  );
 }
