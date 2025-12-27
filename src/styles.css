@@ -146,3 +146,70 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+/* Touch-friendly interactions */
+@layer utilities {
+  .touch-active {
+    @apply bg-gray-100 scale-95 transition-all duration-150;
+  }
+  
+  /* Responsive touch targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Mobile-first responsive containers */
+  .container-responsive {
+    @apply w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Responsive text sizes */
+  .text-responsive-heading {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+  
+  .text-responsive-body {
+    @apply text-sm sm:text-base;
+  }
+  
+  /* Responsive spacing */
+  .spacing-responsive {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+  
+  .gap-responsive {
+    @apply gap-4 sm:gap-6 lg:gap-8;
+  }
+  
+  /* Mobile navigation helpers */
+  .mobile-only {
+    @apply block lg:hidden;
+  }
+  
+  .desktop-only {
+    @apply hidden lg:block;
+  }
+  
+  /* Responsive grid layouts */
+  .grid-responsive {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6;
+  }
+  
+  .grid-form {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+  
+  .grid-sidebar {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8;
+  }
+  
+  /* Focus management for accessibility */
+  .focus-visible {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+  
+  /* Screen reader only content */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  }
+}

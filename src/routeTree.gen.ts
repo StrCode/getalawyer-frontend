@@ -20,6 +20,9 @@ import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-p
 import { Route as OnboardingLawyerRouteRouteImport } from './routes/onboarding/lawyer/route'
 import { Route as OnboardingClientRouteRouteImport } from './routes/onboarding/client/route'
 import { Route as protectedDashboardIndexRouteImport } from './routes/(protected)/dashboard/index'
+import { Route as OnboardingLawyerStatusRouteImport } from './routes/onboarding/lawyer/status'
+import { Route as OnboardingLawyerSpecializationsRouteImport } from './routes/onboarding/lawyer/specializations'
+import { Route as OnboardingLawyerReviewRouteImport } from './routes/onboarding/lawyer/review'
 import { Route as OnboardingLawyerCredentialsRouteImport } from './routes/onboarding/lawyer/credentials'
 import { Route as OnboardingLawyerBasicsRouteImport } from './routes/onboarding/lawyer/basics'
 import { Route as OnboardingClientSpecializationsRouteImport } from './routes/onboarding/client/specializations'
@@ -81,6 +84,22 @@ const protectedDashboardIndexRoute = protectedDashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => protectedDashboardRoute,
 } as any)
+const OnboardingLawyerStatusRoute = OnboardingLawyerStatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => OnboardingLawyerRouteRoute,
+} as any)
+const OnboardingLawyerSpecializationsRoute =
+  OnboardingLawyerSpecializationsRouteImport.update({
+    id: '/specializations',
+    path: '/specializations',
+    getParentRoute: () => OnboardingLawyerRouteRoute,
+  } as any)
+const OnboardingLawyerReviewRoute = OnboardingLawyerReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => OnboardingLawyerRouteRoute,
+} as any)
 const OnboardingLawyerCredentialsRoute =
   OnboardingLawyerCredentialsRouteImport.update({
     id: '/credentials',
@@ -132,6 +151,9 @@ export interface FileRoutesByFullPath {
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
   '/onboarding/lawyer/basics': typeof OnboardingLawyerBasicsRoute
   '/onboarding/lawyer/credentials': typeof OnboardingLawyerCredentialsRoute
+  '/onboarding/lawyer/review': typeof OnboardingLawyerReviewRoute
+  '/onboarding/lawyer/specializations': typeof OnboardingLawyerSpecializationsRoute
+  '/onboarding/lawyer/status': typeof OnboardingLawyerStatusRoute
   '/dashboard/': typeof protectedDashboardIndexRoute
   '/dashboard/settings/': typeof protectedDashboardSettingsIndexRoute
 }
@@ -148,6 +170,9 @@ export interface FileRoutesByTo {
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
   '/onboarding/lawyer/basics': typeof OnboardingLawyerBasicsRoute
   '/onboarding/lawyer/credentials': typeof OnboardingLawyerCredentialsRoute
+  '/onboarding/lawyer/review': typeof OnboardingLawyerReviewRoute
+  '/onboarding/lawyer/specializations': typeof OnboardingLawyerSpecializationsRoute
+  '/onboarding/lawyer/status': typeof OnboardingLawyerStatusRoute
   '/dashboard': typeof protectedDashboardIndexRoute
   '/dashboard/settings': typeof protectedDashboardSettingsIndexRoute
 }
@@ -168,6 +193,9 @@ export interface FileRoutesById {
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
   '/onboarding/lawyer/basics': typeof OnboardingLawyerBasicsRoute
   '/onboarding/lawyer/credentials': typeof OnboardingLawyerCredentialsRoute
+  '/onboarding/lawyer/review': typeof OnboardingLawyerReviewRoute
+  '/onboarding/lawyer/specializations': typeof OnboardingLawyerSpecializationsRoute
+  '/onboarding/lawyer/status': typeof OnboardingLawyerStatusRoute
   '/(protected)/dashboard/': typeof protectedDashboardIndexRoute
   '/(protected)/dashboard/settings/': typeof protectedDashboardSettingsIndexRoute
 }
@@ -188,6 +216,9 @@ export interface FileRouteTypes {
     | '/onboarding/client/specializations'
     | '/onboarding/lawyer/basics'
     | '/onboarding/lawyer/credentials'
+    | '/onboarding/lawyer/review'
+    | '/onboarding/lawyer/specializations'
+    | '/onboarding/lawyer/status'
     | '/dashboard/'
     | '/dashboard/settings/'
   fileRoutesByTo: FileRoutesByTo
@@ -204,6 +235,9 @@ export interface FileRouteTypes {
     | '/onboarding/client/specializations'
     | '/onboarding/lawyer/basics'
     | '/onboarding/lawyer/credentials'
+    | '/onboarding/lawyer/review'
+    | '/onboarding/lawyer/specializations'
+    | '/onboarding/lawyer/status'
     | '/dashboard'
     | '/dashboard/settings'
   id:
@@ -223,6 +257,9 @@ export interface FileRouteTypes {
     | '/onboarding/client/specializations'
     | '/onboarding/lawyer/basics'
     | '/onboarding/lawyer/credentials'
+    | '/onboarding/lawyer/review'
+    | '/onboarding/lawyer/specializations'
+    | '/onboarding/lawyer/status'
     | '/(protected)/dashboard/'
     | '/(protected)/dashboard/settings/'
   fileRoutesById: FileRoutesById
@@ -315,6 +352,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof protectedDashboardIndexRouteImport
       parentRoute: typeof protectedDashboardRoute
     }
+    '/onboarding/lawyer/status': {
+      id: '/onboarding/lawyer/status'
+      path: '/status'
+      fullPath: '/onboarding/lawyer/status'
+      preLoaderRoute: typeof OnboardingLawyerStatusRouteImport
+      parentRoute: typeof OnboardingLawyerRouteRoute
+    }
+    '/onboarding/lawyer/specializations': {
+      id: '/onboarding/lawyer/specializations'
+      path: '/specializations'
+      fullPath: '/onboarding/lawyer/specializations'
+      preLoaderRoute: typeof OnboardingLawyerSpecializationsRouteImport
+      parentRoute: typeof OnboardingLawyerRouteRoute
+    }
+    '/onboarding/lawyer/review': {
+      id: '/onboarding/lawyer/review'
+      path: '/review'
+      fullPath: '/onboarding/lawyer/review'
+      preLoaderRoute: typeof OnboardingLawyerReviewRouteImport
+      parentRoute: typeof OnboardingLawyerRouteRoute
+    }
     '/onboarding/lawyer/credentials': {
       id: '/onboarding/lawyer/credentials'
       path: '/credentials'
@@ -396,11 +454,17 @@ const OnboardingClientRouteRouteWithChildren =
 interface OnboardingLawyerRouteRouteChildren {
   OnboardingLawyerBasicsRoute: typeof OnboardingLawyerBasicsRoute
   OnboardingLawyerCredentialsRoute: typeof OnboardingLawyerCredentialsRoute
+  OnboardingLawyerReviewRoute: typeof OnboardingLawyerReviewRoute
+  OnboardingLawyerSpecializationsRoute: typeof OnboardingLawyerSpecializationsRoute
+  OnboardingLawyerStatusRoute: typeof OnboardingLawyerStatusRoute
 }
 
 const OnboardingLawyerRouteRouteChildren: OnboardingLawyerRouteRouteChildren = {
   OnboardingLawyerBasicsRoute: OnboardingLawyerBasicsRoute,
   OnboardingLawyerCredentialsRoute: OnboardingLawyerCredentialsRoute,
+  OnboardingLawyerReviewRoute: OnboardingLawyerReviewRoute,
+  OnboardingLawyerSpecializationsRoute: OnboardingLawyerSpecializationsRoute,
+  OnboardingLawyerStatusRoute: OnboardingLawyerStatusRoute,
 }
 
 const OnboardingLawyerRouteRouteWithChildren =
