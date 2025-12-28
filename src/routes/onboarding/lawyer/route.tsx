@@ -6,6 +6,7 @@ import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { authClient, signOut } from "@/lib/auth-client";
 import { checkAndRedirectToCurrentStep, onboardingSyncService } from "@/lib/onboarding-sync";
+import { clearEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
 export const Route = createFileRoute("/onboarding/lawyer")({
   component: RouteComponent,
@@ -15,6 +16,15 @@ function RouteComponent() {
   const navigate = useNavigate()
   const location = useLocation()
   const { data: session } = authClient.useSession();
+
+  // Custom signOut function that also clears onboarding data
+  const handleSignOut = () => {
+    // Clear onboarding store data before signing out
+    clearEnhancedOnboardingStore();
+    
+    // Then sign out
+    signOut({}, { onSuccess: () => navigate({ to: "/" }) });
+  };
 
   // Initialize sync service and handle redirection when entering onboarding flow
   useEffect(() => {
@@ -53,9 +63,7 @@ function RouteComponent() {
         <div className="flex justify-center items-center space-x-2 text-sm text-gray-600">
           <Button
             variant="link"
-            onClick={() =>
-              signOut({}, { onSuccess: () => navigate({ to: "/" }) })
-            }
+            onClick={handleSignOut}
             className="text-sm text-black pr-0"
             aria-label="Sign out of your account"
           >

@@ -1,16 +1,20 @@
 "use client";
 
-import { Download, Github, Plus } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Download, Github, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
+import { clearEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
 export function Header() {
   const navigate = useNavigate();
   const { data: session, error, isPending } = authClient.useSession();
 
   const handleSignOut = async () => {
+    // Clear onboarding store data before signing out
+    clearEnhancedOnboardingStore();
+    
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => navigate({ to: "/login" }),

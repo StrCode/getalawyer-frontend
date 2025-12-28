@@ -157,6 +157,35 @@ const httpClient = {
       body: data ? JSON.stringify(data) : undefined,
     }),
 
+  postBlob: async (endpoint: string, data?: unknown, options?: RequestInit): Promise<Blob> => {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      ...options,
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/octet-stream",
+        ...options?.headers,
+      },
+      body: data ? JSON.stringify(data) : undefined,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({
+        error: "Export failed",
+        message: "Export failed",
+      }));
+      throw new ApiError(
+        errorData.error || errorData.message || `HTTP ${response.status}`,
+        response.status,
+        errorData.code,
+        errorData.details,
+      );
+    }
+
+    return response.blob();
+  },
+
   postFormData: async <T>(
     endpoint: string,
     formData: FormData,
@@ -419,6 +448,193 @@ export interface ApiResponse<T = unknown> {
 
 // API wrapper
 export const api = {
+  admin: {
+    // Dashboard
+    getDashboard: () =>
+      httpClient.getAuth<ApiResponse<{
+        totalUsers: number;
+        totalApplications: number;
+        pendingApplications: number;
+        approvedApplications: number;
+        rejectedApplications: number;
+        recentActivity: Array<any>;
+      }>>("/api/admin/dashboard"),
+
+    // Applications Management
+    getApplications: (params: {
+      page?: number;
+      limit?: number;
+      status?: string;
+      query?: string;
+      sortBy?: string;
+      sortOrder?: string;
+      country?: string;
+      dateFrom?: string;
+      dateTo?: string;
+    }) => {
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== '') {
+          searchParams.append(key, String(value));
+        }
+      });
+      return httpClient.getAuth<ApiResponse<{
+        applications: Array<any>;
+        pagination: {
+          page: number;
+          limit: number;
+          total: number;
+          totalPages: number;
+        };
+      }>>(`/api/admin/applications?${searchParams.toString()}`);
+    },
+
+    getApplication: (id: string) =>
+      httpClient.getAuth<ApiResponse<any>>(`/api/admin/applications/${id}`),
+
+    approveApplication: (id: string, data: { reviewNotes: string }) =>
+      httpClient.patch<ApiResponse>(`/api/admin/applications/${id}/approve`, data),
+
+    rejectApplication: (id: string, data: { reason: string; feedback: string }) =>
+      httpClient.patch<ApiResponse>(`/api/admin/applications/${id}/reject`, data),
+
+    // Users Management
+    getUsers: (params: {
+      page?: number;
+      limit?: number;
+      query?: string;
+      userType?: string;
+      status?: string;
+      country?: string;
+      sortBy?: string;
+      sortOrder?: string;
+    }) => {
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== '') {
+          searchParams.append(key, String(value));
+        }
+      });
+      return httpClient.getAuth<ApiResponse<{
+        users: Array<any>;
+        pagination: {
+          page: number;
+          limit: number;
+          total: number;
+          totalPages: number;
+        };
+      }>>(`/api/admin/users?${searchParams.toString()}`);
+    },
+
+    getUser: (id: string) =>
+      httpClient.getAuth<ApiResponse<any>>(`/api/admin/users/${id}`),
+
+    updateUserStatus: (id: string, data: { 
+      status: 'suspend' | 'reactivate' | 'flag'; 
+      reason: string; 
+      banExpires?: string;
+    }) =>
+      httpClient.patch<ApiResponse>(`/api/admin/users/${id}/status`, data),
+
+    updateUserProfile: (id: string, data: { 
+      name?: string; 
+      email?: string; 
+      role?: string;
+    }) =>
+      httpClient.patch<ApiResponse>(`/api/admin/users/${id}/profile`, data),
+
+    // Lawyers Management
+    getLawyers: (params: {
+      page?: number;
+      limit?: number;
+      query?: string;
+      status?: string;
+      country?: string;
+      sortBy?: string;
+      sortOrder?: string;
+    }) => {
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== '') {
+          searchParams.append(key, String(value));
+        }
+      });
+      return httpClient.getAuth<ApiResponse<{
+        users: Array<any>;
+        pagination: {
+          page: number;
+          limit: number;
+          total: number;
+          totalPages: number;
+        };
+      }>>(`/api/admin/lawyers?${searchParams.toString()}`);
+    },
+
+    getLawyer: (id: string) =>
+      httpClient.getAuth<ApiResponse<any>>(`/api/admin/lawyers/${id}`),
+
+    // Clients Management
+    getClients: (params: {
+      page?: number;
+      limit?: number;
+      query?: string;
+      status?: string;
+      country?: string;
+      sortBy?: string;
+      sortOrder?: string;
+    }) => {
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== '') {
+          searchParams.append(key, String(value));
+        }
+      });
+      return httpClient.getAuth<ApiResponse<{
+        users: Array<any>;
+        pagination: {
+          page: number;
+          limit: number;
+          total: number;
+          totalPages: number;
+        };
+      }>>(`/api/admin/clients?${searchParams.toString()}`);
+    },
+
+    getClient: (id: string) =>
+      httpClient.getAuth<ApiResponse<any>>(`/api/admin/clients/${id}`),
+
+    // Statistics
+    getStatistics: (params?: {
+      startDate?: string;
+      endDate?: string;
+      groupBy?: string;
+      metrics?: string;
+    }) => {
+      const searchParams = new URLSearchParams();
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== undefined && value !== '') {
+            searchParams.append(key, String(value));
+          }
+        });
+      }
+      return httpClient.getAuth<ApiResponse<any>>(`/api/admin/statistics?${searchParams.toString()}`);
+    },
+
+    // Data Export
+    exportData: (config: {
+      type: 'users' | 'applications' | 'audit_log' | 'statistics';
+      format: 'csv' | 'excel' | 'pdf';
+      filters?: Record<string, any>;
+      dateRange?: {
+        startDate: string;
+        endDate: string;
+      };
+      columns?: string[];
+    }) => {
+      return httpClient.postBlob('/api/admin/export', config);
+    },
+  },
   countries: {
     getCountries: () => httpClient.getAuth<CountriesRequest>("/api/countries"),
     getStatesbyCountry: (code: string) =>

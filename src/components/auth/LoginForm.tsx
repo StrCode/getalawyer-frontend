@@ -1,23 +1,23 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import * as z from "zod/v4";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDataTransferVerticalIcon,
   Mail02Icon,
 } from "@hugeicons/core-free-icons";
-import { Button } from "../ui/button";
-import { Separator } from "../ui/separator-extended";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import * as z from "zod/v4";
 import type { Card } from "@/components/ui/card";
-import { authClient } from "@/lib/auth-client";
-import { useAppForm } from "@/hooks/form";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldSeparator,
 } from "@/components/ui/field";
-import { cn } from "@/lib/utils";
 import { toastManager } from "@/components/ui/toast";
+import { useAppForm } from "@/hooks/form";
+import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator-extended";
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const navigate = useNavigate({
@@ -48,10 +48,22 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
           rememberMe: value.rememberMe,
         },
         {
-          onSuccess: () => {
-            navigate({
-              to: "/dashboard",
-            });
+          onSuccess: async () => {
+            // Get the session to check user role
+            const {data:session} = await authClient.getSession();
+            const userRole = session?.user.role;
+            console.log(userRole)
+            // Redirect based on role
+            if (['reviewer', 'admin', 'super_admin'].includes(userRole || '')) {
+              navigate({
+                to: "/admin",
+              });
+            } else {
+              navigate({
+                to: "/dashboard",
+              });
+            }
+            
             toastManager.add({
               title: "Sign in successful",
               type: "success",

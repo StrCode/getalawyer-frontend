@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
 import { toastManager } from "@/components/ui/toast";
+import { authClient } from "@/lib/auth-client";
+import { clearEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
 export const Route = createFileRoute("/(protected)/dashboard/")({
   component: RouteComponent,
@@ -39,6 +40,9 @@ function RouteComponent() {
   };
 
   const handleSignOut = async () => {
+    // Clear onboarding store data before signing out
+    clearEnhancedOnboardingStore();
+    
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => navigate({ to: "/login" }),
