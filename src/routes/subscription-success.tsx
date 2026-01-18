@@ -51,9 +51,9 @@ function SubscriptionSuccess() {
 
         const data = await response.json()
 
-        if (data.data?.status === 'active') {
+        if (data.status === 'active') {
           setStatus('success')
-          setSubscriptionData(data.data.subscription)
+          setSubscriptionData(data.subscription)
           toastManager.add({
             title: 'Subscription Activated',
             description: 'Your subscription is now active!',
@@ -63,12 +63,12 @@ function SubscriptionSuccess() {
           setTimeout(() => {
             navigate({ to: '/dashboard' })
           }, 2000)
-        } else if (data.data?.status === 'pending') {
+        } else if (data.status === 'pending') {
           setStatus('pending')
-          setError('Payment is still being processed. Please check back in a few moments.')
+          setError(data.message || 'Payment is still being processed. Please check back in a few moments.')
         } else {
           setStatus('error')
-          setError(data.data?.message || 'Payment verification failed')
+          setError(data.message || 'Payment verification failed')
         }
       } catch (err) {
         setStatus('error')
