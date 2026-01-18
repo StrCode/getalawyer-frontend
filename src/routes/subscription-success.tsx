@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { toastManager } from '@/components/ui/toast'
-import { api } from '@/lib/api/client'
 
 export const Route = createFileRoute('/subscription-success')({
   component: SubscriptionSuccess,
@@ -30,11 +29,31 @@ function SubscriptionSuccess() {
       }
 
       try {
-        const response = await api.subscriptions.verify(reference)
+        // Call the verify endpoint directly without using the API client
+        // since this is a public page without authentication context
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/subscriptions/verify/${reference}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+          }
+        )
 
-        if (response.data?.status === 'active') {
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({
+            message: 'Payment verification failed',
+          }))
+          throw new Error(errorData.message || 'Payment verification failed')
+        }
+
+        const data = await response.json()
+
+        if (data.data?.status === 'active') {
           setStatus('success')
-          setSubscriptionData(response.data.subscription)
+          setSubscriptionData(data.data.subscription)
           toastManager.add({
             title: 'Subscription Activated',
             description: 'Your subscription is now active!',
@@ -44,12 +63,12 @@ function SubscriptionSuccess() {
           setTimeout(() => {
             navigate({ to: '/dashboard' })
           }, 2000)
-        } else if (response.data?.status === 'pending') {
+        } else if (data.data?.status === 'pending') {
           setStatus('pending')
           setError('Payment is still being processed. Please check back in a few moments.')
         } else {
           setStatus('error')
-          setError(response.data?.message || 'Payment verification failed')
+          setError(data.data?.message || 'Payment verification failed')
         }
       } catch (err) {
         setStatus('error')
