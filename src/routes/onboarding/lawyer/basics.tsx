@@ -1,16 +1,14 @@
 // ============================================
-// Step 1: Basics - Enhanced with validation timing fix
+// Step 1: Basics - Simplified Onboarding
 // onboarding/lawyer/basics.tsx
 // ============================================
 
-import { AlertCircleIcon, ArrowRight01Icon, FloppyDiskIcon } from "@hugeicons/core-free-icons";
+import { AlertCircleIcon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ProgressTracker } from "@/components/onboarding/progress-tracker";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -30,31 +28,32 @@ import {
 } from "@/components/ui/select";
 import { toastManager } from "@/components/ui/toast";
 import { useCountriesWithStates } from "@/hooks/use-countries";
-import { useDraftIndicator, useDraftManager } from "@/hooks/use-draft-manager";
 import { authClient } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
-import type { OnboardingStep } from "@/stores/enhanced-onboarding-store";
 import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
 export const Route = createFileRoute("/onboarding/lawyer/basics")({
   component: LawyerBasicsStep,
+  beforeLoad: () => {
+    // Basic info is always accessible as it's the first step
+    // No navigation guard needed
+  },
 });
-
-interface OnBoardingRequest {
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  country: string;
-  state?: string;
-}
 
 function LawyerBasicsStep() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
   
-  // Simple form state (like client location page)
+  // Enhanced onboarding store
+  const {
+    currentStep,
+    completedSteps,
+    basicInfo,
+    updateBasicInfo,
+    markStepCompleted,
+    setCurrentStep,
+  } = useEnhancedOnboardingStore();
+  
+  // Local form state
   const [formData, setFormData] = useState({
     firstName: "",
     middleName: "",
@@ -66,39 +65,6 @@ function LawyerBasicsStep() {
   });
   
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
-  // Hydration state
-  const [isHydrated, setIsHydrated] = useState(false);
-  
-  // Enhanced onboarding store
-  const {
-    currentStep,
-    completedSteps,
-    updatePracticeInfo,
-    markStepCompleted,
-    setCurrentStep,
-    updateLastSaved
-  } = useEnhancedOnboardingStore();
-
-  // Draft management
-  const draftManager = useDraftManager({
-    stepId: 'practice_info' as OnboardingStep,
-    autoSaveInterval: 30000,
-    onSave: (data) => {
-      console.log('Draft saved:', data);
-    },
-    onRestore: (data) => {
-      console.log('Draft restored:', data);
-      if (data && typeof data === 'object' && session?.user?.email) {
-        const draftData = data as Partial<typeof formData>;
-        if (!draftData.email || draftData.email === session.user.email) {
-          setFormData(prev => ({ ...prev, ...draftData }));
-        }
-      }
-    }
-  });
-
-  const draftIndicator = useDraftIndicator('practice_info' as OnboardingStep);
 
   // Fetch countries with states
   const { data, isLoading, isError } = useCountriesWithStates();
@@ -106,18 +72,16 @@ function LawyerBasicsStep() {
   const statesByCountry = data?.statesByCountry || {};
   const availableStates = formData.country ? statesByCountry[formData.country] : [];
 
+  // Debug: Log countries data
+  console.log('Countries data:', { countries: countries.length, isLoading, isError });
+
   const handleFieldChange = (field: keyof typeof formData, value: string) => {
-    setFormData(prev => {
-      const newData = { ...prev, [field]: value };
-      // Update draft with the new data
-      draftManager.updatePendingData(newData);
-      return newData;
-    });
+    setFormData(prev => ({ ...prev, [field]: value }));
     
     // Update store
-    updatePracticeInfo({ [field]: value });
+    updateBasicInfo({ [field]: value });
     
-    // Clear errors for this field
+    // Clear errors for this field and show positive feedback
     if (errors[field]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -130,7 +94,7 @@ function LawyerBasicsStep() {
   const handleCountryChange = (value: string | null) => {
     const countryValue = value || "";
     setFormData(prev => ({ ...prev, country: countryValue, state: "" }));
-    updatePracticeInfo({ country: countryValue, state: "" });
+    updateBasicInfo({ country: countryValue, state: "" });
     setErrors(prev => {
       const newErrors = { ...prev };
       delete newErrors.country;
@@ -142,7 +106,7 @@ function LawyerBasicsStep() {
   const handleStateChange = (value: string | null) => {
     const stateValue = value || "";
     setFormData(prev => ({ ...prev, state: stateValue }));
-    updatePracticeInfo({ state: stateValue });
+    updateBasicInfo({ state: stateValue });
     if (errors.state) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -155,20 +119,29 @@ function LawyerBasicsStep() {
   const validateAndNext = () => {
     const newErrors: Record<string, string> = {};
 
+    // Validate required fields
     if (!formData.firstName.trim()) {
       newErrors.firstName = "First name is required";
+    } else if (formData.firstName.trim().length < 2) {
+      newErrors.firstName = "First name must be at least 2 characters";
     }
+    
     if (!formData.lastName.trim()) {
       newErrors.lastName = "Last name is required";
+    } else if (formData.lastName.trim().length < 2) {
+      newErrors.lastName = "Last name must be at least 2 characters";
     }
+    
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
+    
     if (!formData.phoneNumber.trim()) {
       newErrors.phoneNumber = "Phone number is required";
     }
+    
     if (!formData.country) {
       newErrors.country = "Please select a country";
     }
@@ -185,14 +158,17 @@ function LawyerBasicsStep() {
         description: `${Object.keys(newErrors).length} issue(s) need to be resolved.`,
         type: "error",
       });
+      
+      // Scroll to top to show validation summary (only in browser)
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       return;
     }
 
     // Save to store and navigate
-    updatePracticeInfo(formData);
-    markStepCompleted('practice_info' as OnboardingStep);
-    draftManager.clearDraft();
-    updateLastSaved();
+    updateBasicInfo(formData);
+    markStepCompleted('basic_info');
     
     toastManager.add({
       title: "Basic information saved!",
@@ -203,28 +179,27 @@ function LawyerBasicsStep() {
     router.navigate({ to: "/onboarding/lawyer/credentials" });
   };
 
-  const completeMutation = useMutation({
-    mutationFn: async (_requestData: OnBoardingRequest) => {
-      return Promise.resolve({ success: true });
-    },
-    onSuccess: () => {
-      // This is handled by validateAndNext now
-    },
-    onError: (error: Error) => {
-      console.error("Onboarding error:", error);
-      toastManager.add({
-        title: "Navigation failed",
-        description: error.message || "Failed to proceed to next step. Please try again.",
-        type: "error",
-      });
-    },
-  });
-
-  // Initialize form from store/draft on mount
+  // Initialize form from store on mount
   useEffect(() => {
-    setIsHydrated(true);
-    setCurrentStep('practice_info' as OnboardingStep);
-  }, [setCurrentStep]);
+    setCurrentStep('basic_info');
+    
+    // Load data from store if available
+    if (basicInfo.firstName || basicInfo.email) {
+      setFormData({
+        firstName: basicInfo.firstName || "",
+        middleName: basicInfo.middleName || "",
+        lastName: basicInfo.lastName || "",
+        email: basicInfo.email || session?.user?.email || "",
+        phoneNumber: basicInfo.phoneNumber || "",
+        country: basicInfo.country || "",
+        state: basicInfo.state || "",
+      });
+    } else if (session?.user?.email) {
+      // Pre-populate email from session
+      setFormData(prev => ({ ...prev, email: session.user.email }));
+      updateBasicInfo({ email: session.user.email });
+    }
+  }, [setCurrentStep, basicInfo, session, updateBasicInfo]);
 
   // Loading State
   if (isLoading) {
@@ -262,29 +237,13 @@ function LawyerBasicsStep() {
           {/* Progress Bar */}
           <div className="mb-6 sm:mb-8">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">Step 1 of 4</span>
+              <span className="text-sm font-medium text-gray-700">Step 1 of 2</span>
               <span className="text-xs sm:text-sm text-gray-500">Basic Information</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-500 h-2 rounded-full transition-all duration-300 w-1/4"></div>
+              <div className="bg-blue-500 h-2 rounded-full transition-all duration-300 w-1/2"></div>
             </div>
           </div>
-
-          {/* Draft Status Indicator */}
-          {isHydrated && draftIndicator.status !== 'clean' && (
-            <Alert className={cn("mb-6", {
-              "border-blue-200 bg-blue-50": draftIndicator.status === 'saving',
-              "border-green-200 bg-green-50": draftIndicator.status === 'draft',
-              "border-orange-200 bg-orange-50": draftIndicator.status === 'unsaved',
-              "border-red-200 bg-red-50": draftIndicator.status === 'error',
-              "border-amber-200 bg-amber-50": draftIndicator.status === 'offline',
-            })}>
-              <AlertDescription className={cn("flex items-center gap-2", draftIndicator.color)}>
-                <HugeiconsIcon icon={FloppyDiskIcon} className="w-4 h-4" />
-                {draftIndicator.message}
-              </AlertDescription>
-            </Alert>
-          )}
 
           {/* Validation Summary */}
           {Object.keys(errors).length > 0 && (
@@ -447,10 +406,9 @@ function LawyerBasicsStep() {
             <Button
               type="button"
               onClick={validateAndNext}
-              disabled={completeMutation.isPending}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {completeMutation.isPending ? "Saving..." : "Continue to Credentials"}
+              Continue to Credentials
               <HugeiconsIcon icon={ArrowRight01Icon} />
             </Button>
           </div>
@@ -470,22 +428,6 @@ function LawyerBasicsStep() {
               variant="compact"
               className="mb-6"
             />
-            
-            {/* Auto-save Settings */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-medium text-sm mb-3">Auto-save Settings</h4>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Auto-save enabled</span>
-                <Badge variant={draftManager.isAutoSaveEnabled ? "default" : "secondary"}>
-                  {draftManager.isAutoSaveEnabled ? "On" : "Off"}
-                </Badge>
-              </div>
-              {draftManager.lastSaved && draftManager.lastSaved instanceof Date && !Number.isNaN(draftManager.lastSaved.getTime()) && (
-                <p className="text-xs text-gray-500 mt-2">
-                  Last saved: {draftManager.lastSaved.toLocaleTimeString()}
-                </p>
-              )}
-            </div>
           </div>
         </div>
       </div>

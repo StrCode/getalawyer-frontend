@@ -12,8 +12,11 @@ export function Header() {
   const { data: session, error, isPending } = authClient.useSession();
 
   const handleSignOut = async () => {
-    // Clear onboarding store data before signing out
+    // Clear all onboarding-related cache before signing out
     clearEnhancedOnboardingStore();
+    localStorage.removeItem('onboarding-form-draft');
+    localStorage.removeItem('onboarding-progress');
+    localStorage.removeItem('offline-operation-queue');
     
     await authClient.signOut({
       fetchOptions: {
@@ -23,10 +26,10 @@ export function Header() {
   };
 
   return (
-    <div className="w-full sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background px-3 py-2.5 sm:px-4 sm:py-3 md:px-7">
-      <div className="flex items-center gap-2 min-w-0 flex-1">
+    <div className="top-0 z-10 sticky flex justify-between items-center bg-background px-3 sm:px-4 md:px-7 py-2.5 sm:py-3 border-border border-b w-full">
+      <div className="flex flex-1 items-center gap-2 min-w-0">
         <SidebarTrigger className="shrink-0" />
-        <h1 className="text-base font-medium text-foreground truncate">
+        <h1 className="font-medium text-foreground text-base truncate">
           Welcome back, {session?.user.name.split(" ")[0]} 👋
         </h1>
       </div>

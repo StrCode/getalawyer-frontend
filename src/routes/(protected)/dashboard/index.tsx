@@ -40,8 +40,11 @@ function RouteComponent() {
   };
 
   const handleSignOut = async () => {
-    // Clear onboarding store data before signing out
+    // Clear all onboarding-related cache before signing out
     clearEnhancedOnboardingStore();
+    localStorage.removeItem('onboarding-form-draft');
+    localStorage.removeItem('onboarding-progress');
+    localStorage.removeItem('offline-operation-queue');
     
     await authClient.signOut({
       fetchOptions: {
@@ -51,8 +54,8 @@ function RouteComponent() {
   };
 
   return (
-    <div className="p-4 space-y-4">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div className="space-y-4 p-4">
+      <h1 className="font-bold text-2xl">Dashboard</h1>
       <p>Welcome {session.user.name}</p>
 
       <Button size="lg" variant="destructive" onClick={handleSignOut}>

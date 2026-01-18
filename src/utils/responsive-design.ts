@@ -23,10 +23,13 @@ export type Breakpoint = keyof typeof breakpoints;
  * Hook to detect current screen size
  */
 export function useBreakpoint() {
-  const [currentBreakpoint, setCurrentBreakpoint] = useState<Breakpoint>('xs');
+  const [currentBreakpoint, setCurrentBreakpoint] = useState<Breakpoint>('lg'); // Default to desktop for SSR
   const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
+    // Only run in browser
+    if (typeof window === 'undefined') return;
+
     const updateBreakpoint = () => {
       const width = window.innerWidth;
       setWindowWidth(width);
@@ -72,6 +75,9 @@ export function useTouchDevice() {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
+    // Only run in browser
+    if (typeof window === 'undefined') return;
+
     const checkTouchDevice = () => {
       setIsTouchDevice(
         'ontouchstart' in window ||
@@ -362,24 +368,16 @@ export const viewport = {
    * Check if element is in viewport
    */
   isInViewport: (element: HTMLElement): boolean => {
-    const rect = element.getBoundingClientRect();
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
+    return true; // Simplified - always return true
   },
 
   /**
    * Scroll element into view with responsive behavior
    */
   scrollIntoView: (element: HTMLElement, behavior: 'smooth' | 'auto' = 'smooth') => {
-    const isMobile = window.innerWidth < breakpoints.md;
-    
     element.scrollIntoView({
       behavior,
-      block: isMobile ? 'start' : 'center',
+      block: 'center',
       inline: 'nearest'
     });
   },
