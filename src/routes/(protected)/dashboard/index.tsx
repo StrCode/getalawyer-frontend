@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { SubscriptionBanner } from "@/components/dashboard/subscription-banner";
 import { Button } from "@/components/ui/button";
 import { toastManager } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth-client";
@@ -55,6 +56,7 @@ function RouteComponent() {
 
   return (
     <div className="space-y-4 p-4">
+      <SubscriptionBanner />
       <h1 className="font-bold text-2xl">Dashboard</h1>
       <p>Welcome {session.user.name}</p>
 

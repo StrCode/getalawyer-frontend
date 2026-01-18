@@ -769,6 +769,44 @@ export const api = {
         data
       ),
   },
+  subscriptions: {
+    // Initialize subscription payment
+    initialize: () =>
+      httpClient.post<ApiResponse<{
+        redirectUrl: string;
+        reference: string;
+        subscriptionId: string;
+      }>>("/api/subscriptions/initialize"),
+
+    // Get subscription status
+    getStatus: () =>
+      httpClient.getAuth<ApiResponse<{
+        hasActiveSubscription: boolean;
+        subscription: {
+          id: string;
+          status: 'active' | 'pending' | 'expired' | 'cancelled' | 'failed_renewal';
+          subscriptionStartDate: string;
+          subscriptionEndDate: string;
+          nextBillingDate: string;
+          daysRemaining: number;
+          cardLast4: string;
+          bank: string;
+          autoRenewEnabled: boolean;
+        } | null;
+      }>>("/api/subscriptions/status"),
+
+    // Verify payment after Paystack callback
+    verify: (reference: string) =>
+      httpClient.getAuth<ApiResponse<{
+        status: 'active' | 'pending' | 'error';
+        subscription?: {
+          id: string;
+          status: string;
+          subscriptionEndDate: string;
+        };
+        message?: string;
+      }>>(`/api/subscriptions/verify/${reference}`),
+  },
 };
 
 export { httpClient };

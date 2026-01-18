@@ -1,5 +1,11 @@
 "use client";
-import { useState } from "react";
+import {
+  DashboardCircleIcon,
+  Settings02Icon,
+} from "@hugeicons/core-free-icons";
+import type { IconSvgElement } from "@hugeicons/react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Link, useLocation } from "@tanstack/react-router";
 import {
   Bell,
   Calendar,
@@ -18,14 +24,22 @@ import {
   UserPenIcon,
   Users,
 } from "lucide-react";
-import { Link } from "@tanstack/react-router";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
-  DashboardCircleIcon,
-  Settings02Icon,
-} from "@hugeicons/core-free-icons";
-import { Logo } from "../logo";
-import type { IconSvgElement } from "@hugeicons/react";
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Kbd } from "@/components/ui/kbd";
 import {
   Sidebar,
   SidebarContent,
@@ -39,22 +53,8 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Kbd } from "@/components/ui/kbd";
 import { cn } from "@/lib/utils";
+import { Logo } from "../logo";
 
 // Types
 type LucideIcon = typeof Calendar;
@@ -140,6 +140,7 @@ const footerMenuItems: Array<MenuItem> = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [favoritesOpen, setFavoritesOpen] = useState(true);
+  const location = useLocation();
 
   const renderIcon = (item: MenuItem) => {
     if (item.iconType === "hugeicons") {
@@ -150,11 +151,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   const renderMenuItem = (item: MenuItem) => {
-    console.log(location);
     if (item.url) {
       return (
         <SidebarMenuButton
-          className="h-7 text-sm text-muted-foreground"
+          className="h-7 text-muted-foreground text-sm"
           isActive={item.url === location.pathname}
           render={
             <Link to={item.url}>
@@ -167,7 +167,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
 
     return (
-      <SidebarMenuButton className="h-7 text-sm text-muted-foreground">
+      <SidebarMenuButton className="h-7 text-muted-foreground text-sm">
         {renderIcon(item)}
         <span>{item.title}</span>
       </SidebarMenuButton>
@@ -178,37 +178,32 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar className="lg:border-r-0!" collapsible="icon" {...props}>
       <SidebarHeader className="pb-0">
         <div className="px-2 py-3">
-          <div className="flex items-center justify-between">
+          <div className="flex justify-between items-center">
             <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Button
-                  variant="ghost"
-                  className="flex items-center justify-between gap-3 h-auto p-0 hover:bg-transparent w-full"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="size-6 rounded-sm flex items-center justify-center text-white text-xs font-semibold">
-                      <Logo />
-                    </div>
-                    <span className="font-semibold">GetaLawyer</span>
+              <DropdownMenuTrigger className="flex justify-between items-center gap-3 hover:bg-accent/50 p-0 rounded-md w-full h-auto text-left transition-colors">
+                <div className="flex items-center gap-2">
+                  <div className="flex justify-center items-center rounded-sm size-6 font-semibold text-white text-xs">
+                    <Logo />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <ChevronDown className="size-3 text-muted-foreground" />
-                  </div>
-                </Button>
+                  <span className="font-semibold">GetaLawyer</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ChevronDown className="size-3 text-muted-foreground" />
+                </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="start">
                 <DropdownMenuItem>
                   <div className="flex items-center gap-3 w-full">
-                    <div className="size-6 bg-linear-to-br from-purple-500 to-pink-600 rounded-sm shadow flex items-center justify-center text-white text-xs font-semibold">
+                    <div className="flex justify-center items-center bg-linear-to-br from-purple-500 to-pink-600 shadow rounded-sm size-6 font-semibold text-white text-xs">
                       SU
                     </div>
                     <span className="font-semibold">Square UI</span>
-                    <Check className="size-4 ml-auto" />
+                    <Check className="ml-auto size-4" />
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <div className="flex items-center gap-3 w-full">
-                    <div className="size-6 bg-linear-to-br from-blue-500 to-cyan-600 rounded-sm shadow flex items-center justify-center text-white text-xs font-semibold">
+                    <div className="flex justify-center items-center bg-linear-to-br from-blue-500 to-cyan-600 shadow rounded-sm size-6 font-semibold text-white text-xs">
                       CI
                     </div>
                     <span>Circle</span>
@@ -216,7 +211,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <div className="flex items-center gap-3 w-full">
-                    <div className="size-6 bg-linear-to-br from-orange-500 to-red-600 rounded-sm shadow flex items-center justify-center text-white text-xs font-semibold">
+                    <div className="flex justify-center items-center bg-linear-to-br from-orange-500 to-red-600 shadow rounded-sm size-6 font-semibold text-white text-xs">
                       LN
                     </div>
                     <span>lndev-ui</span>
@@ -231,18 +226,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </DropdownMenu>
           </div>
 
-          {/* <div className="mt-4 relative"> */}
-          {/*   <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground z-10" /> */}
+          {/* <div className="relative mt-4"> */}
+          {/*   <Search className="top-1/2 left-2.5 z-10 absolute size-4 text-muted-foreground -translate-y-1/2" /> */}
           {/*   <Input */}
           {/*     type="search" */}
           {/*     placeholder="Search..." */}
-          {/*     className="pl-8 pr-8 h-8 text-sm text-muted-foreground placeholder:text-muted-foreground tracking-[-0.42px] bg-background" */}
+          {/*     className="bg-background pr-8 pl-8 h-8 text-muted-foreground placeholder:text-muted-foreground text-sm tracking-[-0.42px]" */}
           {/*   /> */}
-          {/*   <div className="flex items-center gap-0.5 rounded border border-border bg-sidebar px-1.5 py-0.5 shrink-0 absolute right-2 top-1/2 -translate-y-1/2"> */}
-          {/*     <span className="text-[10px] font-medium text-muted-foreground leading-none tracking-[-0.1px]"> */}
+          {/*   <div className="top-1/2 right-2 absolute flex items-center gap-0.5 bg-sidebar px-1.5 py-0.5 border border-border rounded -translate-y-1/2 shrink-0"> */}
+          {/*     <span className="font-medium text-[10px] text-muted-foreground leading-none tracking-[-0.1px]"> */}
           {/*       ⌘ */}
           {/*     </span> */}
-          {/*     <Kbd className="h-auto min-w-0 px-0 py-0 text-[10px] leading-none tracking-[-0.1px] bg-transparent border-0"> */}
+          {/*     <Kbd className="bg-transparent px-0 py-0 border-0 min-w-0 h-auto text-[10px] leading-none tracking-[-0.1px]"> */}
           {/*       K */}
           {/*     </Kbd> */}
           {/*   </div> */}
@@ -268,11 +263,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <Collapsible open={favoritesOpen} onOpenChange={setFavoritesOpen}>
             <CollapsibleTrigger>
-              <SidebarGroupLabel className="h-4 pb-4 pt-2 text-xs text-muted-foreground hover:text-foreground hover:bg-transparent cursor-pointer">
+              <SidebarGroupLabel className="hover:bg-transparent pt-2 pb-4 h-4 text-muted-foreground hover:text-foreground text-xs cursor-pointer">
                 <span>Favorites</span>
                 <ChevronDown
                   className={cn(
-                    "size-3 transition-transform ml-auto",
+                    "ml-auto size-3 transition-transform",
                     favoritesOpen && "rotate-180",
                   )}
                 />

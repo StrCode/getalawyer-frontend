@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SubscriptionSuccessRouteImport } from './routes/subscription-success'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +30,7 @@ import { Route as OnboardingLawyerCredentialsRouteImport } from './routes/onboar
 import { Route as OnboardingLawyerBasicsRouteImport } from './routes/onboarding/lawyer/basics'
 import { Route as OnboardingClientSpecializationsRouteImport } from './routes/onboarding/client/specializations'
 import { Route as OnboardingClientLocationRouteImport } from './routes/onboarding/client/location'
+import { Route as protectedDashboardPlansRouteImport } from './routes/(protected)/dashboard/plans'
 import { Route as protectedAdminUsersRouteImport } from './routes/(protected)/admin/users'
 import { Route as protectedAdminStatisticsRouteImport } from './routes/(protected)/admin/statistics'
 import { Route as protectedAdminLawyersRouteImport } from './routes/(protected)/admin/lawyers'
@@ -39,6 +41,11 @@ import { Route as protectedDashboardSettingsIndexRouteImport } from './routes/(p
 import { Route as protectedAdminLawyersIdRouteImport } from './routes/(protected)/admin/lawyers/$id'
 import { Route as protectedAdminClientsIdRouteImport } from './routes/(protected)/admin/clients/$id'
 
+const SubscriptionSuccessRoute = SubscriptionSuccessRouteImport.update({
+  id: '/subscription-success',
+  path: '/subscription-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -142,6 +149,11 @@ const OnboardingClientLocationRoute =
     path: '/location',
     getParentRoute: () => OnboardingClientRouteRoute,
   } as any)
+const protectedDashboardPlansRoute = protectedDashboardPlansRouteImport.update({
+  id: '/plans',
+  path: '/plans',
+  getParentRoute: () => protectedDashboardRoute,
+} as any)
 const protectedAdminUsersRoute = protectedAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -195,6 +207,7 @@ const protectedAdminClientsIdRoute = protectedAdminClientsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/subscription-success': typeof SubscriptionSuccessRoute
   '/admin': typeof protectedAdminRouteRouteWithChildren
   '/onboarding/client': typeof OnboardingClientRouteRouteWithChildren
   '/onboarding/lawyer': typeof OnboardingLawyerRouteRouteWithChildren
@@ -209,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/admin/lawyers': typeof protectedAdminLawyersRouteWithChildren
   '/admin/statistics': typeof protectedAdminStatisticsRoute
   '/admin/users': typeof protectedAdminUsersRoute
+  '/dashboard/plans': typeof protectedDashboardPlansRoute
   '/onboarding/client/location': typeof OnboardingClientLocationRoute
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
   '/onboarding/lawyer/basics': typeof OnboardingLawyerBasicsRoute
@@ -225,6 +239,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/subscription-success': typeof SubscriptionSuccessRoute
   '/onboarding/client': typeof OnboardingClientRouteRouteWithChildren
   '/onboarding/lawyer': typeof OnboardingLawyerRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
@@ -236,6 +251,7 @@ export interface FileRoutesByTo {
   '/admin/lawyers': typeof protectedAdminLawyersRouteWithChildren
   '/admin/statistics': typeof protectedAdminStatisticsRoute
   '/admin/users': typeof protectedAdminUsersRoute
+  '/dashboard/plans': typeof protectedDashboardPlansRoute
   '/onboarding/client/location': typeof OnboardingClientLocationRoute
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
   '/onboarding/lawyer/basics': typeof OnboardingLawyerBasicsRoute
@@ -254,6 +270,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/subscription-success': typeof SubscriptionSuccessRoute
   '/(protected)/admin': typeof protectedAdminRouteRouteWithChildren
   '/onboarding/client': typeof OnboardingClientRouteRouteWithChildren
   '/onboarding/lawyer': typeof OnboardingLawyerRouteRouteWithChildren
@@ -268,6 +285,7 @@ export interface FileRoutesById {
   '/(protected)/admin/lawyers': typeof protectedAdminLawyersRouteWithChildren
   '/(protected)/admin/statistics': typeof protectedAdminStatisticsRoute
   '/(protected)/admin/users': typeof protectedAdminUsersRoute
+  '/(protected)/dashboard/plans': typeof protectedDashboardPlansRoute
   '/onboarding/client/location': typeof OnboardingClientLocationRoute
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
   '/onboarding/lawyer/basics': typeof OnboardingLawyerBasicsRoute
@@ -286,6 +304,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/subscription-success'
     | '/admin'
     | '/onboarding/client'
     | '/onboarding/lawyer'
@@ -300,6 +319,7 @@ export interface FileRouteTypes {
     | '/admin/lawyers'
     | '/admin/statistics'
     | '/admin/users'
+    | '/dashboard/plans'
     | '/onboarding/client/location'
     | '/onboarding/client/specializations'
     | '/onboarding/lawyer/basics'
@@ -316,6 +336,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/subscription-success'
     | '/onboarding/client'
     | '/onboarding/lawyer'
     | '/forgot-password'
@@ -327,6 +348,7 @@ export interface FileRouteTypes {
     | '/admin/lawyers'
     | '/admin/statistics'
     | '/admin/users'
+    | '/dashboard/plans'
     | '/onboarding/client/location'
     | '/onboarding/client/specializations'
     | '/onboarding/lawyer/basics'
@@ -344,6 +366,7 @@ export interface FileRouteTypes {
     | '/'
     | '/(auth)'
     | '/login'
+    | '/subscription-success'
     | '/(protected)/admin'
     | '/onboarding/client'
     | '/onboarding/lawyer'
@@ -358,6 +381,7 @@ export interface FileRouteTypes {
     | '/(protected)/admin/lawyers'
     | '/(protected)/admin/statistics'
     | '/(protected)/admin/users'
+    | '/(protected)/dashboard/plans'
     | '/onboarding/client/location'
     | '/onboarding/client/specializations'
     | '/onboarding/lawyer/basics'
@@ -376,6 +400,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authRouteRoute: typeof authRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
+  SubscriptionSuccessRoute: typeof SubscriptionSuccessRoute
   protectedAdminRouteRoute: typeof protectedAdminRouteRouteWithChildren
   OnboardingClientRouteRoute: typeof OnboardingClientRouteRouteWithChildren
   OnboardingLawyerRouteRoute: typeof OnboardingLawyerRouteRouteWithChildren
@@ -384,6 +409,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/subscription-success': {
+      id: '/subscription-success'
+      path: '/subscription-success'
+      fullPath: '/subscription-success'
+      preLoaderRoute: typeof SubscriptionSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -523,6 +555,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding/client/location'
       preLoaderRoute: typeof OnboardingClientLocationRouteImport
       parentRoute: typeof OnboardingClientRouteRoute
+    }
+    '/(protected)/dashboard/plans': {
+      id: '/(protected)/dashboard/plans'
+      path: '/plans'
+      fullPath: '/dashboard/plans'
+      preLoaderRoute: typeof protectedDashboardPlansRouteImport
+      parentRoute: typeof protectedDashboardRoute
     }
     '/(protected)/admin/users': {
       id: '/(protected)/admin/users'
@@ -707,12 +746,14 @@ const protectedDashboardSettingsRouteRouteWithChildren =
 
 interface protectedDashboardRouteChildren {
   protectedDashboardSettingsRouteRoute: typeof protectedDashboardSettingsRouteRouteWithChildren
+  protectedDashboardPlansRoute: typeof protectedDashboardPlansRoute
   protectedDashboardIndexRoute: typeof protectedDashboardIndexRoute
 }
 
 const protectedDashboardRouteChildren: protectedDashboardRouteChildren = {
   protectedDashboardSettingsRouteRoute:
     protectedDashboardSettingsRouteRouteWithChildren,
+  protectedDashboardPlansRoute: protectedDashboardPlansRoute,
   protectedDashboardIndexRoute: protectedDashboardIndexRoute,
 }
 
@@ -723,6 +764,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authRouteRoute: authRouteRouteWithChildren,
   LoginRoute: LoginRoute,
+  SubscriptionSuccessRoute: SubscriptionSuccessRoute,
   protectedAdminRouteRoute: protectedAdminRouteRouteWithChildren,
   OnboardingClientRouteRoute: OnboardingClientRouteRouteWithChildren,
   OnboardingLawyerRouteRoute: OnboardingLawyerRouteRouteWithChildren,
