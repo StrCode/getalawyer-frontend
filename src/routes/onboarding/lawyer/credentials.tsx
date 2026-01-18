@@ -31,6 +31,13 @@ export const Route = createFileRoute("/onboarding/lawyer/credentials")({
         to: '/onboarding/lawyer/basics',
       });
     }
+    
+    // If application is already submitted or approved, redirect to status page
+    if (store.applicationStatus === 'submitted' || store.applicationStatus === 'approved') {
+      throw redirect({
+        to: '/onboarding/lawyer/status',
+      });
+    }
   },
 });
 
@@ -41,6 +48,7 @@ function LawyerCredentialsStep() {
   const {
     currentStep,
     completedSteps,
+    basicInfo,
     credentials,
     updateCredentials,
     markStepCompleted,
@@ -161,56 +169,55 @@ function LawyerCredentialsStep() {
     }
   };
 
-  const handlePhotoSelect = async (file: File) => {
-    setIsUploadingPhoto(true);
-    setPhotoError("");
-    setUploadProgress(0);
-    
-    try {
-      // Upload photo with retry logic
-      const result = await uploadPhoto(file, (progress) => {
-        setUploadProgress(progress);
-      });
-      
-      // Update form data with uploaded photo URL
-      setFormData(prev => ({
-        ...prev,
-        photograph: file,
-        photographUrl: result.url,
-      }));
-      
-      updateCredentials({
-        photograph: file,
-        photographUrl: result.url,
-      });
-      
-      // Clear photo error from validation errors
-      if (errors.photograph) {
-        setErrors(prev => {
-          const newErrors = { ...prev };
-          delete newErrors.photograph;
-          return newErrors;
-        });
-      }
-      
-      toastManager.add({
-        title: "Photo Uploaded",
-        description: "Your photograph has been uploaded successfully.",
-        type: "success",
-      });
-    } catch (error) {
-      const errorMessage = getUploadErrorMessage(error);
-      setPhotoError(errorMessage);
-      
-      toastManager.add({
-        title: "Upload Failed",
-        description: errorMessage,
-        type: "error",
-      });
-    } finally {
-      setIsUploadingPhoto(false);
-      setUploadProgress(0);
+  const handlePhotoSelect = (file: File) => {
+    // Validate file
+    const validationError = validatePhotoFile(file);
+    if (validationError) {
+      setPhotoError(validationError);
+      return;
     }
+
+    // Store file locally - will be uploaded on form submission
+    setFormData(prev => ({
+      ...prev,
+      photograph: file,
+    }));
+    
+    updateCredentials({
+      photograph: file,
+    });
+    
+    // Clear any previous errors
+    setPhotoError("");
+    if (errors.photograph) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.photograph;
+        return newErrors;
+      });
+    }
+
+    toastManager.add({
+      title: "Photo Selected",
+      description: "Your photograph has been selected. It will be uploaded when you submit.",
+      type: "success",
+    });
+  };
+
+  const validatePhotoFile = (file: File): string | null => {
+    const ACCEPTED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      return 'Please upload a JPEG, PNG, or WebP image';
+    }
+
+    if (file.size > MAX_SIZE) {
+      const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+      return `Photo must be under 5MB. Current size: ${sizeMB}MB`;
+    }
+
+    return null;
   };
 
   const handlePhotoRemove = () => {
@@ -224,13 +231,6 @@ function LawyerCredentialsStep() {
       photographUrl: "",
     });
     setPhotoError("");
-  };
-
-  const handlePhotoRetry = async () => {
-    // Retry upload with the same file
-    if (formData.photograph) {
-      await handlePhotoSelect(formData.photograph);
-    }
   };
 
   const validateAndSubmit = async () => {
@@ -254,7 +254,7 @@ function LawyerCredentialsStep() {
     }
     
     // Validate photograph
-    if (!formData.photograph && !formData.photographUrl) {
+    if (!formData.photograph) {
       newErrors.photograph = "Photograph is required";
     }
 
@@ -269,9 +269,63 @@ function LawyerCredentialsStep() {
     }
 
     try {
-      // Save to store and mark step completed
-      updateCredentials(formData);
-      markStepCompleted('credentials');
+      setIsUploadingPhoto(true);
+      setUploadProgress(0);
+      setPhotoError("");
+
+      // Mock mode - skip actual upload and progress directly
+      if (import.meta.env.VITE_USE_MOCK_NIN === 'true') {
+        // Simulate upload progress
+        await new Promise(resolve => {
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += Math.random() * 30;
+            if (progress >= 100) {
+              progress = 100;
+              clearInterval(interval);
+              resolve(null);
+            }
+            setUploadProgress(Math.min(progress, 100));
+          }, 200);
+        });
+
+        // Update form data (mock URL)
+        const finalFormData = {
+          ...formData,
+          photographUrl: "mock://photograph-url",
+        };
+
+        // Clear localStorage and form data
+        localStorage.clear();
+        
+        toastManager.add({
+          title: "Credentials saved!",
+          description: "[MOCK] Your credentials have been verified and saved.",
+          type: "success",
+        });
+
+        // Navigate to review page
+        router.navigate({ to: "/onboarding/lawyer/review" });
+        return;
+      }
+
+      // Real mode - upload photo during submission
+      if (!formData.photograph) {
+        throw new Error("Photograph is required");
+      }
+
+      const uploadResult = await uploadPhoto(formData.photograph, (progress) => {
+        setUploadProgress(progress);
+      });
+
+      // Update form data with uploaded photo URL
+      const finalFormData = {
+        ...formData,
+        photographUrl: uploadResult.url,
+      };
+
+      // Clear localStorage
+      localStorage.clear();
       
       toastManager.add({
         title: "Credentials saved!",
@@ -279,13 +333,14 @@ function LawyerCredentialsStep() {
         type: "success",
       });
 
-      // Navigate to pending approval page
-      router.navigate({ to: "/onboarding/lawyer/pending" });
+      // Navigate to review page
+      router.navigate({ to: "/onboarding/lawyer/review" });
     } catch (error) {
-      // Handle submission errors
       const errorMessage = error instanceof Error 
-        ? error.message 
+        ? getUploadErrorMessage(error)
         : "Failed to submit application. Please try again.";
+      
+      setPhotoError(errorMessage);
       
       toastManager.add({
         title: "Submission Failed",
@@ -295,9 +350,11 @@ function LawyerCredentialsStep() {
       
       // Show error in validation summary
       setErrors({
-        ...newErrors,
-        submission: errorMessage,
+        photograph: errorMessage,
       });
+    } finally {
+      setIsUploadingPhoto(false);
+      setUploadProgress(0);
     }
   };
 
@@ -323,33 +380,33 @@ function LawyerCredentialsStep() {
   }, [setCurrentStep, credentials]);
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="mx-auto p-4 sm:p-6 max-w-4xl">
+      <div className="gap-8 grid grid-cols-1 lg:grid-cols-3">
         {/* Main Form Content */}
         <div className="lg:col-span-2">
           {/* Progress Bar */}
           <div className="mb-6 sm:mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">Step 2 of 2</span>
-              <span className="text-xs sm:text-sm text-gray-500">Credentials</span>
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-medium text-gray-700 text-sm">Step 2 of 2</span>
+              <span className="text-gray-500 text-xs sm:text-sm">Credentials</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-500 h-2 rounded-full transition-all duration-300 w-full"></div>
+            <div className="bg-gray-200 rounded-full w-full h-2">
+              <div className="bg-blue-500 rounded-full w-full h-2 transition-all duration-300"></div>
             </div>
           </div>
 
           {/* Validation Summary */}
           {Object.keys(errors).length > 0 && (
-            <Alert className="mb-6 border-red-200 bg-red-50">
+            <Alert className="bg-red-50 mb-6 border-red-200">
               <HugeiconsIcon icon={AlertCircleIcon} className="w-4 h-4" />
               <AlertDescription>
-                <div className="font-medium text-red-800 mb-2">
+                <div className="mb-2 font-medium text-red-800">
                   Please fix the following issues:
                 </div>
-                <ul className="text-sm text-red-700 space-y-1">
+                <ul className="space-y-1 text-red-700 text-sm">
                   {Object.entries(errors).map(([field, message]) => (
                     <li key={field} className="flex items-start gap-1">
-                      <span className="text-red-500 mt-0.5">•</span>
+                      <span className="mt-0.5 text-red-500">•</span>
                       {message}
                     </li>
                   ))}
@@ -359,9 +416,9 @@ function LawyerCredentialsStep() {
           )}
 
           {/* Header */}
-          <div className="text-center mb-6 sm:mb-8">
-            <div className="text-5xl mb-3">🎓</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="mb-6 sm:mb-8 text-center">
+            <div className="mb-3 text-5xl">🎓</div>
+            <h2 className="mb-2 font-bold text-gray-900 text-2xl">
               Verify Your Credentials
             </h2>
             <p className="text-gray-600">
@@ -372,10 +429,10 @@ function LawyerCredentialsStep() {
           {/* Form */}
           <div className="space-y-6">
             {/* Bar Number Section */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+            <div className="space-y-4 bg-white p-6 border border-gray-200 rounded-lg">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">Bar Number</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="mb-1 font-semibold text-gray-900 text-lg">Bar Number</h3>
+                <p className="text-gray-600 text-sm">
                   Enter your Nigerian Bar Association number
                 </p>
               </div>
@@ -396,15 +453,41 @@ function LawyerCredentialsStep() {
             </div>
 
             {/* NIN Verification Section */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+            <div className="space-y-4 bg-white p-6 border border-gray-200 rounded-lg">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                <h3 className="mb-1 font-semibold text-gray-900 text-lg">
                   National Identification Number (NIN)
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-gray-600 text-sm">
                   Verify your identity with your NIN
                 </p>
               </div>
+
+              {/* Mock Mode Notice */}
+              {import.meta.env.VITE_USE_MOCK_NIN === 'true' && (
+                <div className="bg-amber-50 p-3 border border-amber-200 rounded-lg">
+                  <p className="mb-2 font-medium text-amber-900 text-xs">
+                    🧪 MOCK MODE - Backend not available
+                  </p>
+                  <p className="mb-2 text-amber-700 text-xs">
+                    Use these test NINs to see different verification results:
+                  </p>
+                  <div className="gap-2 grid grid-cols-2 text-xs">
+                    <div>
+                      <p className="font-medium text-green-700">✓ Valid NINs:</p>
+                      <p className="text-amber-700">12345678901</p>
+                      <p className="text-amber-700">98765432101</p>
+                      <p className="text-amber-700">55555555555</p>
+                    </div>
+                    <div>
+                      <p className="font-medium text-red-700">✗ Invalid NINs:</p>
+                      <p className="text-amber-700">11111111111</p>
+                      <p className="text-amber-700">22222222222</p>
+                      <p className="text-amber-700">33333333333</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <Field>
                 <FieldLabel>NIN *</FieldLabel>
@@ -437,14 +520,14 @@ function LawyerCredentialsStep() {
 
               {/* NIN Verification Status */}
               {formData.ninVerified && formData.ninVerificationData && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="bg-green-50 p-4 border border-green-200 rounded-lg">
                   <div className="flex items-start gap-3">
-                    <HugeiconsIcon icon={CheckmarkCircle01Icon} className="w-5 h-5 text-green-600 mt-0.5" />
+                    <HugeiconsIcon icon={CheckmarkCircle01Icon} className="mt-0.5 w-5 h-5 text-green-600" />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-green-900 mb-2">
+                      <p className="mb-2 font-medium text-green-900 text-sm">
                         NIN Verified Successfully
                       </p>
-                      <div className="space-y-1 text-xs text-green-700">
+                      <div className="space-y-1 text-green-700 text-xs">
                         <p><strong>Full Name:</strong> {formData.ninVerificationData.fullName}</p>
                         <p><strong>Date of Birth:</strong> {formData.ninVerificationData.dateOfBirth}</p>
                         {formData.ninVerificationData.gender && (
@@ -457,10 +540,10 @@ function LawyerCredentialsStep() {
               )}
 
               {isVerifyingNIN && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="bg-blue-50 p-4 border border-blue-200 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
-                    <p className="text-sm text-blue-700">
+                    <div className="border-blue-500 border-b-2 rounded-full w-5 h-5 animate-spin"></div>
+                    <p className="text-blue-700 text-sm">
                       Verifying your NIN with the national database...
                     </p>
                   </div>
@@ -469,10 +552,10 @@ function LawyerCredentialsStep() {
             </div>
 
             {/* Photograph Upload Section */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+            <div className="space-y-4 bg-white p-6 border border-gray-200 rounded-lg">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">Photograph</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="mb-1 font-semibold text-gray-900 text-lg">Photograph</h3>
+                <p className="text-gray-600 text-sm">
                   Upload a clear photograph of yourself
                 </p>
               </div>
@@ -480,7 +563,7 @@ function LawyerCredentialsStep() {
               <Field>
                 <FieldLabel>Your Photograph *</FieldLabel>
                 <FieldDescription className="text-xs">
-                  Upload a professional photograph (JPEG, PNG, or WebP, max 5MB)
+                  Upload a professional photograph (JPEG, PNG, or WebP, max 5MB). It will be uploaded when you submit the form.
                 </FieldDescription>
                 <PhotoUploader
                   onPhotoSelect={handlePhotoSelect}
@@ -490,46 +573,36 @@ function LawyerCredentialsStep() {
                   disabled={isUploadingPhoto}
                 />
                 
-                {/* Upload Progress */}
+                {/* Upload Progress - shown during form submission */}
                 {isUploadingPhoto && (
-                  <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="bg-blue-50 mt-3 p-3 border border-blue-200 rounded-lg">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
-                      <p className="text-sm text-blue-700">
-                        Uploading... {uploadProgress}%
+                      <div className="border-blue-500 border-b-2 rounded-full w-4 h-4 animate-spin"></div>
+                      <p className="text-blue-700 text-sm">
+                        Uploading photograph... {uploadProgress}%
                       </p>
                     </div>
-                    <div className="w-full bg-blue-200 rounded-full h-2">
+                    <div className="bg-blue-200 rounded-full w-full h-2">
                       <div 
-                        className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                        className="bg-blue-500 rounded-full h-2 transition-all duration-300"
                         style={{ width: `${uploadProgress}%` }}
                       ></div>
                     </div>
                   </div>
                 )}
                 
-                {/* Upload Error with Retry */}
+                {/* Upload Error during submission */}
                 {photoError && !isUploadingPhoto && (
-                  <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-3">
+                  <div className="bg-red-50 mt-3 p-3 border border-red-200 rounded-lg">
                     <div className="flex items-start gap-3">
-                      <HugeiconsIcon icon={AlertCircleIcon} className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
+                      <HugeiconsIcon icon={AlertCircleIcon} className="mt-0.5 w-5 h-5 text-red-600 shrink-0" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-red-900 mb-2">
+                        <p className="mb-2 font-medium text-red-900 text-sm">
                           Upload Failed
                         </p>
-                        <p className="text-xs text-red-700 mb-3">
+                        <p className="text-red-700 text-xs">
                           {photoError}
                         </p>
-                        {formData.photograph && (
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={handlePhotoRetry}
-                            className="text-xs h-8 bg-red-600 hover:bg-red-700"
-                          >
-                            Retry Upload
-                          </Button>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -551,7 +624,7 @@ function LawyerCredentialsStep() {
             <Button
               type="button"
               onClick={validateAndSubmit}
-              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 px-6 py-3 rounded-lg font-medium text-white disabled:transform-none hover:scale-[1.02] active:scale-[0.98] transition disabled:cursor-not-allowed transform"
             >
               Submit Application
               <HugeiconsIcon icon={ArrowRight01Icon} />
@@ -559,14 +632,14 @@ function LawyerCredentialsStep() {
           </div>
 
           {/* Helper Text */}
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="bg-blue-50 mt-6 p-4 border border-blue-200 rounded-lg">
             <div className="flex items-start gap-3">
               <span className="text-blue-600 text-xl">ℹ️</span>
               <div>
-                <p className="text-sm font-medium text-blue-900">
+                <p className="font-medium text-blue-900 text-sm">
                   What happens next?
                 </p>
-                <ul className="text-xs text-blue-700 mt-2 space-y-1">
+                <ul className="space-y-1 mt-2 text-blue-700 text-xs">
                   <li>• Your application will be reviewed by our admin team</li>
                   <li>• We'll verify your Bar Number with the Nigerian Bar Association</li>
                   <li>• You'll receive an email notification once your profile is approved</li>
@@ -579,7 +652,7 @@ function LawyerCredentialsStep() {
 
         {/* Sidebar with Progress Tracker */}
         <div className="lg:col-span-1">
-          <div className="sticky top-6">
+          <div className="top-6 sticky">
             <ProgressTracker
               currentStep={currentStep}
               completedSteps={completedSteps}
@@ -588,14 +661,14 @@ function LawyerCredentialsStep() {
             />
             
             {/* Completion Checklist */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-medium text-sm mb-3">Completion Checklist</h4>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="mb-3 font-medium text-sm">Completion Checklist</h4>
               <div className="space-y-2 text-xs">
                 <div className="flex items-center gap-2">
                   {formData.barNumber ? (
                     <HugeiconsIcon icon={CheckmarkCircle01Icon} className="w-4 h-4 text-green-500" />
                   ) : (
-                    <div className="w-4 h-4 rounded-full border-2 border-gray-300"></div>
+                    <div className="border-2 border-gray-300 rounded-full w-4 h-4"></div>
                   )}
                   <span className={formData.barNumber ? "text-green-700" : "text-gray-600"}>
                     Bar Number entered
@@ -605,7 +678,7 @@ function LawyerCredentialsStep() {
                   {formData.ninVerified ? (
                     <HugeiconsIcon icon={CheckmarkCircle01Icon} className="w-4 h-4 text-green-500" />
                   ) : (
-                    <div className="w-4 h-4 rounded-full border-2 border-gray-300"></div>
+                    <div className="border-2 border-gray-300 rounded-full w-4 h-4"></div>
                   )}
                   <span className={formData.ninVerified ? "text-green-700" : "text-gray-600"}>
                     NIN verified
@@ -615,7 +688,7 @@ function LawyerCredentialsStep() {
                   {formData.photograph || formData.photographUrl ? (
                     <HugeiconsIcon icon={CheckmarkCircle01Icon} className="w-4 h-4 text-green-500" />
                   ) : (
-                    <div className="w-4 h-4 rounded-full border-2 border-gray-300"></div>
+                    <div className="border-2 border-gray-300 rounded-full w-4 h-4"></div>
                   )}
                   <span className={(formData.photograph || formData.photographUrl) ? "text-green-700" : "text-gray-600"}>
                     Photograph uploaded
@@ -624,8 +697,8 @@ function LawyerCredentialsStep() {
               </div>
               
               {formData.barNumber && formData.ninVerified && (formData.photograph || formData.photographUrl) && (
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <Badge className="w-full justify-center bg-green-100 text-green-700 border-green-200">
+                <div className="mt-4 pt-4 border-gray-200 border-t">
+                  <Badge className="justify-center bg-green-100 border-green-200 w-full text-green-700">
                     Ready to Submit
                   </Badge>
                 </div>

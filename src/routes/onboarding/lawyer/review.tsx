@@ -1,30 +1,25 @@
 // ============================================
-// Step 4: Review - Read-only review page showing submitted application
+// Review - Application Review Page
 // onboarding/lawyer/review.tsx
 // ============================================
 
 import { 
   AlertCircleIcon, 
-  ArrowLeft02Icon, 
   ArrowRight01Icon, 
-  BriefcaseIcon,
-  FileIcon,
+  CheckmarkCircle01Icon, 
+  ImageIcon,
   Tick01Icon, 
   UserIcon
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ProgressTracker } from "@/components/onboarding/progress-tracker";
+import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { api } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
-import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
 export const Route = createFileRoute("/onboarding/lawyer/review")({
   component: LawyerReviewStep,
@@ -32,7 +27,7 @@ export const Route = createFileRoute("/onboarding/lawyer/review")({
 
 interface ReviewSectionProps {
   title: string;
-  icon: React.ComponentType<any>;
+  icon: any;
   isValid: boolean;
   children: React.ReactNode;
   className?: string;
@@ -48,10 +43,10 @@ function ReviewSection({
   return (
     <Card className={cn("relative", className)}>
       <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
+        <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className={cn(
-              "w-10 h-10 rounded-lg flex items-center justify-center",
+              "flex justify-center items-center rounded-lg w-10 h-10",
               isValid ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
             )}>
               <HugeiconsIcon icon={Icon} className="w-5 h-5" />
@@ -60,13 +55,13 @@ function ReviewSection({
               <CardTitle className="text-lg">{title}</CardTitle>
               <div className="flex items-center gap-2 mt-1">
                 {isValid ? (
-                  <Badge variant="default" className="bg-green-100 text-green-700 border-green-200">
-                    <HugeiconsIcon icon={Tick01Icon} className="w-3 h-3 mr-1" />
+                  <Badge variant="default" className="bg-green-100 border-green-200 text-green-700">
+                    <HugeiconsIcon icon={Tick01Icon} className="mr-1 w-3 h-3" />
                     Complete
                   </Badge>
                 ) : (
                   <Badge variant="destructive">
-                    <HugeiconsIcon icon={AlertCircleIcon} className="w-3 h-3 mr-1" />
+                    <HugeiconsIcon icon={AlertCircleIcon} className="mr-1 w-3 h-3" />
                     Incomplete
                   </Badge>
                 )}
@@ -86,114 +81,97 @@ function ReviewSection({
 function LawyerReviewStep() {
   const router = useRouter();
   
-  // Hydration state (prevent hydration mismatch)
-  const [isHydrated, setIsHydrated] = useState(false);
-  
-  // Enhanced store state and actions
-  const {
-    currentStep,
-    completedSteps,
-    practiceInfo,
-    documents,
-    specializations,
-    validateStep,
-    setCurrentStep,
-    applicationStatus,
-    submissionDate,
-    referenceNumber
-  } = useEnhancedOnboardingStore();
-
-  // Set current step on mount
-  useEffect(() => {
-    setCurrentStep('review');
-  }, [setCurrentStep]);
-
-  // Initialize hydration state
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
-
-  // Fetch specializations data for display names
-  const { data: specializationsData } = useQuery({
-    queryKey: ['specializations'],
-    queryFn: () => api.specialization.getAll(),
-  });
-
-  // Validate all previous steps
-  const practiceInfoValidation = validateStep('practice_info');
-  const documentsValidation = validateStep('documents');
-  const specializationsValidation = validateStep('specializations');
-
-  const allStepsValid = practiceInfoValidation.isValid && 
-                       documentsValidation.isValid && 
-                       specializationsValidation.isValid;
-
-  // Get specialization names
-  const getSpecializationName = (id: string) => {
-    const spec = specializationsData?.specializations.find(s => s.id === id);
-    return spec?.name || `Specialization ${id}`;
+  // Mock data for review (will be replaced with database data later)
+  const mockSubmittedData = {
+    basicInfo: {
+      firstName: 'Chioma',
+      middleName: 'Eze',
+      lastName: 'Okafor',
+      email: 'chioma.okafor@email.com',
+      phoneNumber: '+234 801 234 5678',
+      country: 'Nigeria',
+      state: 'Lagos',
+    },
+    credentials: {
+      barNumber: 'NBA/2023/12345',
+      nin: '12345678901',
+      ninVerified: true,
+      ninVerificationData: {
+        fullName: 'Chioma Eze Okafor',
+        dateOfBirth: '1990-05-15',
+        gender: 'Female',
+      },
+      photographUrl: 'https://via.placeholder.com/200',
+    },
+    submissionDate: new Date().toISOString(),
   };
+
+  // State to hold submitted application data
+  const [submittedData] = useState(mockSubmittedData);
+
+  // Use submitted data for display
+  const displayBasicInfo = submittedData.basicInfo;
+  const displayCredentials = submittedData.credentials;
+
+  // Validate submitted data
+  const basicInfoValid = !!(
+    displayBasicInfo.firstName?.trim() &&
+    displayBasicInfo.lastName?.trim() &&
+    displayBasicInfo.email?.trim() &&
+    displayBasicInfo.phoneNumber?.trim() &&
+    displayBasicInfo.country?.trim()
+  );
+  
+  const credentialsValid = !!(
+    displayCredentials.barNumber?.trim() &&
+    displayCredentials.nin?.trim() &&
+    displayCredentials.ninVerified &&
+    displayCredentials.photographUrl
+  );
 
   // Handle navigation to status page
   const handleViewStatus = () => {
     router.navigate({ to: "/onboarding/lawyer/status" });
   };
 
-  // Handle back navigation (only if not submitted)
-  const handleBack = () => {
-    if (applicationStatus !== 'submitted') {
-      router.navigate({ to: "/onboarding/lawyer/specializations" });
-    }
-  };
-
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="mx-auto p-6 max-w-4xl">
+      <div className="gap-8 grid grid-cols-1 lg:grid-cols-3">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6 lg:col-span-2">
           {/* Progress Bar */}
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">Step 4 of 4</span>
-              <span className="text-sm text-gray-500">Review & Submit</span>
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-medium text-gray-700 text-sm">Step 3 of 3</span>
+              <span className="text-gray-500 text-sm">Review & Submit</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-500 h-2 rounded-full transition-all duration-300 w-full"></div>
+            <div className="bg-gray-200 rounded-full w-full h-2">
+              <div className="bg-blue-500 rounded-full w-full h-2 transition-all duration-300"></div>
             </div>
           </div>
 
           {/* Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="mb-8 text-center">
+            <h2 className="mb-2 font-bold text-gray-900 text-2xl">
               Application Review
             </h2>
-            <p className="text-sm text-gray-600 max-w-2xl mx-auto">
-              {applicationStatus === 'submitted' 
-                ? "Your application has been submitted successfully. Here's a summary of your submitted information."
-                : "Review your application information. Your application was submitted from the specializations step."
-              }
+            <p className="mx-auto max-w-2xl text-gray-600 text-sm">
+              Here's a summary of your submitted information.
             </p>
           </div>
 
           {/* Application Status Alert */}
-          {applicationStatus === 'submitted' && (
-            <Alert className="border-green-200 bg-green-50 mb-6">
-              <HugeiconsIcon icon={Tick01Icon} className="w-4 h-4" />
-              <AlertDescription>
-                <div className="font-medium text-green-800 mb-2">
-                  Application Submitted Successfully
-                </div>
-                <div className="text-sm text-green-700">
-                  {submissionDate && (
-                    <p>Submitted on: {submissionDate.toLocaleDateString()}</p>
-                  )}
-                  {referenceNumber && (
-                    <p>Reference Number: {referenceNumber}</p>
-                  )}
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
+          <Alert className="bg-green-50 mb-6 border-green-200">
+            <HugeiconsIcon icon={Tick01Icon} className="w-4 h-4" />
+            <AlertDescription>
+              <div className="mb-2 font-medium text-green-800">
+                Application Submitted Successfully
+              </div>
+              <div className="text-green-700 text-sm">
+                <p>Submitted on: {new Date().toLocaleDateString()}</p>
+              </div>
+            </AlertDescription>
+          </Alert>
 
           {/* Review Sections */}
           <div className="space-y-6">
@@ -201,181 +179,146 @@ function LawyerReviewStep() {
             <ReviewSection
               title="Basic Information"
               icon={UserIcon}
-              isValid={practiceInfoValidation.isValid}
+              isValid={basicInfoValid}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
                 <div>
-                  <div className="text-sm font-medium text-gray-500">Full Name</div>
+                  <div className="font-medium text-gray-500 text-sm">Full Name</div>
                   <p className="text-gray-900">
-                    {practiceInfo.firstName} {practiceInfo.middleName} {practiceInfo.lastName}
+                    {displayBasicInfo.firstName} {displayBasicInfo.middleName} {displayBasicInfo.lastName}
                   </p>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-500">Email</div>
-                  <p className="text-gray-900">{practiceInfo.email}</p>
+                  <div className="font-medium text-gray-500 text-sm">Email</div>
+                  <p className="text-gray-900">{displayBasicInfo.email}</p>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-500">Phone Number</div>
-                  <p className="text-gray-900">{practiceInfo.phoneNumber}</p>
+                  <div className="font-medium text-gray-500 text-sm">Phone Number</div>
+                  <p className="text-gray-900">{displayBasicInfo.phoneNumber}</p>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-gray-500">Location</div>
+                  <div className="font-medium text-gray-500 text-sm">Location</div>
                   <p className="text-gray-900">
-                    {practiceInfo.city && `${practiceInfo.city}, `}
-                    {practiceInfo.state && `${practiceInfo.state}, `}
-                    {practiceInfo.country}
+                    {displayBasicInfo.state && `${displayBasicInfo.state}, `}
+                    {displayBasicInfo.country}
                   </p>
                 </div>
               </div>
             </ReviewSection>
 
-            {/* Documents Section */}
+            {/* Credentials Section */}
             <ReviewSection
-              title="Professional Documents"
-              icon={FileIcon}
-              isValid={documentsValidation.isValid}
+              title="Professional Credentials"
+              icon={CheckmarkCircle01Icon}
+              isValid={credentialsValid}
             >
-              {documents.length > 0 ? (
-                <div className="space-y-3">
-                  {documents.map((doc) => (
-                    <div key={doc.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <HugeiconsIcon icon={FileIcon} className="w-5 h-5 text-blue-600" />
+              <div className="space-y-4">
+                <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
+                  <div>
+                    <div className="font-medium text-gray-500 text-sm">Bar Number</div>
+                    <p className="text-gray-900">{displayCredentials.barNumber || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-500 text-sm">NIN</div>
+                    <p className="text-gray-900">{displayCredentials.nin || 'Not provided'}</p>
+                  </div>
+                </div>
+                
+                {displayCredentials.ninVerificationData && (
+                  <div className="bg-green-50 p-3 border border-green-200 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <HugeiconsIcon icon={Tick01Icon} className="mt-0.5 w-4 h-4 text-green-600 shrink-0" />
+                      <div className="flex-1">
+                        <p className="font-medium text-green-900 text-sm">NIN Verified</p>
+                        <div className="space-y-1 mt-2 text-green-700 text-xs">
+                          <p><strong>Name:</strong> {displayCredentials.ninVerificationData.fullName}</p>
+                          <p><strong>DOB:</strong> {displayCredentials.ninVerificationData.dateOfBirth}</p>
+                          {displayCredentials.ninVerificationData.gender && (
+                            <p><strong>Gender:</strong> {displayCredentials.ninVerificationData.gender}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {displayCredentials.photographUrl && (
+                  <div>
+                    <div className="mb-2 font-medium text-gray-500 text-sm">Photograph</div>
+                    <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
+                      <div className="flex justify-center items-center bg-blue-100 rounded-lg w-10 h-10">
+                        <HugeiconsIcon icon={ImageIcon} className="w-5 h-5 text-blue-600" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">{doc.originalName}</p>
-                        <p className="text-sm text-gray-500 capitalize">{doc.type.replace('_', ' ')}</p>
+                        <p className="font-medium text-gray-900 text-sm">Professional Photograph</p>
+                        <p className="text-gray-500 text-xs">Uploaded and verified</p>
                       </div>
-                      <Badge 
-                        variant={doc.uploadStatus === 'completed' ? 'default' : 'secondary'}
-                        className={doc.uploadStatus === 'completed' ? 'bg-green-100 text-green-700' : ''}
-                      >
-                        {doc.uploadStatus === 'completed' ? 'Uploaded' : doc.uploadStatus}
+                      <Badge className="bg-green-100 text-green-700">
+                        <HugeiconsIcon icon={Tick01Icon} className="mr-1 w-3 h-3" />
+                        Uploaded
                       </Badge>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-4">No documents uploaded</p>
-              )}
-            </ReviewSection>
-
-            {/* Specializations Section */}
-            <ReviewSection
-              title="Practice Areas & Experience"
-              icon={BriefcaseIcon}
-              isValid={specializationsValidation.isValid}
-            >
-              {specializations.length > 0 ? (
-                <div className="space-y-3">
-                  {specializations.map((spec) => (
-                    <div key={spec.specializationId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {getSpecializationName(spec.specializationId)}
-                        </p>
-                        {spec.description && (
-                          <p className="text-sm text-gray-500">{spec.description}</p>
-                        )}
-                      </div>
-                      <Badge variant="outline">
-                        {spec.yearsOfExperience} {spec.yearsOfExperience === 1 ? 'year' : 'years'}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-4">No specializations selected</p>
-              )}
+                  </div>
+                )}
+              </div>
             </ReviewSection>
           </div>
 
           {/* Action Buttons */}
           <div className="flex gap-3 mt-8">
-            {applicationStatus !== 'submitted' && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleBack}
-                className="w-32"
-              >
-                <HugeiconsIcon icon={ArrowLeft02Icon} className="w-4 h-4" />
-                Back
-              </Button>
-            )}
-            
             <Button
               type="button"
               onClick={handleViewStatus}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition transform hover:scale-[1.02] active:scale-[0.98]"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium text-white hover:scale-[1.02] active:scale-[0.98] transition transform"
             >
               View Application Status
-              <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
+              <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 w-4 h-4" />
             </Button>
           </div>
 
           {/* Information Notice */}
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="bg-blue-50 mt-6 p-4 border border-blue-200 rounded-lg">
             <div className="flex items-start gap-3">
               <span className="text-blue-600 text-xl">ℹ️</span>
               <div>
-                <p className="text-sm font-medium text-blue-900">
-                  Application Status:
+                <p className="font-medium text-blue-900 text-sm">
+                  What happens next?
                 </p>
-                <ul className="text-xs text-blue-700 mt-1 space-y-1">
-                  <li>• Your application was submitted from the specializations step</li>
-                  <li>• This page shows a read-only summary of your submitted information</li>
-                  <li>• Check the status page for updates on your application review</li>
-                  <li>• You'll receive email notifications about any status changes</li>
+                <ul className="space-y-1 mt-1 text-blue-700 text-xs">
+                  <li>• Your application will be reviewed by our admin team</li>
+                  <li>• We'll verify your credentials and NIN information</li>
+                  <li>• You'll receive an email notification once your profile is approved</li>
+                  <li>• Approval typically takes 1-3 business days</li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Sidebar with Progress Tracker */}
+        {/* Sidebar with Summary */}
         <div className="lg:col-span-1">
-          <div className="sticky top-6">
-            <ProgressTracker
-              currentStep={currentStep}
-              completedSteps={completedSteps}
-              variant="compact"
-              className="mb-6"
-            />
-            
+          <div className="top-6 sticky">
             {/* Application Summary */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Application Summary</CardTitle>
                 <CardDescription>
-                  {applicationStatus === 'submitted' 
-                    ? "Your submitted application" 
-                    : "Review your information"
-                  }
+                  Your submitted application
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Basic Information</span>
-                  {practiceInfoValidation.isValid ? (
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 text-sm">Basic Information</span>
+                  {basicInfoValid ? (
                     <HugeiconsIcon icon={Tick01Icon} className="w-4 h-4 text-green-600" />
                   ) : (
                     <HugeiconsIcon icon={AlertCircleIcon} className="w-4 h-4 text-red-600" />
                   )}
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Documents</span>
-                  {documentsValidation.isValid ? (
-                    <HugeiconsIcon icon={Tick01Icon} className="w-4 h-4 text-green-600" />
-                  ) : (
-                    <HugeiconsIcon icon={AlertCircleIcon} className="w-4 h-4 text-red-600" />
-                  )}
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Specializations</span>
-                  {specializationsValidation.isValid ? (
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 text-sm">Credentials</span>
+                  {credentialsValid ? (
                     <HugeiconsIcon icon={Tick01Icon} className="w-4 h-4 text-green-600" />
                   ) : (
                     <HugeiconsIcon icon={AlertCircleIcon} className="w-4 h-4 text-red-600" />
@@ -384,24 +327,13 @@ function LawyerReviewStep() {
                 
                 <Separator />
                 
-                <div className="flex items-center justify-between font-medium">
+                <div className="flex justify-between items-center font-medium">
                   <span className="text-sm">Application Status</span>
-                  <Badge className={
-                    applicationStatus === 'submitted' 
-                      ? "bg-green-100 text-green-700" 
-                      : "bg-blue-100 text-blue-700"
-                  }>
-                    <HugeiconsIcon icon={Tick01Icon} className="w-3 h-3 mr-1" />
-                    {applicationStatus === 'submitted' ? 'Submitted' : 'Ready'}
+                  <Badge className="bg-green-100 text-green-700">
+                    <HugeiconsIcon icon={Tick01Icon} className="mr-1 w-3 h-3" />
+                    Submitted
                   </Badge>
                 </div>
-                
-                {applicationStatus === 'submitted' && referenceNumber && (
-                  <div className="pt-2 border-t">
-                    <div className="text-xs text-gray-500">Reference Number</div>
-                    <div className="text-sm font-mono font-medium">{referenceNumber}</div>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </div>

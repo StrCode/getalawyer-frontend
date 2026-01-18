@@ -5,7 +5,7 @@
 
 import { AlertCircleIcon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ProgressTracker } from "@/components/onboarding/progress-tracker";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -34,8 +34,15 @@ import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 export const Route = createFileRoute("/onboarding/lawyer/basics")({
   component: LawyerBasicsStep,
   beforeLoad: () => {
-    // Basic info is always accessible as it's the first step
-    // No navigation guard needed
+    // Check if application is already submitted or verified
+    const store = useEnhancedOnboardingStore.getState();
+    
+    // If application is submitted or approved, redirect to status page
+    if (store.applicationStatus === 'submitted' || store.applicationStatus === 'approved') {
+      throw redirect({
+        to: '/onboarding/lawyer/status',
+      });
+    }
   },
 });
 
@@ -204,9 +211,9 @@ function LawyerBasicsStep() {
   // Loading State
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+      <div className="mx-auto p-6 max-w-4xl">
+        <div className="flex justify-center items-center py-12">
+          <div className="mx-auto mb-4 border-blue-500 border-b-2 rounded-full w-8 h-8 animate-spin"></div>
           <p className="text-gray-600">Loading location data...</p>
         </div>
       </div>
@@ -216,10 +223,10 @@ function LawyerBasicsStep() {
   // Error State
   if (isError) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center py-20 bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-700 font-medium">Error loading data.</p>
+      <div className="mx-auto p-6 max-w-4xl">
+        <div className="flex justify-center items-center py-12">
+          <div className="bg-red-50 p-4 py-20 border border-red-200 rounded-lg text-center">
+            <p className="font-medium text-red-700">Error loading data.</p>
             <p className="text-red-500 text-sm">
               Please check your internet connection or refresh the page.
             </p>
@@ -230,33 +237,33 @@ function LawyerBasicsStep() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="mx-auto p-4 sm:p-6 max-w-4xl">
+      <div className="gap-8 grid grid-cols-1 lg:grid-cols-3">
         {/* Main Form Content */}
         <div className="lg:col-span-2">
           {/* Progress Bar */}
           <div className="mb-6 sm:mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700">Step 1 of 2</span>
-              <span className="text-xs sm:text-sm text-gray-500">Basic Information</span>
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-medium text-gray-700 text-sm">Step 1 of 2</span>
+              <span className="text-gray-500 text-xs sm:text-sm">Basic Information</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-blue-500 h-2 rounded-full transition-all duration-300 w-1/2"></div>
+            <div className="bg-gray-200 rounded-full w-full h-2">
+              <div className="bg-blue-500 rounded-full w-1/2 h-2 transition-all duration-300"></div>
             </div>
           </div>
 
           {/* Validation Summary */}
           {Object.keys(errors).length > 0 && (
-            <Alert className="mb-6 border-red-200 bg-red-50">
+            <Alert className="bg-red-50 mb-6 border-red-200">
               <HugeiconsIcon icon={AlertCircleIcon} className="w-4 h-4" />
               <AlertDescription>
-                <div className="font-medium text-red-800 mb-2">
+                <div className="mb-2 font-medium text-red-800">
                   Please fix the following issues:
                 </div>
-                <ul className="text-sm text-red-700 space-y-1">
+                <ul className="space-y-1 text-red-700 text-sm">
                   {Object.entries(errors).map(([field, message]) => (
                     <li key={field} className="flex items-start gap-1">
-                      <span className="text-red-500 mt-0.5">•</span>
+                      <span className="mt-0.5 text-red-500">•</span>
                       {message}
                     </li>
                   ))}
@@ -266,9 +273,9 @@ function LawyerBasicsStep() {
           )}
 
           {/* Header */}
-          <div className="text-center mb-6 sm:mb-8">
-            <div className="text-5xl mb-3">👨‍💼</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="mb-6 sm:mb-8 text-center">
+            <div className="mb-3 text-5xl">👨‍💼</div>
+            <h2 className="mb-2 font-bold text-gray-900 text-2xl">
               Welcome! Let's set up your profile
             </h2>
             <p className="text-gray-600">
@@ -278,7 +285,7 @@ function LawyerBasicsStep() {
 
           {/* Form */}
           <div className="space-y-5">
-            <FieldGroup className="grid grid-cols-3 gap-4">
+            <FieldGroup className="gap-4 grid grid-cols-3">
               {/* First Name */}
               <Field>
                 <FieldLabel>First Name *</FieldLabel>
@@ -311,7 +318,7 @@ function LawyerBasicsStep() {
               </Field>
             </FieldGroup>
 
-            <FieldGroup className="grid md:grid-cols-2 gap-4">
+            <FieldGroup className="gap-4 grid md:grid-cols-2">
               {/* Email */}
               <Field>
                 <FieldLabel>Email Address *</FieldLabel>
@@ -345,7 +352,7 @@ function LawyerBasicsStep() {
               </Field>
             </FieldGroup>
 
-            <FieldGroup className="grid md:grid-cols-2 gap-4">
+            <FieldGroup className="gap-4 grid md:grid-cols-2">
               {/* Country */}
               <Field>
                 <FieldLabel>Country *</FieldLabel>
@@ -394,7 +401,7 @@ function LawyerBasicsStep() {
 
               {/* Info message when no states available */}
               {formData.country && availableStates.length <= 1 && (
-                <p className="flex justify-end items-end text-gray-500 pb-2 text-sm">
+                <p className="flex justify-end items-end pb-2 text-gray-500 text-sm">
                   No states or regions are listed for this country.
                 </p>
               )}
@@ -406,7 +413,7 @@ function LawyerBasicsStep() {
             <Button
               type="button"
               onClick={validateAndNext}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="bg-blue-500 hover:bg-blue-600 disabled:opacity-50 px-6 py-3 rounded-lg w-full font-medium text-white disabled:transform-none hover:scale-[1.02] active:scale-[0.98] transition disabled:cursor-not-allowed transform"
             >
               Continue to Credentials
               <HugeiconsIcon icon={ArrowRight01Icon} />
@@ -414,14 +421,14 @@ function LawyerBasicsStep() {
           </div>
 
           {/* Helper Text */}
-          <p className="text-center text-gray-500 text-sm mt-4">
+          <p className="mt-4 text-gray-500 text-sm text-center">
             Your information is secure and will only be shared with verified clients
           </p>
         </div>
 
         {/* Sidebar with Progress Tracker */}
         <div className="lg:col-span-1">
-          <div className="sticky top-6">
+          <div className="top-6 sticky">
             <ProgressTracker
               currentStep={currentStep}
               completedSteps={completedSteps}

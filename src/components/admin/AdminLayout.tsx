@@ -2,6 +2,7 @@ import { Outlet, useLocation, useNavigate } from '@tanstack/react-router';
 import type React from 'react';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { signOut, useSession } from '@/lib/auth-client';
+import { clearEnhancedOnboardingStore } from '@/stores/enhanced-onboarding-store';
 import { AdminHeader } from './AdminHeader';
 import { AdminSidebar } from './AdminSidebar';
 
@@ -20,9 +21,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   if (!session?.user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-2">
-          <h2 className="text-xl font-semibold">Loading...</h2>
+      <div className="flex justify-center items-center bg-background min-h-screen">
+        <div className="space-y-2 text-center">
+          <h2 className="font-semibold text-xl">Loading...</h2>
           <p className="text-muted-foreground">Verifying your access...</p>
         </div>
       </div>
@@ -32,9 +33,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   // Redirect non-admin users
   if (!hasAdminAccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-4">
-          <h2 className="text-xl font-semibold">Access Denied</h2>
+      <div className="flex justify-center items-center bg-background min-h-screen">
+        <div className="space-y-4 text-center">
+          <h2 className="font-semibold text-xl">Access Denied</h2>
           <p className="text-muted-foreground">You don't have permission to access the admin dashboard.</p>
         </div>
       </div>
@@ -45,6 +46,12 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   const handleLogout = async () => {
     try {
+      // Clear all onboarding-related cache before signing out
+      clearEnhancedOnboardingStore();
+      localStorage.removeItem('onboarding-form-draft');
+      localStorage.removeItem('onboarding-progress');
+      localStorage.removeItem('offline-operation-queue');
+      
       await signOut();
       navigate({ to: '/' });
     } catch (error) {
@@ -56,7 +63,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="flex bg-background w-full min-h-screen">
         <AdminSidebar 
           currentPath={location.pathname} 
           userRole={userRole}

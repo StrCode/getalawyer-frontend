@@ -3,9 +3,41 @@
  * 
  * Handles National Identification Number (NIN) verification via external API
  * with retry logic and comprehensive error handling.
+ * 
+ * MOCK MODE: When backend is not available, use these test NINs:
+ * - Valid NINs: 12345678901, 98765432101, 55555555555
+ * - Invalid NINs: 11111111111, 22222222222, 33333333333
  */
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+// Mock mode flag - set to true to use mock data instead of API calls
+const USE_MOCK_MODE = import.meta.env.VITE_USE_MOCK_NIN === 'true' || !API_URL.includes('localhost');
+
+// Valid test NINs for mock mode
+const VALID_TEST_NINS = ['12345678901', '98765432101', '55555555555'];
+
+// Mock data for valid NINs
+const MOCK_NIN_DATA: Record<string, NINVerificationData> = {
+  '12345678901': {
+    nin: '12345678901',
+    fullName: 'Chioma Okafor',
+    dateOfBirth: '1990-05-15',
+    gender: 'Female',
+  },
+  '98765432101': {
+    nin: '98765432101',
+    fullName: 'Emeka Nwosu',
+    dateOfBirth: '1988-03-22',
+    gender: 'Male',
+  },
+  '55555555555': {
+    nin: '55555555555',
+    fullName: 'Aisha Mohammed',
+    dateOfBirth: '1992-07-10',
+    gender: 'Female',
+  },
+};
 
 /**
  * NIN Verification Request
@@ -75,6 +107,10 @@ const calculateBackoffDelay = (attempt: number): number => {
  * @throws NINVerificationError for non-retryable errors
  * 
  * Requirements: 3.2, 3.3, 3.4, 8.2, 8.5
+ * 
+ * MOCK MODE TEST NINs:
+ * Valid: 12345678901, 98765432101, 55555555555
+ * Invalid: 11111111111, 22222222222, 33333333333
  */
 export async function verifyNIN(nin: string): Promise<NINVerificationResponse> {
   const maxAttempts = 3;
@@ -87,6 +123,29 @@ export async function verifyNIN(nin: string): Promise<NINVerificationResponse> {
       'INVALID_FORMAT',
       false,
     );
+  }
+
+  // Mock mode - simulate API responses without backend
+  if (USE_MOCK_MODE) {
+    // Simulate network delay
+    await sleep(1500);
+
+    if (VALID_TEST_NINS.includes(nin)) {
+      // Valid NIN - return success
+      const mockData = MOCK_NIN_DATA[nin];
+      return {
+        success: true,
+        data: mockData,
+        message: `[MOCK] NIN verified successfully for ${mockData.fullName}`,
+      };
+    } else {
+      // Invalid NIN - return error
+      return {
+        success: false,
+        error: `[MOCK] NIN not found in database. This is a test NIN. Valid test NINs: ${VALID_TEST_NINS.join(', ')}`,
+        message: 'NIN verification failed',
+      };
+    }
   }
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {

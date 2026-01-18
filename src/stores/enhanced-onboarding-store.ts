@@ -112,6 +112,7 @@ export interface EnhancedOnboardingState {
   
   // Utility
   resetStore: () => void;
+  clearFormData: () => void;
   updateLastSaved: () => void;
 }
 
@@ -425,6 +426,32 @@ export const useEnhancedOnboardingStore = create<EnhancedOnboardingState>()(
       // Utility
       resetStore: () => {
         set(initialState);
+      },
+      
+      clearFormData: () => {
+        set((state) => ({
+          basicInfo: {
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            country: '',
+            state: '',
+            phoneNumber: '',
+            email: '',
+          },
+          credentials: {
+            barNumber: '',
+            nin: '',
+            ninVerified: false,
+            ninVerificationData: undefined,
+            photograph: undefined,
+            photographUrl: undefined,
+            photographPublicId: undefined,
+          },
+          completedSteps: [],
+          currentStep: 'basic_info',
+          // Keep applicationStatus as is
+        }));
       },
       
       updateLastSaved: () => {
