@@ -32,6 +32,7 @@ import { Route as OnboardingLawyerBasicsRouteImport } from './routes/onboarding/
 import { Route as OnboardingClientSpecializationsRouteImport } from './routes/onboarding/client/specializations'
 import { Route as OnboardingClientLocationRouteImport } from './routes/onboarding/client/location'
 import { Route as publicLawyerLawyerIdRouteImport } from './routes/(public)/lawyer.$lawyerId'
+import { Route as protectedDashboardSearchLawyerRouteImport } from './routes/(protected)/dashboard/search-lawyer'
 import { Route as protectedDashboardPlansRouteImport } from './routes/(protected)/dashboard/plans'
 import { Route as protectedAdminUsersRouteImport } from './routes/(protected)/admin/users'
 import { Route as protectedAdminStatisticsRouteImport } from './routes/(protected)/admin/statistics'
@@ -161,6 +162,12 @@ const publicLawyerLawyerIdRoute = publicLawyerLawyerIdRouteImport.update({
   path: '/lawyer/$lawyerId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const protectedDashboardSearchLawyerRoute =
+  protectedDashboardSearchLawyerRouteImport.update({
+    id: '/search-lawyer',
+    path: '/search-lawyer',
+    getParentRoute: () => protectedDashboardRoute,
+  } as any)
 const protectedDashboardPlansRoute = protectedDashboardPlansRouteImport.update({
   id: '/plans',
   path: '/plans',
@@ -236,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/admin/statistics': typeof protectedAdminStatisticsRoute
   '/admin/users': typeof protectedAdminUsersRoute
   '/dashboard/plans': typeof protectedDashboardPlansRoute
+  '/dashboard/search-lawyer': typeof protectedDashboardSearchLawyerRoute
   '/lawyer/$lawyerId': typeof publicLawyerLawyerIdRoute
   '/onboarding/client/location': typeof OnboardingClientLocationRoute
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
@@ -267,6 +275,7 @@ export interface FileRoutesByTo {
   '/admin/statistics': typeof protectedAdminStatisticsRoute
   '/admin/users': typeof protectedAdminUsersRoute
   '/dashboard/plans': typeof protectedDashboardPlansRoute
+  '/dashboard/search-lawyer': typeof protectedDashboardSearchLawyerRoute
   '/lawyer/$lawyerId': typeof publicLawyerLawyerIdRoute
   '/onboarding/client/location': typeof OnboardingClientLocationRoute
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
@@ -303,6 +312,7 @@ export interface FileRoutesById {
   '/(protected)/admin/statistics': typeof protectedAdminStatisticsRoute
   '/(protected)/admin/users': typeof protectedAdminUsersRoute
   '/(protected)/dashboard/plans': typeof protectedDashboardPlansRoute
+  '/(protected)/dashboard/search-lawyer': typeof protectedDashboardSearchLawyerRoute
   '/(public)/lawyer/$lawyerId': typeof publicLawyerLawyerIdRoute
   '/onboarding/client/location': typeof OnboardingClientLocationRoute
   '/onboarding/client/specializations': typeof OnboardingClientSpecializationsRoute
@@ -339,6 +349,7 @@ export interface FileRouteTypes {
     | '/admin/statistics'
     | '/admin/users'
     | '/dashboard/plans'
+    | '/dashboard/search-lawyer'
     | '/lawyer/$lawyerId'
     | '/onboarding/client/location'
     | '/onboarding/client/specializations'
@@ -370,6 +381,7 @@ export interface FileRouteTypes {
     | '/admin/statistics'
     | '/admin/users'
     | '/dashboard/plans'
+    | '/dashboard/search-lawyer'
     | '/lawyer/$lawyerId'
     | '/onboarding/client/location'
     | '/onboarding/client/specializations'
@@ -405,6 +417,7 @@ export interface FileRouteTypes {
     | '/(protected)/admin/statistics'
     | '/(protected)/admin/users'
     | '/(protected)/dashboard/plans'
+    | '/(protected)/dashboard/search-lawyer'
     | '/(public)/lawyer/$lawyerId'
     | '/onboarding/client/location'
     | '/onboarding/client/specializations'
@@ -595,6 +608,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/lawyer/$lawyerId'
       preLoaderRoute: typeof publicLawyerLawyerIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(protected)/dashboard/search-lawyer': {
+      id: '/(protected)/dashboard/search-lawyer'
+      path: '/search-lawyer'
+      fullPath: '/dashboard/search-lawyer'
+      preLoaderRoute: typeof protectedDashboardSearchLawyerRouteImport
+      parentRoute: typeof protectedDashboardRoute
     }
     '/(protected)/dashboard/plans': {
       id: '/(protected)/dashboard/plans'
@@ -787,6 +807,7 @@ const protectedDashboardSettingsRouteRouteWithChildren =
 interface protectedDashboardRouteChildren {
   protectedDashboardSettingsRouteRoute: typeof protectedDashboardSettingsRouteRouteWithChildren
   protectedDashboardPlansRoute: typeof protectedDashboardPlansRoute
+  protectedDashboardSearchLawyerRoute: typeof protectedDashboardSearchLawyerRoute
   protectedDashboardIndexRoute: typeof protectedDashboardIndexRoute
 }
 
@@ -794,6 +815,7 @@ const protectedDashboardRouteChildren: protectedDashboardRouteChildren = {
   protectedDashboardSettingsRouteRoute:
     protectedDashboardSettingsRouteRouteWithChildren,
   protectedDashboardPlansRoute: protectedDashboardPlansRoute,
+  protectedDashboardSearchLawyerRoute: protectedDashboardSearchLawyerRoute,
   protectedDashboardIndexRoute: protectedDashboardIndexRoute,
 }
 

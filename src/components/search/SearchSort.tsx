@@ -1,5 +1,4 @@
 import { ArrowUpDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,11 +23,9 @@ export function SearchSort({ value, onChange }: SearchSortProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="default">
-          <ArrowUpDown className="mr-2 w-4 h-4" />
-          {currentLabel}
-        </Button>
+      <DropdownMenuTrigger className="inline-flex relative justify-center items-center gap-2 bg-background hover:bg-accent disabled:opacity-50 px-4 py-2 border border-input aria-invalid:border-destructive focus-visible:border-ring rounded-md focus-visible:outline-none aria-invalid:ring-destructive/50 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 h-10 font-medium text-sm whitespace-nowrap transition-colors hover:text-accent-foreground disabled:pointer-events-none">
+        <ArrowUpDown className="mr-2 w-4 h-4" />
+        {currentLabel}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {sortOptions.map((option) => (

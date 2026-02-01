@@ -53,6 +53,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { Logo } from "../logo";
 
@@ -66,56 +67,131 @@ type MenuItem = {
   isActive?: boolean;
 };
 
-// Menu Items Data
-const mainMenuItems: Array<MenuItem> = [
+// Lawyer Menu Items
+const lawyerMainMenuItems: Array<MenuItem> = [
   {
     title: "Dashboard",
-    icon: DashboardCircleIcon,
-    iconType: "hugeicons",
+    icon: LayoutDashboard,
+    iconType: "lucide",
     url: "/dashboard",
   },
   {
-    title: "Search",
+    title: "Inquiries",
+    icon: Bell,
+    iconType: "lucide",
+    url: "/dashboard/inquiries",
+  },
+  {
+    title: "Cases",
+    icon: Folder,
+    iconType: "lucide",
+    url: "/dashboard/cases",
+  },
+  {
+    title: "Calendar",
     icon: Calendar,
     iconType: "lucide",
-  },
-  {
-    title: "Bookings",
-    icon: Library,
-    iconType: "lucide",
-  },
-  {
-    title: "Case Management",
-    icon: Users,
-    iconType: "lucide",
+    url: "/dashboard/calendar",
   },
   {
     title: "Messages",
-    icon: Settings02Icon,
-    iconType: "hugeicons",
+    icon: MessageSquare,
+    iconType: "lucide",
+    url: "/dashboard/messages",
   },
   {
-    title: "Reviews",
-    icon: UserPenIcon,
+    title: "Earnings",
+    icon: Sparkles,
     iconType: "lucide",
+    url: "/dashboard/earnings",
+  },
+  {
+    title: "Clients",
+    icon: Users,
+    iconType: "lucide",
+    url: "/dashboard/clients",
   },
 ];
 
-const favoriteItems: Array<MenuItem> = [
+const lawyerFavoriteItems: Array<MenuItem> = [
   {
-    title: "Contracts",
-    icon: Folder,
+    title: "Profile",
+    icon: UserPenIcon,
     iconType: "lucide",
+    url: "/dashboard/profile",
   },
   {
-    title: "Content",
-    icon: Folder,
+    title: "Reviews",
+    icon: Sparkles,
     iconType: "lucide",
+    url: "/dashboard/reviews",
   },
   {
-    title: "Summaries",
+    title: "Documents",
     icon: Folder,
     iconType: "lucide",
+    url: "/dashboard/documents",
+  },
+];
+
+// Client Menu Items
+const clientMainMenuItems: Array<MenuItem> = [
+  {
+    title: "Dashboard",
+    icon: LayoutDashboard,
+    iconType: "lucide",
+    url: "/dashboard",
+  },
+  {
+    title: "Search Lawyers",
+    icon: Search,
+    iconType: "lucide",
+    url: "/dashboard/search-lawyer",
+  },
+  {
+    title: "My Cases",
+    icon: Folder,
+    iconType: "lucide",
+    url: "/dashboard/my-cases",
+  },
+  {
+    title: "Appointments",
+    icon: Calendar,
+    iconType: "lucide",
+    url: "/dashboard/appointments",
+  },
+  {
+    title: "Messages",
+    icon: MessageSquare,
+    iconType: "lucide",
+    url: "/dashboard/messages",
+  },
+  {
+    title: "My Lawyers",
+    icon: Users,
+    iconType: "lucide",
+    url: "/dashboard/my-lawyers",
+  },
+];
+
+const clientFavoriteItems: Array<MenuItem> = [
+  {
+    title: "Profile",
+    icon: UserPenIcon,
+    iconType: "lucide",
+    url: "/dashboard/profile",
+  },
+  {
+    title: "Saved Lawyers",
+    icon: Sparkles,
+    iconType: "lucide",
+    url: "/dashboard/saved",
+  },
+  {
+    title: "Documents",
+    icon: Folder,
+    iconType: "lucide",
+    url: "/dashboard/documents",
   },
 ];
 
@@ -141,6 +217,12 @@ const footerMenuItems: Array<MenuItem> = [
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [favoritesOpen, setFavoritesOpen] = useState(true);
   const location = useLocation();
+  const { data: session } = authClient.useSession();
+
+  // Determine which menu items to show based on user role
+  const isLawyer = session?.user?.role === 'lawyer';
+  const mainMenuItems = isLawyer ? lawyerMainMenuItems : clientMainMenuItems;
+  const favoriteItems = isLawyer ? lawyerFavoriteItems : clientFavoriteItems;
 
   const renderIcon = (item: MenuItem) => {
     if (item.iconType === "hugeicons") {
