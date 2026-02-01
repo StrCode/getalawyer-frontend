@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { SubscriptionBanner } from "@/components/dashboard/subscription-banner";
-import { Button } from "@/components/ui/button";
-import { toastManager } from "@/components/ui/toast";
+import { useEffect } from "react";
+import { ClientDashboard } from "@/components/dashboard/ClientDashboard";
+import { LawyerDashboard } from "@/components/dashboard/LawyerDashboard";
 import { authClient } from "@/lib/auth-client";
-import { clearEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
 export const Route = createFileRoute("/(protected)/dashboard/")({
   component: RouteComponent,
@@ -13,71 +12,28 @@ function RouteComponent() {
   const navigate = useNavigate();
   const { data: session, error, isPending } = authClient.useSession();
 
+  // Redirect admins to admin panel
+  useEffect(() => {
+    if (session?.user?.role && ['reviewer', 'admin', 'super_admin'].includes(session.user.role)) {
+      navigate({ to: "/admin", replace: true });
+    }
+  }, [session?.user?.role, navigate]);
+
   if (isPending) {
     return <div>Loading session...</div>;
   }
 
-  // 3. Safety guard: If no session exists (and redirect hasn't happened yet), return null
+  // Safety guard: If no session exists, return null
   if (!session?.user) return null;
 
-  const verifyEmail = async (email: string) => {
-    try {
-      await authClient.sendVerificationEmail({
-        email: email,
-        callbackURL: `${import.meta.env.VITE_APP_URL}/dashboard`,
-        fetchOptions: {
-          onSuccess: () => {
-            toastManager.add({
-              title: "Check your email",
-              description: "We've sent a verification link to your inbox.",
-              type: "success", // Assuming your toast supports types
-            });
-          },
-        },
-      });
-    } catch (error) {
-      console.error("Verification failed:", error);
-    }
-  };
-
-  const handleSignOut = async () => {
-    // Clear all onboarding-related cache before signing out
-    clearEnhancedOnboardingStore();
-    localStorage.removeItem('onboarding-form-draft');
-    localStorage.removeItem('onboarding-progress');
-    localStorage.removeItem('offline-operation-queue');
-    
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => navigate({ to: "/login" }),
-      },
-    });
-  };
-
-  return (
-    <div className="space-y-4 p-4">
-      <SubscriptionBanner />
-      <h1 className="font-bold text-2xl">Dashboard</h1>
-      <p>Welcome {session.user.name}</p>
-
-      <Button size="lg" variant="destructive" onClick={handleSignOut}>
-        Sign Out
-      </Button>
-
-      <div className="flex items-center gap-4">
-        <span>
-          The email is{" "}
-          {session.user.emailVerified ? "Verified" : "Not Verified"}
-        </span>
-        {!session.user.emailVerified && (
-          <Button
-            onClick={() => verifyEmail(session.user.email)}
-            variant="secondary"
-          >
-            Verify Email Address
-          </Button>
-        )}
-      </div>
-    </div>
-  );
+  // Render dashboard based on user role
+  switch (session.user.role) {
+    case 'lawyer':
+      return <LawyerDashboard />;
+    case 'client':
+      return <ClientDashboard />;
+    default:
+      // Default to client dashboard for any other role
+      return <ClientDashboard />;
+  }
 }

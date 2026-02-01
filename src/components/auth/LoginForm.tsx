@@ -49,20 +49,11 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
         },
         {
           onSuccess: async () => {
-            // Get the session to check user role
-            const {data:session} = await authClient.getSession();
-            const userRole = session?.user.role;
-            console.log(userRole)
-            // Redirect based on role
-            if (['reviewer', 'admin', 'super_admin'].includes(userRole || '')) {
-              navigate({
-                to: "/admin",
-              });
-            } else {
-              navigate({
-                to: "/dashboard",
-              });
-            }
+            // All users go to /dashboard
+            // The dashboard route will handle role-based rendering
+            navigate({
+              to: "/dashboard",
+            });
             
             toastManager.add({
               title: "Sign in successful",
@@ -96,7 +87,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
               href="#"
               className="flex flex-col items-center gap-2 font-medium"
             >
-              <div className="flex size-8 items-center justify-center rounded-md">
+              <div className="flex justify-center items-center rounded-md size-8">
                 <HugeiconsIcon
                   size={"8"}
                   icon={ArrowDataTransferVerticalIcon}
@@ -104,7 +95,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
               </div>
               <span className="sr-only">GetaLawyer.</span>
             </a>
-            <h1 className="text-xl font-bold">Welcome to GetaLawyer.</h1>
+            <h1 className="font-bold text-xl">Welcome to GetaLawyer.</h1>
             <FieldDescription>
               Don&apos;t have an account?
               <Button
@@ -136,13 +127,13 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
             )}
           </form.AppField>
 
-          <Field className="-mt-2 flex flex-row">
+          <Field className="flex flex-row -mt-2">
             <form.AppField name="rememberMe">
               {(field) => <field.CheckboxField label="Remember me" />}
             </form.AppField>
 
             <Link className="text-sm" to={"/forgot-password"}>
-              <div className="text-center flex gap-2 items-center flex-row hover:underline">
+              <div className="flex flex-row items-center gap-2 text-center hover:underline">
                 Forgot password?
               </div>
             </Link>
@@ -154,15 +145,15 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
             </Button>
           </Field>
 
-          <div className="full flex items-center justify-center overflow-hidden">
+          <div className="flex justify-center items-center overflow-hidden full">
             <Separator variant="dashed" className="flex-grow" />
-            <span className="text-sm text-muted-foreground px-4 rounded-full">
+            <span className="px-4 rounded-full text-muted-foreground text-sm">
               OR
             </span>
             <Separator variant="dashed" className="flex-grow" />
           </div>
 
-          <Field className="grid gap-4 sm:grid-cols-2">
+          <Field className="gap-4 grid sm:grid-cols-2">
             <Button variant="outline" type="button">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path

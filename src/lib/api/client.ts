@@ -807,6 +807,52 @@ export const api = {
         message?: string;
       }>>(`/api/subscriptions/verify/${reference}`),
   },
+  search: {
+    // Search lawyers - Public endpoint
+    searchLawyers: (params: {
+      q?: string;
+      specializations?: string[];
+      minExperience?: number;
+      maxExperience?: number;
+      page?: number;
+      limit?: number;
+      sortBy?: 'relevance' | 'experience' | 'recent';
+    }) => {
+      const searchParams = new URLSearchParams();
+      if (params.q) searchParams.append('q', params.q);
+      if (params.specializations?.length) {
+        // Join specializations with comma instead of repeating the parameter
+        searchParams.append('specializations', params.specializations.join(','));
+      }
+      if (params.minExperience !== undefined) searchParams.append('minExperience', String(params.minExperience));
+      if (params.maxExperience !== undefined) searchParams.append('maxExperience', String(params.maxExperience));
+      if (params.page) searchParams.append('page', String(params.page));
+      if (params.limit) searchParams.append('limit', String(params.limit));
+      if (params.sortBy) searchParams.append('sortBy', params.sortBy);
+      
+      return httpClient.get<any>(`/api/search/lawyers?${searchParams.toString()}`);
+    },
+
+    // Autocomplete suggestions - Public endpoint
+    autocomplete: (q: string) => {
+      const searchParams = new URLSearchParams({ q });
+      return httpClient.get<any>(`/api/search/autocomplete?${searchParams.toString()}`);
+    },
+
+    // Get available filters - Public endpoint
+    getFilters: (params?: {
+      q?: string;
+      minExperience?: number;
+      maxExperience?: number;
+    }) => {
+      const searchParams = new URLSearchParams();
+      if (params?.q) searchParams.append('q', params.q);
+      if (params?.minExperience !== undefined) searchParams.append('minExperience', String(params.minExperience));
+      if (params?.maxExperience !== undefined) searchParams.append('maxExperience', String(params.maxExperience));
+      
+      return httpClient.get<any>(`/api/search/filters?${searchParams.toString()}`);
+    },
+  },
 };
 
 export { httpClient };
