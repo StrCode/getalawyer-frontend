@@ -3,10 +3,18 @@ import { AlertCircle, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useSubscription } from '@/hooks/use-subscription'
 
-export function SubscriptionBanner() {
+interface SubscriptionBannerProps {
+  showOnlyIfNotSubscribed?: boolean;
+}
+
+export function SubscriptionBanner({ showOnlyIfNotSubscribed = false }: SubscriptionBannerProps) {
   const { data, isLoading } = useSubscription()
 
   if (isLoading) {
+    // Don't show loading state if we only want to show when not subscribed
+    if (showOnlyIfNotSubscribed) {
+      return null;
+    }
     return (
       <div className="flex justify-between items-center gap-4 bg-gray-50 p-4 border border-gray-200 rounded-lg">
         <div className="flex items-center gap-3">
@@ -20,6 +28,11 @@ export function SubscriptionBanner() {
   }
 
   const hasActiveSubscription = data?.data?.hasActiveSubscription
+
+  // If showOnlyIfNotSubscribed is true and user has active subscription, don't render
+  if (showOnlyIfNotSubscribed && hasActiveSubscription) {
+    return null;
+  }
 
   if (hasActiveSubscription) {
     const subscription = data?.data?.subscription

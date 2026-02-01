@@ -221,6 +221,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Determine which menu items to show based on user role
   const isLawyer = session?.user?.role === 'lawyer';
+  // Note: "user" role is for regular clients, "lawyer" role is for lawyers
   const mainMenuItems = isLawyer ? lawyerMainMenuItems : clientMainMenuItems;
   const favoriteItems = isLawyer ? lawyerFavoriteItems : clientFavoriteItems;
 

@@ -4,7 +4,7 @@ import { RegisterForm } from "@/components/auth/RegisterForm";
 
 // Define the search params type
 type RegisterSearch = {
-  type?: "client" | "lawyer";
+  type?: "user" | "lawyer";
 };
 
 export const Route = createFileRoute("/(auth)/register")({
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/(auth)/register")({
   validateSearch: (search: Record<string, unknown>): RegisterSearch => {
     return {
       type:
-        search.type === "client" || search.type === "lawyer"
+        search.type === "user" || search.type === "lawyer"
           ? search.type
           : undefined,
     };
@@ -23,12 +23,12 @@ export const Route = createFileRoute("/(auth)/register")({
 function RouteComponent() {
   const { type } = Route.useSearch();
 
-  const [userType, _] = useState<"client" | "lawyer">(
-    type || "client",
+  const [userType, _] = useState<"user" | "lawyer">(
+    type || "user",
   );
 
   return (
-    <div className="flex pt-8 justify-center items-center px-4">
+    <div className="flex justify-center items-center px-4 pt-8">
       <div className="w-full max-w-sm">
         <RegisterForm userType={userType} />
       </div>

@@ -56,7 +56,7 @@ export function UserManagement({ userType = 'all', initialFilters = {}, currentU
     query: '',
     status: '',
     country: '',
-    userType: userType === 'all' ? '' : userType === 'lawyers' ? 'lawyer' : 'client',
+    userType: userType === 'all' ? '' : userType === 'lawyers' ? 'lawyer' : 'user',
     sortBy: 'name',
     sortOrder: 'asc',
     ...initialFilters,
@@ -122,7 +122,7 @@ export function UserManagement({ userType = 'all', initialFilters = {}, currentU
         const user = row.original;
         return (
           <div className="flex items-center space-x-3">
-            <Avatar className="h-8 w-8">
+            <Avatar className="w-8 h-8">
               <AvatarImage src={user.image} alt={user.name} />
               <AvatarFallback>
                 {user.name?.charAt(0)?.toUpperCase() || 'U'}
@@ -130,7 +130,7 @@ export function UserManagement({ userType = 'all', initialFilters = {}, currentU
             </Avatar>
             <div>
               <div className="font-medium">{user.name}</div>
-              <div className="text-sm text-muted-foreground">{user.email}</div>
+              <div className="text-muted-foreground text-sm">{user.email}</div>
             </div>
           </div>
         );
@@ -238,10 +238,10 @@ export function UserManagement({ userType = 'all', initialFilters = {}, currentU
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="font-bold text-gray-900 text-3xl">
           {userType === 'lawyers' ? 'Lawyers' : userType === 'clients' ? 'Clients' : 'Users'} Management
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p className="mt-2 text-gray-600">
           View and manage {userType === 'all' ? 'user' : userType} accounts and profiles
         </p>
       </div>
@@ -262,8 +262,8 @@ export function UserManagement({ userType = 'all', initialFilters = {}, currentU
             Lawyers Only
           </Button>
           <Button
-            variant={filters.userType === 'client' ? 'default' : 'outline'}
-            onClick={() => handleFilterChange({ userType: 'client' })}
+            variant={filters.userType === 'user' ? 'default' : 'outline'}
+            onClick={() => handleFilterChange({ userType: 'user' })}
           >
             Clients Only
           </Button>
@@ -339,7 +339,7 @@ function UserDetailView({ user }: { user: User }) {
     <div className="space-y-6">
       {/* User Header */}
       <div className="flex items-start space-x-4">
-        <Avatar className="h-16 w-16">
+        <Avatar className="w-16 h-16">
           <AvatarImage src={user.image} alt={user.name} />
           <AvatarFallback className="text-lg">
             {user.name?.charAt(0)?.toUpperCase() || 'U'}
@@ -347,7 +347,7 @@ function UserDetailView({ user }: { user: User }) {
         </Avatar>
         <div className="flex-1">
           <div className="flex items-center space-x-3">
-            <h3 className="text-xl font-semibold">{user.name}</h3>
+            <h3 className="font-semibold text-xl">{user.name}</h3>
             <Badge variant={user.banned ? 'destructive' : 'default'}>
               {user.banned ? 'Banned' : 'Active'}
             </Badge>
@@ -355,18 +355,18 @@ function UserDetailView({ user }: { user: User }) {
               {user.client ? 'Client' : user.lawyer ? 'Lawyer' : 'User'}
             </Badge>
           </div>
-          <div className="mt-2 space-y-1 text-sm text-gray-600">
+          <div className="space-y-1 mt-2 text-gray-600 text-sm">
             <div className="flex items-center space-x-2">
-              <Mail className="h-4 w-4" />
+              <Mail className="w-4 h-4" />
               <span>{user.email}</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Calendar className="h-4 w-4" />
+              <Calendar className="w-4 h-4" />
               <span>Joined {new Date(user.createdAt).toLocaleDateString()}</span>
             </div>
             {user.lastLoginAt && (
               <div className="flex items-center space-x-2">
-                <UserCheck className="h-4 w-4" />
+                <UserCheck className="w-4 h-4" />
                 <span>Last login {new Date(user.lastLoginAt).toLocaleDateString()}</span>
               </div>
             )}
@@ -376,16 +376,16 @@ function UserDetailView({ user }: { user: User }) {
 
       {/* Ban Information */}
       {user.banned && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="bg-red-50 border-red-200">
           <CardHeader>
-            <CardTitle className="text-red-800 flex items-center space-x-2">
-              <UserX className="h-5 w-5" />
+            <CardTitle className="flex items-center space-x-2 text-red-800">
+              <UserX className="w-5 h-5" />
               <span>Account Banned</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             {user.banReason && (
-              <p className="text-red-700 mb-2">
+              <p className="mb-2 text-red-700">
                 <strong>Reason:</strong> {user.banReason}
               </p>
             )}
@@ -399,37 +399,37 @@ function UserDetailView({ user }: { user: User }) {
       )}
 
       {/* Profile Information */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
         {/* Client Profile */}
         {user.client && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <Building className="h-5 w-5" />
+                <Building className="w-5 h-5" />
                 <span>Client Profile</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {user.client.company && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Company</label>
+                  <label className="font-medium text-gray-500 text-sm">Company</label>
                   <p>{user.client.company}</p>
                 </div>
               )}
               {user.client.phoneNumber && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Phone</label>
+                  <label className="font-medium text-gray-500 text-sm">Phone</label>
                   <div className="flex items-center space-x-2">
-                    <Phone className="h-4 w-4 text-gray-400" />
+                    <Phone className="w-4 h-4 text-gray-400" />
                     <span>{user.client.phoneNumber}</span>
                   </div>
                 </div>
               )}
               {(user.client.country || user.client.state) && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Location</label>
+                  <label className="font-medium text-gray-500 text-sm">Location</label>
                   <div className="flex items-center space-x-2">
-                    <MapPin className="h-4 w-4 text-gray-400" />
+                    <MapPin className="w-4 h-4 text-gray-400" />
                     <span>
                       {user.client.state && user.client.country
                         ? `${user.client.state}, ${user.client.country}`
@@ -440,7 +440,7 @@ function UserDetailView({ user }: { user: User }) {
               )}
               {user.client.specializations && user.client.specializations.length > 0 && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Specializations</label>
+                  <label className="font-medium text-gray-500 text-sm">Specializations</label>
                   <div className="flex flex-wrap gap-2 mt-1">
                     {user.client.specializations.map((spec) => (
                       <Badge key={spec.id} variant="outline">
@@ -459,25 +459,25 @@ function UserDetailView({ user }: { user: User }) {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <Scale className="h-5 w-5" />
+                <Scale className="w-5 h-5" />
                 <span>Lawyer Profile</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {user.lawyer.phoneNumber && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Phone</label>
+                  <label className="font-medium text-gray-500 text-sm">Phone</label>
                   <div className="flex items-center space-x-2">
-                    <Phone className="h-4 w-4 text-gray-400" />
+                    <Phone className="w-4 h-4 text-gray-400" />
                     <span>{user.lawyer.phoneNumber}</span>
                   </div>
                 </div>
               )}
               {(user.lawyer.country || user.lawyer.state) && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Location</label>
+                  <label className="font-medium text-gray-500 text-sm">Location</label>
                   <div className="flex items-center space-x-2">
-                    <MapPin className="h-4 w-4 text-gray-400" />
+                    <MapPin className="w-4 h-4 text-gray-400" />
                     <span>
                       {user.lawyer.state && user.lawyer.country
                         ? `${user.lawyer.state}, ${user.lawyer.country}`
@@ -488,25 +488,25 @@ function UserDetailView({ user }: { user: User }) {
               )}
               {user.lawyer.yearsOfExperience !== undefined && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Experience</label>
+                  <label className="font-medium text-gray-500 text-sm">Experience</label>
                   <p>{user.lawyer.yearsOfExperience} years</p>
                 </div>
               )}
               {user.lawyer.barLicenseNumber && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Bar License</label>
+                  <label className="font-medium text-gray-500 text-sm">Bar License</label>
                   <p>{user.lawyer.barLicenseNumber}</p>
                 </div>
               )}
               {user.lawyer.barAssociation && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Bar Association</label>
+                  <label className="font-medium text-gray-500 text-sm">Bar Association</label>
                   <p>{user.lawyer.barAssociation}</p>
                 </div>
               )}
               {user.lawyer.licenseStatus && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">License Status</label>
+                  <label className="font-medium text-gray-500 text-sm">License Status</label>
                   <Badge variant={user.lawyer.licenseStatus === 'active' ? 'default' : 'secondary'}>
                     {user.lawyer.licenseStatus}
                   </Badge>
@@ -514,12 +514,12 @@ function UserDetailView({ user }: { user: User }) {
               )}
               {user.lawyer.specializations && user.lawyer.specializations.length > 0 && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Specializations</label>
+                  <label className="font-medium text-gray-500 text-sm">Specializations</label>
                   <div className="space-y-2 mt-1">
                     {user.lawyer.specializations.map((spec) => (
-                      <div key={spec.id} className="flex items-center justify-between">
+                      <div key={spec.id} className="flex justify-between items-center">
                         <Badge variant="outline">{spec.name}</Badge>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-gray-500 text-sm">
                           {spec.yearsOfExperience} years
                         </span>
                       </div>

@@ -11,6 +11,7 @@ import {
   Shield,
   TrendingUp
 } from "lucide-react";
+import { SubscriptionBanner } from "@/components/dashboard/subscription-banner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -104,6 +105,9 @@ export function LawyerDashboard() {
   return (
     <div className="flex-1 overflow-auto">
       <div className="space-y-6 p-4 md:p-6">
+        {/* Subscription Banner - Only shows if not subscribed (handled internally) */}
+        <SubscriptionBanner showOnlyIfNotSubscribed />
+
         {/* Profile Progress Banner */}
         <Card className="border-l-4 border-l-blue-500">
           <CardContent className="p-4">
@@ -275,7 +279,8 @@ export function LawyerDashboard() {
               <div className="flex flex-col items-center py-4">
                 {/* Circular Progress */}
                 <div className="relative mb-6 w-40 h-40">
-                  <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 100 100">
+                  <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 100 100" aria-label="Earnings progress chart">
+                    <title>Monthly earnings progress</title>
                     <circle
                       cx="50"
                       cy="50"
@@ -356,7 +361,7 @@ export function LawyerDashboard() {
               <CardContent className="space-y-3">
                 {notifications.map((notification) => (
                   <div key={notification.id} className="flex items-start gap-3 hover:bg-gray-50 p-3 rounded-lg transition-colors">
-                    <div className="flex flex-shrink-0 justify-center items-center bg-blue-100 rounded-full w-8 h-8">
+                    <div className="flex justify-center items-center bg-blue-100 rounded-full w-8 h-8 shrink-0">
                       <Bell className="w-4 h-4 text-blue-600" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -364,7 +369,7 @@ export function LawyerDashboard() {
                       <p className="mt-1 text-gray-500 text-xs">{notification.time}</p>
                     </div>
                     {!notification.read && (
-                      <div className="flex-shrink-0 bg-green-500 mt-2 rounded-full w-2 h-2" />
+                      <div className="bg-green-500 mt-2 rounded-full w-2 h-2 shrink-0" />
                     )}
                   </div>
                 ))}

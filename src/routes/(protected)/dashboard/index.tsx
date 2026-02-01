@@ -30,10 +30,10 @@ function RouteComponent() {
   switch (session.user.role) {
     case 'lawyer':
       return <LawyerDashboard />;
-    case 'client':
+    case 'user':
       return <ClientDashboard />;
     default:
-      // Default to client dashboard for any other role
+      // Default to client dashboard for any other role (including legacy 'client' role)
       return <ClientDashboard />;
   }
 }

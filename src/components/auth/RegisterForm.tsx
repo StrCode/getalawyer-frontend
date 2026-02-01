@@ -5,13 +5,11 @@ import {
   UserCircleIcon,
   UserEdit01Icon,
 } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import * as z from "zod/v4";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { toastManager } from "../ui/toast";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -21,8 +19,10 @@ import {
 } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
 import { useAppForm } from "@/hooks/form";
-import { authClient } from "@/lib/auth-client";
 import { httpClient } from "@/lib/api/client";
+import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
+import { toastManager } from "../ui/toast";
 
 // Step 1: Email and Name validation
 const emailSchema = z.object({
@@ -50,7 +50,7 @@ const passwordSchema = z
 
 type Step = "email" | "password";
 
-export function RegisterForm({ userType }: { userType: "client" | "lawyer" }) {
+export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>("email");
   const [isLoading, setIsLoading] = useState(false);
@@ -77,8 +77,8 @@ export function RegisterForm({ userType }: { userType: "client" | "lawyer" }) {
     },
   });
 
-  const handleRegistrationComplete = (userType: "client" | "lawyer") => {
-    if (userType === "client") {
+  const handleRegistrationComplete = (userType: "user" | "lawyer") => {
+    if (userType === "user") {
       return "/onboarding/client/location";
     } else {
       return "onboarding/lawyer/step-1";
@@ -179,7 +179,7 @@ export function RegisterForm({ userType }: { userType: "client" | "lawyer" }) {
           type: "success",
         });
 
-        if (userType === "client") {
+        if (userType === "user") {
           navigate({ to: "/onboarding/client/location" });
         } else {
           navigate({ to: "/onboarding/lawyer/basics" });
@@ -227,7 +227,7 @@ export function RegisterForm({ userType }: { userType: "client" | "lawyer" }) {
           {/* Step 1: Email and Name */}
           <div>
             <div
-              className="size-24 mx-auto rounded-full p-4"
+              className="mx-auto p-4 rounded-full size-24"
               style={{
                 borderImage:
                   "linear-gradient(to bottom, #E4E5E7 0%, #E4E5E7 100%) 1",
@@ -235,7 +235,7 @@ export function RegisterForm({ userType }: { userType: "client" | "lawyer" }) {
                   "linear-gradient(180deg, rgba(228,229,231,0.48) 0%, rgba(247,248,248,0.00) 100%)",
               }}
             >
-              <div className="border border-gray-200 shadow-sm size-16 flex justify-center items-center gap-1 bg-white rounded-full p-2.5">
+              <div className="flex justify-center items-center gap-1 bg-white shadow-sm p-2.5 border border-gray-200 rounded-full size-16">
                 <HugeiconsIcon icon={UserEdit01Icon} className="size-8" />
               </div>
             </div>
@@ -255,7 +255,7 @@ export function RegisterForm({ userType }: { userType: "client" | "lawyer" }) {
                     >
                       <span className="sr-only">GetaLawyer.</span>
                     </a>
-                    <h1 className="text-xl font-bold">Welcome to GetaLawyer</h1>
+                    <h1 className="font-bold text-xl">Welcome to GetaLawyer</h1>
                   </div>
                   <emailForm.AppField name="name">
                     {(field) => (
@@ -294,7 +294,7 @@ export function RegisterForm({ userType }: { userType: "client" | "lawyer" }) {
 
                   <FieldSeparator>Or</FieldSeparator>
 
-                  <Field className="grid gap-4 sm:grid-cols-2">
+                  <Field className="gap-4 grid sm:grid-cols-2">
                     <Button
                       variant="outline"
                       type="button"
@@ -345,7 +345,7 @@ export function RegisterForm({ userType }: { userType: "client" | "lawyer" }) {
           {/* Step 2: Password Setup */}
           <div className="">
             <div
-              className="size-24 mx-auto rounded-full p-4"
+              className="mx-auto p-4 rounded-full size-24"
               style={{
                 borderImage:
                   "linear-gradient(to bottom, #E4E5E7 0%, #E4E5E7 100%) 1",
@@ -353,14 +353,14 @@ export function RegisterForm({ userType }: { userType: "client" | "lawyer" }) {
                   "linear-gradient(180deg, rgba(228,229,231,0.48) 0%, rgba(247,248,248,0.00) 100%)",
               }}
             >
-              <div className="border border-gray-200 shadow-sm size-16 flex justify-center items-center gap-1 bg-white rounded-full p-2.5">
+              <div className="flex justify-center items-center gap-1 bg-white shadow-sm p-2.5 border border-gray-200 rounded-full size-16">
                 <HugeiconsIcon icon={LockComputerIcon} className="size-8" />
               </div>
             </div>
-            <h2 className="text-2xl text-center font-bold mt-4">
+            <h2 className="mt-4 font-bold text-2xl text-center">
               Password Setup
             </h2>
-            <p className="text-sm text-center text-gray-600 mt-2">
+            <p className="mt-2 text-gray-600 text-sm text-center">
               Set up a secure password for {registrationData.email}
             </p>
             <Separator className="m-4" />
@@ -386,7 +386,7 @@ export function RegisterForm({ userType }: { userType: "client" | "lawyer" }) {
                   <field.PasswordPassField label="Confirm Password" />
                 )}
               </passwordForm.AppField>
-              <div className="flex flex-col gap-4 items-center">
+              <div className="flex flex-col items-center gap-4">
                 <Button
                   size="lg"
                   variant="default"
