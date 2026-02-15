@@ -9,7 +9,7 @@ export function SEOHead({ metadata }: SEOHeadProps) {
   useEffect(() => {
     // Update document title
     if (metadata.title) {
-      document.title = `${metadata.title} | GetALawyer`;
+      document.title = metadata.title;
     }
 
     // Update or create meta tags
@@ -32,6 +32,9 @@ export function SEOHead({ metadata }: SEOHeadProps) {
     updateMetaTag('description', metadata.description);
     if (metadata.keywords) {
       updateMetaTag('keywords', metadata.keywords);
+    }
+    if (metadata.robots) {
+      updateMetaTag('robots', metadata.robots);
     }
 
     // Open Graph tags

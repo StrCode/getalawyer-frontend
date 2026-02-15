@@ -1,45 +1,29 @@
-"use client";
 import {
-  DashboardCircleIcon,
   Settings02Icon,
+  UserEdit01Icon,
 } from "@hugeicons/core-free-icons";
 import type { IconSvgElement } from "@hugeicons/react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-  Bell,
   Calendar,
-  Check,
   ChevronDown,
+  DollarSign,
   Folder,
-  HelpCircle,
   LayoutDashboard,
-  Library,
-  Link as LinkIcon,
   MessageSquare,
-  Plus,
   Search,
   Settings,
-  Sparkles,
-  UserPenIcon,
+  TrendingUp,
   Users,
 } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Kbd } from "@/components/ui/kbd";
 import {
   Sidebar,
   SidebarContent,
@@ -67,31 +51,43 @@ type MenuItem = {
   isActive?: boolean;
 };
 
-// Lawyer Menu Items
+// Property Manager Menu Items
 const lawyerMainMenuItems: Array<MenuItem> = [
   {
-    title: "Dashboard",
+    title: "Overview",
     icon: LayoutDashboard,
     iconType: "lucide",
     url: "/dashboard",
   },
   {
-    title: "Inquiries",
-    icon: Bell,
-    iconType: "lucide",
-    url: "/dashboard/inquiries",
-  },
-  {
-    title: "Cases",
+    title: "Listings",
     icon: Folder,
     iconType: "lucide",
-    url: "/dashboard/cases",
+    url: "/dashboard/listings",
   },
   {
-    title: "Calendar",
+    title: "Booking Management",
     icon: Calendar,
     iconType: "lucide",
-    url: "/dashboard/calendar",
+    url: "/dashboard/bookings",
+  },
+  {
+    title: "People",
+    icon: Users,
+    iconType: "lucide",
+    url: "/dashboard/people",
+  },
+  {
+    title: "Finance & Payments",
+    icon: DollarSign,
+    iconType: "lucide",
+    url: "/dashboard/finance",
+  },
+  {
+    title: "Maintenance",
+    icon: Settings,
+    iconType: "lucide",
+    url: "/dashboard/maintenance",
   },
   {
     title: "Messages",
@@ -100,39 +96,20 @@ const lawyerMainMenuItems: Array<MenuItem> = [
     url: "/dashboard/messages",
   },
   {
-    title: "Earnings",
-    icon: Sparkles,
+    title: "Analytics & Reporting",
+    icon: TrendingUp,
     iconType: "lucide",
-    url: "/dashboard/earnings",
+    url: "/dashboard/analytics",
   },
   {
-    title: "Clients",
+    title: "Team Management",
     icon: Users,
     iconType: "lucide",
-    url: "/dashboard/clients",
+    url: "/dashboard/team",
   },
 ];
 
-const lawyerFavoriteItems: Array<MenuItem> = [
-  {
-    title: "Profile",
-    icon: UserPenIcon,
-    iconType: "lucide",
-    url: "/dashboard/profile",
-  },
-  {
-    title: "Reviews",
-    icon: Sparkles,
-    iconType: "lucide",
-    url: "/dashboard/reviews",
-  },
-  {
-    title: "Documents",
-    icon: Folder,
-    iconType: "lucide",
-    url: "/dashboard/documents",
-  },
-];
+const lawyerFavoriteItems: Array<MenuItem> = [];
 
 // Client Menu Items
 const clientMainMenuItems: Array<MenuItem> = [
@@ -177,27 +154,15 @@ const clientMainMenuItems: Array<MenuItem> = [
 const clientFavoriteItems: Array<MenuItem> = [
   {
     title: "Profile",
-    icon: UserPenIcon,
-    iconType: "lucide",
+    icon: UserEdit01Icon,
+    iconType: "hugeicons",
     url: "/dashboard/profile",
-  },
-  {
-    title: "Saved Lawyers",
-    icon: Sparkles,
-    iconType: "lucide",
-    url: "/dashboard/saved",
-  },
-  {
-    title: "Documents",
-    icon: Folder,
-    iconType: "lucide",
-    url: "/dashboard/documents",
   },
 ];
 
 const footerMenuItems: Array<MenuItem> = [
   {
-    title: "Feedback",
+    title: "Contact Support",
     icon: MessageSquare,
     iconType: "lucide",
   },
@@ -206,11 +171,6 @@ const footerMenuItems: Array<MenuItem> = [
     icon: Settings02Icon,
     iconType: "hugeicons",
     url: "/dashboard/settings",
-  },
-  {
-    title: "Help Center",
-    icon: HelpCircle,
-    iconType: "lucide",
   },
 ];
 
@@ -227,21 +187,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const renderIcon = (item: MenuItem) => {
     if (item.iconType === "hugeicons") {
-      return <HugeiconsIcon icon={item.icon as IconSvgElement} />;
+      return <HugeiconsIcon icon={item.icon as IconSvgElement} variant="solid" />;
     }
     const LucideIcon = item.icon as LucideIcon;
-    return <LucideIcon className="size-4" />;
+    return <LucideIcon className="size-5" />;
   };
 
   const renderMenuItem = (item: MenuItem) => {
+    const isActive = item.url === location.pathname;
+    
     if (item.url) {
       return (
         <SidebarMenuButton
-          className="h-7 text-muted-foreground text-sm"
-          isActive={item.url === location.pathname}
+          className={cn(
+            "items-center gap-2 px-3 border rounded-lg h-9 font-medium text-sm leading-5 tracking-[-0.006em] transition-colors",
+            isActive 
+              ? "bg-white border-[#E1E6EB] text-[#525866] hover:bg-white" 
+              : "bg-transparent border-transparent text-[#525866] hover:bg-gray-200/50"
+          )}
+          isActive={isActive}
           render={
-            <Link to={item.url}>
-              {renderIcon(item)}
+            <Link to={item.url} className="flex items-center gap-2">
+              <span className="flex justify-center items-center size-5 text-[#525866]">
+                {renderIcon(item)}
+              </span>
               <span>{item.title}</span>
             </Link>
           }
@@ -250,86 +219,45 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
 
     return (
-      <SidebarMenuButton className="h-7 text-muted-foreground text-sm">
-        {renderIcon(item)}
+      <SidebarMenuButton 
+        className="items-center gap-2 hover:bg-gray-200/50 px-3 border border-transparent rounded-lg h-9 font-medium text-[#525866] text-sm leading-5 tracking-[-0.006em] transition-colors"
+      >
+        <span className="flex justify-center items-center size-5 text-[#525866]">{renderIcon(item)}</span>
         <span>{item.title}</span>
       </SidebarMenuButton>
     );
   };
 
   return (
-    <Sidebar className="lg:border-r-0!" collapsible="icon" {...props}>
-      <SidebarHeader className="pb-0">
-        <div className="px-2 py-3">
-          <div className="flex justify-between items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex justify-between items-center gap-3 hover:bg-accent/50 p-0 rounded-md w-full h-auto text-left transition-colors">
-                <div className="flex items-center gap-2">
-                  <div className="flex justify-center items-center rounded-sm size-6 font-semibold text-white text-xs">
-                    <Logo />
-                  </div>
-                  <span className="font-semibold">GetaLawyer</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <ChevronDown className="size-3 text-muted-foreground" />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="start">
-                <DropdownMenuItem>
-                  <div className="flex items-center gap-3 w-full">
-                    <div className="flex justify-center items-center bg-linear-to-br from-purple-500 to-pink-600 shadow rounded-sm size-6 font-semibold text-white text-xs">
-                      SU
-                    </div>
-                    <span className="font-semibold">Square UI</span>
-                    <Check className="ml-auto size-4" />
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="flex items-center gap-3 w-full">
-                    <div className="flex justify-center items-center bg-linear-to-br from-blue-500 to-cyan-600 shadow rounded-sm size-6 font-semibold text-white text-xs">
-                      CI
-                    </div>
-                    <span>Circle</span>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className="flex items-center gap-3 w-full">
-                    <div className="flex justify-center items-center bg-linear-to-br from-orange-500 to-red-600 shadow rounded-sm size-6 font-semibold text-white text-xs">
-                      LN
-                    </div>
-                    <span>lndev-ui</span>
-                  </div>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Plus className="size-4" />
-                  <span>Add new team</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+    <Sidebar className="bg-gray-100 lg:border-r-0!" collapsible="icon" {...props}>
+      <SidebarHeader className="bg-gray-100 pb-0">
+        <div className="px-4 py-4">
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center gap-2">
+              <div className="flex justify-center items-center bg-gray-900 rounded-sm size-8 font-bold text-white text-sm">
+                <Logo />
+              </div>
+              <span className="font-semibold text-gray-900">Smart Stay Rentals</span>
+            </div>
+            <ChevronDown className="size-4 text-gray-400" />
           </div>
 
-          {/* <div className="relative mt-4"> */}
-          {/*   <Search className="top-1/2 left-2.5 z-10 absolute size-4 text-muted-foreground -translate-y-1/2" /> */}
-          {/*   <Input */}
-          {/*     type="search" */}
-          {/*     placeholder="Search..." */}
-          {/*     className="bg-background pr-8 pl-8 h-8 text-muted-foreground placeholder:text-muted-foreground text-sm tracking-[-0.42px]" */}
-          {/*   /> */}
-          {/*   <div className="top-1/2 right-2 absolute flex items-center gap-0.5 bg-sidebar px-1.5 py-0.5 border border-border rounded -translate-y-1/2 shrink-0"> */}
-          {/*     <span className="font-medium text-[10px] text-muted-foreground leading-none tracking-[-0.1px]"> */}
-          {/*       ⌘ */}
-          {/*     </span> */}
-          {/*     <Kbd className="bg-transparent px-0 py-0 border-0 min-w-0 h-auto text-[10px] leading-none tracking-[-0.1px]"> */}
-          {/*       K */}
-          {/*     </Kbd> */}
-          {/*   </div> */}
-          {/* </div> */}
+          <div className="relative">
+            <Search className="top-1/2 left-3 z-10 absolute size-4 text-gray-400 -translate-y-1/2" />
+            <Input
+              type="search"
+              placeholder="Search..."
+              className="bg-white pl-10 border-gray-200 h-10 text-gray-600 placeholder:text-gray-400 text-sm"
+            />
+          </div>
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="bg-gray-100">
         <SidebarGroup>
+          <SidebarGroupLabel className="px-4 pt-4 pb-2 h-auto font-medium text-gray-500 text-xs uppercase tracking-wider">
+            Menu
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainMenuItems.map((item) => (
@@ -341,38 +269,43 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
+        <SidebarSeparator className="bg-gray-200" />
 
-        <SidebarGroup>
-          <Collapsible open={favoritesOpen} onOpenChange={setFavoritesOpen}>
-            <CollapsibleTrigger>
-              <SidebarGroupLabel className="hover:bg-transparent pt-2 pb-4 h-4 text-muted-foreground hover:text-foreground text-xs cursor-pointer">
-                <span>Favorites</span>
-                <ChevronDown
-                  className={cn(
-                    "ml-auto size-3 transition-transform",
-                    favoritesOpen && "rotate-180",
-                  )}
-                />
-              </SidebarGroupLabel>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {favoriteItems.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      {renderMenuItem(item)}
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </Collapsible>
-        </SidebarGroup>
+        {favoriteItems.length > 0 && (
+          <SidebarGroup>
+            <Collapsible open={favoritesOpen} onOpenChange={setFavoritesOpen}>
+              <CollapsibleTrigger>
+                <SidebarGroupLabel className="hover:bg-transparent px-4 pt-2 pb-4 h-4 text-gray-500 hover:text-gray-700 text-xs uppercase tracking-wider cursor-pointer">
+                  <span>Favorites</span>
+                  <ChevronDown
+                    className={cn(
+                      "ml-auto size-3 transition-transform",
+                      favoritesOpen && "rotate-180",
+                    )}
+                  />
+                </SidebarGroupLabel>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {favoriteItems.map((item) => (
+                      <SidebarMenuItem key={item.title}>
+                        {renderMenuItem(item)}
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </CollapsibleContent>
+            </Collapsible>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
-      <SidebarFooter className="p-4">
+      <SidebarFooter className="bg-gray-100 p-4">
         <div className="space-y-1 mb-4">
+          <div className="mb-3 px-2 font-medium text-gray-500 text-xs uppercase tracking-wider">
+            Help & Support
+          </div>
           <SidebarMenu>
             {footerMenuItems.map((item) => (
               <SidebarMenuItem key={item.title}>
@@ -380,6 +313,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
+        </div>
+
+        {/* User Profile */}
+        <div className="flex items-center gap-3 bg-white hover:bg-gray-200/50 p-3 border border-gray-200 rounded-lg transition-colors cursor-pointer">
+          <div className="flex justify-center items-center bg-linear-to-br from-purple-500 to-pink-500 rounded-full w-10 h-10 font-semibold text-white text-sm">
+            {session?.user?.name?.split(' ').map(n => n[0]).join('') || 'SW'}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-gray-900 text-sm truncate">{session?.user?.name || 'Sophia Williams'}</p>
+            <p className="text-gray-500 text-xs">Admin</p>
+          </div>
+          <ChevronDown className="size-4 text-gray-400" />
         </div>
       </SidebarFooter>
     </Sidebar>

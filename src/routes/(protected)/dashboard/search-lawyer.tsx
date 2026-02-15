@@ -4,8 +4,11 @@ import { SearchBar } from '@/components/search/SearchBar';
 import { SearchFilters } from '@/components/search/SearchFilters';
 import { SearchResults } from '@/components/search/SearchResults';
 import { SearchSort } from '@/components/search/SearchSort';
+import { SEOHead } from '@/components/seo/SEOHead';
+import { PAGE_SEO_CONFIG } from '@/config/page-seo';
 import { useLawyerSearch } from '@/hooks/use-lawyer-search';
 import type { SearchParams } from '@/types/lawyer-search';
+import { generateProtectedPageSEO } from '@/utils/seo';
 
 export const Route = createFileRoute('/(protected)/dashboard/search-lawyer')({
   component: SearchLawyerPage,
@@ -31,6 +34,12 @@ function SearchLawyerPage() {
   const [searchQuery, setSearchQuery] = useState(searchParams.q || '');
   
   const { data, isLoading } = useLawyerSearch(searchParams);
+
+  const seoMetadata = generateProtectedPageSEO({
+    title: PAGE_SEO_CONFIG.dashboardSearch.title,
+    description: PAGE_SEO_CONFIG.dashboardSearch.description,
+    path: '/dashboard/search-lawyer',
+  });
 
   const handleFiltersChange = (newFilters: SearchParams) => {
     navigate({
@@ -63,42 +72,45 @@ function SearchLawyerPage() {
   };
 
   return (
-    <div className="flex-1 overflow-auto">
-      <div className="space-y-6 p-4 md:p-6">
-        {/* Search Header */}
-        <div>
-          <h1 className="mb-2 font-bold text-2xl">Find a Lawyer</h1>
-          <p className="text-gray-600">Search from thousands of qualified lawyers</p>
-        </div>
+    <>
+      <SEOHead metadata={seoMetadata} />
+      <div className="flex-1 overflow-auto">
+        <div className="space-y-6 p-4 md:p-6">
+          {/* Search Header */}
+          <div>
+            <h1 className="mb-2 font-bold text-2xl">Find a Lawyer</h1>
+            <p className="text-gray-600">Search from thousands of qualified lawyers</p>
+          </div>
 
-        {/* Search Bar */}
-        <SearchBar
-          value={searchQuery}
-          onChange={setSearchQuery}
-          onSearch={handleSearch}
-        />
-
-        {/* Filters and Sort */}
-        <div className="flex flex-wrap justify-between items-center gap-4">
-          <SearchFilters
-            filters={searchParams}
-            onFiltersChange={handleFiltersChange}
+          {/* Search Bar */}
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            onSearch={handleSearch}
           />
-          <SearchSort
-            value={searchParams.sortBy || 'relevance'}
-            onChange={(sortBy) => handleFiltersChange({ ...searchParams, sortBy })}
+
+          {/* Filters and Sort */}
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <SearchFilters
+              filters={searchParams}
+              onFiltersChange={handleFiltersChange}
+            />
+            <SearchSort
+              value={searchParams.sortBy || 'relevance'}
+              onChange={(sortBy) => handleFiltersChange({ ...searchParams, sortBy })}
+            />
+          </div>
+
+          {/* Results */}
+          <SearchResults
+            data={data}
+            isLoading={isLoading}
+            onViewProfile={handleViewProfile}
+            onPageChange={handlePageChange}
+            onDidYouMeanClick={handleDidYouMeanClick}
           />
         </div>
-
-        {/* Results */}
-        <SearchResults
-          data={data}
-          isLoading={isLoading}
-          onViewProfile={handleViewProfile}
-          onPageChange={handlePageChange}
-          onDidYouMeanClick={handleDidYouMeanClick}
-        />
       </div>
-    </div>
+    </>
   );
 }

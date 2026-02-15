@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { ClientDashboard } from "@/components/dashboard/ClientDashboard";
-import { LawyerDashboard } from "@/components/dashboard/LawyerDashboard";
+import { PropertyDashboard } from "@/components/dashboard/PropertyDashboard";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { PAGE_SEO_CONFIG } from "@/config/page-seo";
 import { authClient } from "@/lib/auth-client";
+import { generateProtectedPageSEO } from "@/utils/seo";
 
 export const Route = createFileRoute("/(protected)/dashboard/")({
   component: RouteComponent,
@@ -10,14 +12,20 @@ export const Route = createFileRoute("/(protected)/dashboard/")({
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const { data: session, error, isPending } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
+
+  const seoMetadata = generateProtectedPageSEO({
+    title: PAGE_SEO_CONFIG.dashboard.title,
+    description: PAGE_SEO_CONFIG.dashboard.description,
+    path: '/dashboard',
+  });
 
   // Redirect admins to admin panel
   useEffect(() => {
-    if (session?.user?.role && ['reviewer', 'admin', 'super_admin'].includes(session.user.role)) {
+    if (session?.user.role && ['reviewer', 'admin', 'super_admin'].includes(session.user.role)) {
       navigate({ to: "/admin", replace: true });
     }
-  }, [session?.user?.role, navigate]);
+  }, [session?.user.role, navigate]);
 
   if (isPending) {
     return <div>Loading session...</div>;
@@ -26,14 +34,11 @@ function RouteComponent() {
   // Safety guard: If no session exists, return null
   if (!session?.user) return null;
 
-  // Render dashboard based on user role
-  switch (session.user.role) {
-    case 'lawyer':
-      return <LawyerDashboard />;
-    case 'user':
-      return <ClientDashboard />;
-    default:
-      // Default to client dashboard for any other role (including legacy 'client' role)
-      return <ClientDashboard />;
-  }
+  // Render property management dashboard for all users
+  return (
+    <>
+      <SEOHead metadata={seoMetadata} />
+      <PropertyDashboard />
+    </>
+  );
 }

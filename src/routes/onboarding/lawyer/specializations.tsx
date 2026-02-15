@@ -9,10 +9,13 @@ import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import React from "react";
 import { EnhancedSpecializationsSelector } from "@/components/onboarding/enhanced-specializations";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { toastManager } from "@/components/ui/toast";
+import { PAGE_SEO_CONFIG } from "@/config/page-seo";
 import { api } from "@/lib/api/client";
 import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
+import { generateOnboardingPageSEO } from "@/utils/seo";
 
 export const Route = createFileRoute("/onboarding/lawyer/specializations")({
   component: LawyerSpecializationsStep,
@@ -37,6 +40,14 @@ function LawyerSpecializationsStep() {
   const updateLastSaved = useEnhancedOnboardingStore((state) => state.updateLastSaved);
   const clearDraft = useEnhancedOnboardingStore((state) => state.clearDraft);
   const errors = useEnhancedOnboardingStore((state) => state.errors);
+
+  const seoMetadata = generateOnboardingPageSEO({
+    step: PAGE_SEO_CONFIG.onboarding.lawyerSpecializations.step,
+    description: PAGE_SEO_CONFIG.onboarding.lawyerSpecializations.description,
+    path: '/onboarding/lawyer/specializations',
+    currentStep: 3,
+    totalSteps: 5,
+  });
 
   // Set current step on mount
   React.useEffect(() => {
@@ -119,24 +130,26 @@ function LawyerSpecializationsStep() {
                      (!errors.specializations || errors.specializations.length === 0);
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <>
+      <SEOHead metadata={seoMetadata} />
+      <div className="mx-auto p-6 max-w-4xl">
       {/* Progress Bar */}
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">Step 3 of 4</span>
-          <span className="text-sm text-gray-500">Practice Areas & Experience</span>
+        <div className="flex justify-between items-center mb-2">
+          <span className="font-medium text-gray-700 text-sm">Step 3 of 4</span>
+          <span className="text-gray-500 text-sm">Practice Areas & Experience</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div className="bg-blue-500 h-2 rounded-full transition-all duration-300 w-3/4"></div>
+        <div className="bg-gray-200 rounded-full w-full h-2">
+          <div className="bg-blue-500 rounded-full w-3/4 h-2 transition-all duration-300"></div>
         </div>
       </div>
 
       {/* Header */}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="mb-8 text-center">
+        <h2 className="mb-2 font-bold text-gray-900 text-2xl">
           Your Practice Areas
         </h2>
-        <p className="text-sm text-gray-600 max-w-2xl mx-auto">
+        <p className="mx-auto max-w-2xl text-gray-600 text-sm">
           Select your areas of legal expertise and specify your years of experience in each. 
           This helps clients find the right lawyer for their specific legal needs.
         </p>
@@ -164,28 +177,28 @@ function LawyerSpecializationsStep() {
           type="button"
           onClick={handleSubmit}
           disabled={!isFormValid || completeOnboardingMutation.isPending}
-          className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg transition transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 px-6 py-3 rounded-lg font-medium text-white disabled:transform-none hover:scale-[1.02] active:scale-[0.98] transition disabled:cursor-not-allowed transform"
         >
           {completeOnboardingMutation.isPending ? (
             "Submitting application..."
           ) : (
             <>
               Submit Application
-              <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
+              <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 w-4 h-4" />
             </>
           )}
         </Button>
       </div>
 
       {/* Helper Text */}
-      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="bg-blue-50 mt-6 p-4 border border-blue-200 rounded-lg">
         <div className="flex items-start gap-3">
           <span className="text-blue-600 text-xl">💡</span>
           <div>
-            <p className="text-sm font-medium text-blue-900">
+            <p className="font-medium text-blue-900 text-sm">
               Tips for selecting specializations:
             </p>
-            <ul className="text-xs text-blue-700 mt-1 space-y-1">
+            <ul className="space-y-1 mt-1 text-blue-700 text-xs">
               <li>• Choose areas where you have significant experience</li>
               <li>• Be honest about your years of experience - it builds trust</li>
               <li>• You can select 1-5 specializations to showcase your expertise</li>
@@ -197,14 +210,14 @@ function LawyerSpecializationsStep() {
 
       {/* Validation Summary */}
       {!isFormValid && specializations.length > 0 && (
-        <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div className="bg-yellow-50 mt-4 p-4 border border-yellow-200 rounded-lg">
           <div className="flex items-start gap-3">
             <span className="text-yellow-600 text-xl">⚠️</span>
             <div>
-              <p className="text-sm font-medium text-yellow-900">
+              <p className="font-medium text-yellow-900 text-sm">
                 Please review your selections:
               </p>
-              <ul className="text-xs text-yellow-700 mt-1 space-y-1">
+              <ul className="space-y-1 mt-1 text-yellow-700 text-xs">
                 {specializations.length === 0 && (
                   <li>• At least one specialization is required</li>
                 )}
@@ -223,5 +236,6 @@ function LawyerSpecializationsStep() {
         </div>
       )}
     </div>
+    </>
   );
 }

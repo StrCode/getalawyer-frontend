@@ -4,6 +4,7 @@ import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { PhotoUploader } from "@/components/onboarding/photo-uploader";
 import { ProgressTracker } from "@/components/onboarding/progress-tracker";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,9 +16,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toastManager } from "@/components/ui/toast";
+import { PAGE_SEO_CONFIG } from "@/config/page-seo";
 import { getUserFriendlyErrorMessage, type NINVerificationData, verifyNIN } from "@/services/nin-verification";
 import { getUploadErrorMessage, isRetryableUploadError, uploadPhoto } from "@/services/photo-upload";
 import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
+import { generateOnboardingPageSEO } from "@/utils/seo";
 
 export const Route = createFileRoute("/onboarding/lawyer/credentials")({
   component: LawyerCredentialsStep,

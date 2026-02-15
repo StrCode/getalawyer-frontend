@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { RegisterForm } from "@/components/auth/RegisterForm";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { PAGE_SEO_CONFIG } from "@/config/page-seo";
+import { generateAuthPageSEO } from "@/utils/seo";
 
 // Define the search params type
 type RegisterSearch = {
@@ -27,11 +30,20 @@ function RouteComponent() {
     type || "user",
   );
 
+  const seoMetadata = generateAuthPageSEO({
+    title: PAGE_SEO_CONFIG.register.title,
+    description: PAGE_SEO_CONFIG.register.description,
+    path: '/register',
+  });
+
   return (
-    <div className="flex justify-center items-center px-4 pt-8">
-      <div className="w-full max-w-sm">
-        <RegisterForm userType={userType} />
+    <>
+      <SEOHead metadata={seoMetadata} />
+      <div className="flex justify-center items-center px-4 pt-8">
+        <div className="w-full max-w-sm">
+          <RegisterForm userType={userType} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

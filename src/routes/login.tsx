@@ -1,43 +1,66 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
-import { Logo } from "@/components/logo";
+import { createFileRoute } from "@tanstack/react-router";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { Logo } from "@/components/logo";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { PAGE_SEO_CONFIG } from "@/config/page-seo";
+import { generateAuthPageSEO } from "@/utils/seo";
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const seoMetadata = generateAuthPageSEO({
+    title: PAGE_SEO_CONFIG.login.title,
+    description: PAGE_SEO_CONFIG.login.description,
+    path: '/login',
+  });
+
   return (
-    <main className="relative md:h-screen md:overflow-hidden lg:grid lg:grid-cols-2">
-      <div className="relative hidden h-full flex-col border-r bg-secondary p-10 lg:flex dark:bg-secondary/20">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-        <Logo className="mr-auto h-5" />
-        <div className="z-10 mt-auto">
-          <blockquote className="space-y-2">
-            <p className="text-xl">
-              &ldquo;This Platform has helped me to save time and serve my
-              clients faster than ever before.&rdquo;
-            </p>
-            <footer className="font-mono font-semibold text-sm">
-              ~ Ali Hassan
-            </footer>
-          </blockquote>
+    <>
+      <SEOHead metadata={seoMetadata} />
+      <main className="relative lg:grid lg:grid-cols-2 md:h-screen md:overflow-hidden">
+        <div className="hidden relative lg:flex flex-col border-r h-full overflow-hidden">
+          {/* Background Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-no-repeat bg-center"
+            style={{ backgroundImage: 'url(/getalawyer-logo.jpg)' }}
+          />
+          
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-black/30" />
+          
+          {/* Content */}
+          <div className="z-10 relative flex flex-col p-10 h-full">
+            <Logo className="brightness-0 invert mr-auto h-5" />
+            
+            <div className="mt-auto">
+              <blockquote className="space-y-2 text-white">
+                <p className="text-xl">
+                  &ldquo;This Platform has helped me to save time and serve my
+                  clients faster than ever before.&rdquo;
+                </p>
+                <footer className="font-mono font-semibold text-white/80 text-sm">
+                  ~ Ali Hassan
+                </footer>
+              </blockquote>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="relative flex min-h-screen flex-col justify-center p-4">
-        <div
-          aria-hidden
-          className="-z-10 absolute inset-0 isolate opacity-60 contain-strict"
-        >
-          <div className="-translate-y-87.5 absolute top-0 right-0 h-320 w-140 rounded-full bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,--theme(--color-foreground/.06)_0,hsla(0,0%,55%,.02)_50%,--theme(--color-foreground/.01)_80%)]" />
-          <div className="absolute top-0 right-0 h-320 w-60 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,--theme(--color-foreground/.04)_0,--theme(--color-foreground/.01)_80%,transparent_100%)] [translate:5%_-50%]" />
-          <div className="-translate-y-87.5 absolute top-0 right-0 h-320 w-60 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,--theme(--color-foreground/.04)_0,--theme(--color-foreground/.01)_80%,transparent_100%)]" />
+        <div className="relative flex flex-col justify-center p-6 lg:p-8 min-h-screen">
+          <div
+            aria-hidden
+            className="-z-10 isolate absolute inset-0 opacity-60 contain-strict"
+          >
+            <div className="top-0 right-0 absolute bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,--theme(--color-foreground/.06)_0,hsla(0,0%,55%,.02)_50%,--theme(--color-foreground/.01)_80%)] rounded-full w-140 h-320 -translate-y-87.5" />
+            <div className="top-0 right-0 absolute bg-[radial-gradient(50%_50%_at_50%_50%,--theme(--color-foreground/.04)_0,--theme(--color-foreground/.01)_80%,transparent_100%)] rounded-full w-60 h-320 [translate:5%_-50%]" />
+            <div className="top-0 right-0 absolute bg-[radial-gradient(50%_50%_at_50%_50%,--theme(--color-foreground/.04)_0,--theme(--color-foreground/.01)_80%,transparent_100%)] rounded-full w-60 h-320 -translate-y-87.5" />
+          </div>
+          <div className="mx-auto w-full max-w-md">
+            <LoginForm />
+          </div>
         </div>
-        <div className="mx-auto space-y-4 sm:w-sm">
-          <LoginForm />
-        </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

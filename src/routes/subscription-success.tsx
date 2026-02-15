@@ -1,9 +1,12 @@
 import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { SEOHead } from '@/components/seo/SEOHead'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { toastManager } from '@/components/ui/toast'
+import { PAGE_SEO_CONFIG } from '@/config/page-seo'
+import { generateProtectedPageSEO } from '@/utils/seo'
 
 export const Route = createFileRoute('/subscription-success')({
   component: SubscriptionSuccess,
@@ -19,6 +22,12 @@ function SubscriptionSuccess() {
   const [status, setStatus] = useState<VerificationStatus>('loading')
   const [subscriptionData, setSubscriptionData] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const seoMetadata = generateProtectedPageSEO({
+    title: PAGE_SEO_CONFIG.subscriptionSuccess.title,
+    description: PAGE_SEO_CONFIG.subscriptionSuccess.description,
+    path: '/subscription-success',
+  });
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -81,23 +90,28 @@ function SubscriptionSuccess() {
 
   if (status === 'loading') {
     return (
-      <div className="flex justify-center items-center bg-background p-4 min-h-screen">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Verifying Payment</CardTitle>
-            <CardDescription>Please wait while we verify your payment...</CardDescription>
-          </CardHeader>
-          <CardContent className="flex justify-center">
-            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-          </CardContent>
-        </Card>
-      </div>
+      <>
+        <SEOHead metadata={seoMetadata} />
+        <div className="flex justify-center items-center bg-background p-4 min-h-screen">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle>Verifying Payment</CardTitle>
+              <CardDescription>Please wait while we verify your payment...</CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-center">
+              <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+            </CardContent>
+          </Card>
+        </div>
+      </>
     )
   }
 
   if (status === 'success') {
     return (
-      <div className="flex justify-center items-center bg-background p-4 min-h-screen">
+      <>
+        <SEOHead metadata={seoMetadata} />
+        <div className="flex justify-center items-center bg-background p-4 min-h-screen">
         <Card className="border-green-200 w-full max-w-md">
           <CardHeader>
             <div className="flex justify-center mb-4">
@@ -141,12 +155,15 @@ function SubscriptionSuccess() {
           </CardContent>
         </Card>
       </div>
+      </>
     )
   }
 
   if (status === 'pending') {
     return (
-      <div className="flex justify-center items-center bg-background p-4 min-h-screen">
+      <>
+        <SEOHead metadata={seoMetadata} />
+        <div className="flex justify-center items-center bg-background p-4 min-h-screen">
         <Card className="border-yellow-200 w-full max-w-md">
           <CardHeader>
             <div className="flex justify-center mb-4">
@@ -171,42 +188,46 @@ function SubscriptionSuccess() {
           </CardContent>
         </Card>
       </div>
+      </>
     )
   }
 
   return (
-    <div className="flex justify-center items-center bg-background p-4 min-h-screen">
-      <Card className="border-red-200 w-full max-w-md">
-        <CardHeader>
-          <div className="flex justify-center mb-4">
-            <AlertCircle className="w-12 h-12 text-red-600" />
-          </div>
-          <CardTitle className="text-center">Payment Failed</CardTitle>
-          <CardDescription className="text-center">
-            There was an issue with your payment
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-gray-600 text-sm">
-            {error}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              onClick={() => navigate({ to: '/dashboard/plans' })}
-              className="flex-1"
-            >
-              Try Again
-            </Button>
-            <Button
-              onClick={() => navigate({ to: '/dashboard' })}
-              variant="outline"
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <>
+      <SEOHead metadata={seoMetadata} />
+      <div className="flex justify-center items-center bg-background p-4 min-h-screen">
+        <Card className="border-red-200 w-full max-w-md">
+          <CardHeader>
+            <div className="flex justify-center mb-4">
+              <AlertCircle className="w-12 h-12 text-red-600" />
+            </div>
+            <CardTitle className="text-center">Payment Failed</CardTitle>
+            <CardDescription className="text-center">
+              There was an issue with your payment
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-gray-600 text-sm">
+              {error}
+            </p>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => navigate({ to: '/dashboard/plans' })}
+                className="flex-1"
+              >
+                Try Again
+              </Button>
+              <Button
+                onClick={() => navigate({ to: '/dashboard' })}
+                variant="outline"
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   )
 }
