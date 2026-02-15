@@ -17,7 +17,7 @@ import { api } from "@/lib/api/client";
 import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 import { generateOnboardingPageSEO } from "@/utils/seo";
 
-export const Route = createFileRoute("/onboarding/(lawyer)/lawyer-specializations")({
+export const Route = createFileRoute("/(protected)/onboarding/(lawyer)/lawyer-specializations")({
   component: LawyerSpecializationsStep,
 });
 

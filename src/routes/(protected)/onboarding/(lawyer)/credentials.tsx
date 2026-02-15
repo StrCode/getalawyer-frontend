@@ -22,7 +22,7 @@ import { getUploadErrorMessage, isRetryableUploadError, uploadPhoto } from "@/se
 import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 import { generateOnboardingPageSEO } from "@/utils/seo";
 
-export const Route = createFileRoute("/onboarding/(lawyer)/credentials")({
+export const Route = createFileRoute("/(protected)/onboarding/(lawyer)/credentials")({
   component: LawyerCredentialsStep,
   beforeLoad: () => {
     // Check if user can access credentials step

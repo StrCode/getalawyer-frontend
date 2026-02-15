@@ -14,13 +14,20 @@ import { authClient, signOut } from "@/lib/auth-client";
 import { clearEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
 
-export const Route = createFileRoute('/onboarding/(client)')({
+export const Route = createFileRoute('/(protected)/onboarding/(client)')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const navigate = useNavigate()
   const { data: session, isPending } = authClient.useSession();
+
+  // Redirect if onboarding is already completed
+  useEffect(() => {
+    if (!isPending && session?.user?.onboarding_completed) {
+      navigate({ to: "/dashboard", replace: true });
+    }
+  }, [session, isPending, navigate]);
 
   // Redirect lawyers to lawyer onboarding
   useEffect(() => {

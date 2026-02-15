@@ -21,7 +21,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/onboarding/(lawyer)/review")({
+export const Route = createFileRoute("/(protected)/onboarding/(lawyer)/review")({
   component: LawyerReviewStep,
 });
 

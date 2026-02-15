@@ -15,7 +15,7 @@ import {
 	useOnboardingClientStore,
 } from "@/stores/onBoardingClient";
 
-export const Route = createFileRoute("/onboarding/(client)/client-specializations")({
+export const Route = createFileRoute("/(protected)/onboarding/(client)/client-specializations")({
 	component: RouteComponent,
 });
 

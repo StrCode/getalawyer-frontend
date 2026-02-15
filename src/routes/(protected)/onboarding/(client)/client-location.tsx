@@ -12,7 +12,7 @@ import {
 import { useCountriesWithStates } from "@/hooks/use-countries";
 import { useOnboardingClientStore } from "@/stores/onBoardingClient";
 
-export const Route = createFileRoute("/onboarding/(client)/client-location")({
+export const Route = createFileRoute("/(protected)/onboarding/(client)/client-location")({
 	component: OnboardingStep1,
 });
 

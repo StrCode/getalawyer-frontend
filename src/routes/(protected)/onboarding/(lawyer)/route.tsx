@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { authClient, signOut } from "@/lib/auth-client";
 import { clearEnhancedOnboardingStore, useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
-export const Route = createFileRoute("/onboarding/(lawyer)")({
+export const Route = createFileRoute("/(protected)/onboarding/(lawyer)")({
   component: RouteComponent,
   beforeLoad: ({ location }) => {
     // Redirect to current incomplete step when accessing base onboarding route
@@ -53,6 +53,13 @@ function getCurrentStepRoute(store: ReturnType<typeof useEnhancedOnboardingStore
 function RouteComponent() {
   const navigate = useNavigate()
   const { data: session, isPending } = authClient.useSession();
+
+  // Redirect if onboarding is already completed
+  useEffect(() => {
+    if (!isPending && session?.user?.onboarding_completed) {
+      navigate({ to: "/dashboard", replace: true });
+    }
+  }, [session, isPending, navigate]);
 
   // Redirect non-lawyers to client onboarding
   useEffect(() => {

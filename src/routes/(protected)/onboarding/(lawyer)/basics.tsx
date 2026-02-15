@@ -31,7 +31,7 @@ import { useCountriesWithStates } from "@/hooks/use-countries";
 import { authClient } from "@/lib/auth-client";
 import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
-export const Route = createFileRoute("/onboarding/(lawyer)/basics")({
+export const Route = createFileRoute("/(protected)/onboarding/(lawyer)/basics")({
   component: LawyerBasicsStep,
   beforeLoad: () => {
     // Check if application is already submitted or verified

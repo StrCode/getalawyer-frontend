@@ -22,7 +22,7 @@ import {
   useEnhancedOnboardingStore 
 } from "@/stores/enhanced-onboarding-store";
 
-export const Route = createFileRoute("/onboarding/(lawyer)/status")({
+export const Route = createFileRoute("/(protected)/onboarding/(lawyer)/status")({
   component: LawyerStatusPage,
 });
 

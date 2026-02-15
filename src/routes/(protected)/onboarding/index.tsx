@@ -1,15 +1,15 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { getUser } from "@/functions/get-user";
 
-export const Route = createFileRoute("/onboarding/")({
-	beforeLoad: async () => {
-		// Get the current session from server
-		const session = await getUser();
+export const Route = createFileRoute("/(protected)/onboarding/")({
+	beforeLoad: async ({ context }) => {
+		// Get session from parent protected route context
+		const { session } = context;
 
-		if (!session?.user) {
-			// If no session, redirect to login
+		// If onboarding is already completed, redirect to dashboard
+		if (session.user.onboarding_completed) {
 			throw redirect({
-				to: "/login",
+				to: "/dashboard",
+				replace: true,
 			});
 		}
 
