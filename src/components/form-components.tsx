@@ -1,4 +1,3 @@
-import { useStore } from "@tanstack/react-form";
 import {
   CancelCircleIcon,
   CheckmarkCircle02Icon,
@@ -7,22 +6,22 @@ import {
   ViewOffIcon,
   ViewOffSlashIcon,
 } from "@hugeicons/core-free-icons";
-import { useMemo, useState } from "react";
-
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Checkbox } from "./ui/checkbox";
 import type { IconSvgElement } from '@hugeicons/react';
-import { useFieldContext, useFormContext } from "@/hooks/form-context";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { HugeiconsIcon } from '@hugeicons/react';
+import { useStore } from "@tanstack/react-form";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useFieldContext, useFormContext } from "@/hooks/form-context";
+import { Checkbox } from "./ui/checkbox";
 
 export function SubscribeButton({ label }: { label: string }) {
   const form = useFormContext();
@@ -55,7 +54,6 @@ export function TextField({
       <InputGroup>
         <InputGroupInput
           type="text"
-          className="h-14 rounded-2xl"
           value={field.state.value}
           placeholder={placeholder}
           onBlur={field.handleBlur}
@@ -63,7 +61,7 @@ export function TextField({
           aria-invalid={errors.length > 0}
         />
         {StartIcon && (
-          <InputGroupAddon>
+          <InputGroupAddon align="inline-start">
             <HugeiconsIcon icon={StartIcon} />
           </InputGroupAddon>
         )}
@@ -168,7 +166,7 @@ export function CheckboxField({
             {label}
           </FieldLabel>
           {description && (
-            <p className="text-sm text-gray-500 mt-0.5">{description}</p>
+            <p className="mt-0.5 text-gray-500 text-sm">{description}</p>
           )}
         </div>
       </div>
@@ -202,7 +200,7 @@ export function TimeField({
           placeholder={placeholder}
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.value)}
-          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+          className="[&::-webkit-calendar-picker-indicator]:hidden bg-background appearance-none [&::-webkit-calendar-picker-indicator]:appearance-none"
           aria-invalid={errors.length > 0}
         />
       </div>
@@ -256,7 +254,7 @@ function PasswordStrength({ value, id }: { value: string; id: string }) {
     <div className="mt-3">
       {/* Progress Bar */}
       <div
-        className="mt-1 mb-2 h-1 w-full overflow-hidden rounded-full bg-border"
+        className="mt-1 mb-2 bg-border rounded-full w-full h-1 overflow-hidden"
         role="progressbar"
         aria-valuenow={score}
         aria-valuemin={0}
@@ -271,7 +269,7 @@ function PasswordStrength({ value, id }: { value: string; id: string }) {
       {/* Text Status */}
       <p
         id={`${id}-strength-desc`}
-        className="text-sm font-medium text-foreground"
+        className="font-medium text-foreground text-sm"
       >
         {getStrengthText(score)}. Must contain:
       </p>
@@ -283,12 +281,12 @@ function PasswordStrength({ value, id }: { value: string; id: string }) {
             {req.met ? (
               <HugeiconsIcon icon={CheckmarkCircle02Icon}
                 size={14}
-                className="text-white rounded-full p-0.5 bg-emerald-500"
+                className="bg-emerald-500 p-0.5 rounded-full text-white"
               />
             ) : (
               <HugeiconsIcon icon={CancelCircleIcon}
                 size={14}
-                className="text-gray-950 bg-stone-200 rounded-full p-0.5"
+                className="bg-stone-200 p-0.5 rounded-full text-gray-950"
               />
             )}
             <span
@@ -372,7 +370,7 @@ export function PasswordPassField({
       </InputGroup>
 
       {description && (
-        <p className="text-xs text-muted-foreground">{description}</p>
+        <p className="text-muted-foreground text-xs">{description}</p>
       )
       }
 

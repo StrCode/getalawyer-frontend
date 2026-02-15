@@ -39,8 +39,8 @@ function RouteComponent() {
   return (
     <>
       <SEOHead metadata={seoMetadata} />
-      <div className="flex justify-center items-center px-4 pt-8">
-        <div className="w-full max-w-sm">
+      <div className="flex justify-center items-center px-4 py-8">
+        <div className="w-full max-w-md">
           <RegisterForm userType={userType} />
         </div>
       </div>
