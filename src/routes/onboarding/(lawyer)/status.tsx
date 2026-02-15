@@ -246,7 +246,7 @@ function LawyerStatusPage() {
 
   // Navigation handlers
   const handleBackToApplication = () => {
-    router.navigate({ to: "/onboarding/(lawyer)/review" });
+    router.navigate({ to: "/onboarding/review" });
   };
 
   const handleGoToDashboard = () => {

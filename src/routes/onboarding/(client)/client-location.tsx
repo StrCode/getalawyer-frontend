@@ -54,7 +54,7 @@ function OnboardingStep1() {
 			return
 		}
 
-		router.navigate({ to: "/onboarding/(client)/client-specializations" });
+		router.navigate({ to: "/onboarding/client-specializations" });
 	}
 
 	if (isLoading) {

@@ -150,6 +150,7 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
           name: registrationData.name,
           email: registrationData.email,
           password: value.password,
+          role: userType,
           onboarding_completed: false,
         });
 
@@ -183,9 +184,9 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
         });
 
         if (userType === "user") {
-          navigate({ to: "/onboarding/client" });
+          navigate({ to: "/onboarding/client-location" });
         } else {
-          navigate({ to: "/onboarding/lawyer" });
+          navigate({ to: "/onboarding/basics" });
         }
       } catch (error: any) {
         console.error("Unexpected error during sign up:", error);

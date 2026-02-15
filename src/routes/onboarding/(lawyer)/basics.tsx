@@ -183,7 +183,7 @@ function LawyerBasicsStep() {
       type: "success",
     });
 
-    router.navigate({ to: "/onboarding/(lawyer)/credentials" });
+    router.navigate({ to: "/onboarding/credentials" });
   };
 
   // Initialize form from store on mount

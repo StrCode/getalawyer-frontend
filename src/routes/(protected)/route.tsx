@@ -5,7 +5,6 @@ export const Route = createFileRoute("/(protected)")({
   beforeLoad: async () => {
     // Check if user is authenticated using server-side session
     const session = await getUser();
-    console.log("I came here Session:", session)
     
     if (!session?.user) {
       // Redirect to login if not authenticated
@@ -13,7 +12,7 @@ export const Route = createFileRoute("/(protected)")({
         to: "/login",
       });
     }
-
+    
     // Return session to make it available to child routes
     return {
       session,

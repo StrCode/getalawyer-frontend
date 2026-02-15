@@ -76,7 +76,7 @@ function LawyerSpecializationsStep() {
       updateLastSaved();
 
       // Navigate to review step (which will now show confirmation)
-      router.navigate({ to: "/onboarding/(lawyer)/review" });
+      router.navigate({ to: "/onboarding/review" });
     },
     onError: (error: Error) => {
       console.error("Onboarding completion error:", error);
@@ -117,7 +117,7 @@ function LawyerSpecializationsStep() {
 
   // Handle back navigation
   const handleBack = () => {
-    router.navigate({ to: "/onboarding/(lawyer)/credentials" });
+    router.navigate({ to: "/onboarding/credentials" });
   };
 
   // Check if form is valid for submission

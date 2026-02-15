@@ -67,7 +67,7 @@ function RouteComponent() {
 	}
 
 	const handleBack = () => {
-		navigate({ to: "/onboarding/(client)/client-location" });
+		navigate({ to: "/onboarding/client-location" });
 	}
 
 	return (

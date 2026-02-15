@@ -131,7 +131,7 @@ function LawyerReviewStep() {
 
   // Handle navigation to status page
   const handleViewStatus = () => {
-    router.navigate({ to: "/onboarding/(lawyer)/status" });
+    router.navigate({ to: "/onboarding/status" });
   };
 
   return (

@@ -43,7 +43,7 @@ function App() {
               </ul>
               <Link
                 to="/register"
-                search={{ type: "client" }}
+                search={{ type: "user" }}
                 className="block bg-blue-600 hover:bg-blue-700 py-3 rounded-lg w-full text-white text-center transition"
               >
                 Sign Up as Client

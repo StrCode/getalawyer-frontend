@@ -4,8 +4,10 @@ import {
   createFileRoute,
   Link,
   Outlet,
+  redirect,
   useNavigate
 } from '@tanstack/react-router'
+import { useEffect } from 'react';
 import { Logo } from '@/components/logo';
 import { Button } from "@/components/ui/button";
 import { authClient, signOut } from "@/lib/auth-client";
@@ -18,7 +20,14 @@ export const Route = createFileRoute('/onboarding/(client)')({
 
 function RouteComponent() {
   const navigate = useNavigate()
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
+
+  // Redirect lawyers to lawyer onboarding
+  useEffect(() => {
+    if (!isPending && session?.user?.role === "lawyer") {
+      navigate({ to: "/onboarding/basics", replace: true });
+    }
+  }, [session, isPending, navigate]);
 
   // Custom signOut function that also clears onboarding data
   const handleSignOut = () => {
@@ -31,6 +40,38 @@ function RouteComponent() {
     // Then sign out
     signOut({}, { onSuccess: () => navigate({ to: "/" }) });
   };
+
+  // Show loading state while checking session
+  if (isPending) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <div className="inline-flex justify-center items-center bg-primary/10 mb-3 rounded-full w-12 h-12">
+            <svg
+              className="w-5 h-5 text-primary animate-spin"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+          </div>
+          <p className="text-gray-600 text-sm">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

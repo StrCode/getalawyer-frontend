@@ -308,7 +308,7 @@ function LawyerCredentialsStep() {
         });
 
         // Navigate to review page
-        router.navigate({ to: "/onboarding/(lawyer)/review" });
+        router.navigate({ to: "/onboarding/review" });
         return;
       }
 
@@ -337,7 +337,7 @@ function LawyerCredentialsStep() {
       });
 
       // Navigate to review page
-      router.navigate({ to: "/onboarding/(lawyer)/review" });
+      router.navigate({ to: "/onboarding/review" });
     } catch (error) {
       const errorMessage = error instanceof Error 
         ? getUploadErrorMessage(error)
@@ -362,7 +362,7 @@ function LawyerCredentialsStep() {
   };
 
   const handleBack = () => {
-    router.navigate({ to: "/onboarding/(lawyer)/basics" });
+    router.navigate({ to: "/onboarding/basics" });
   };
 
   // Initialize form from store on mount
