@@ -150,7 +150,7 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
           name: registrationData.name,
           email: registrationData.email,
           password: value.password,
-          role: userType,
+          userType,
           onboarding_completed: false,
         });
 

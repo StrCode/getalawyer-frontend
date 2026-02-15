@@ -237,7 +237,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <div className="flex justify-center items-center bg-gray-900 rounded-sm size-8 font-bold text-white text-sm">
                 <Logo />
               </div>
-              <span className="font-semibold text-gray-900">Smart Stay Rentals</span>
+              <span className="font-semibold text-gray-900">GetaLawyer</span>
             </div>
             <ChevronDown className="size-4 text-gray-400" />
           </div>

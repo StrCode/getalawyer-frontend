@@ -5,6 +5,13 @@ export const Route = createFileRoute("/(protected)/onboarding/")({
 		// Get session from parent protected route context
 		const { session } = context;
 
+		// Safety check - this shouldn't happen since parent route protects it
+		if (!session?.user) {
+			throw redirect({
+				to: "/login",
+			});
+		}
+
 		// If onboarding is already completed, redirect to dashboard
 		if (session.user.onboarding_completed) {
 			throw redirect({
