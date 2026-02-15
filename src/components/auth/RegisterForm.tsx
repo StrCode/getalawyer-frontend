@@ -82,9 +82,9 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
 
   const handleRegistrationComplete = (userType: "user" | "lawyer") => {
     if (userType === "user") {
-      return "/onboarding/client/location";
+      return "/onboarding/client-location";
     } else {
-      return "onboarding/lawyer/step-1";
+      return "/onboarding/basics";
     }
   };
 
@@ -183,9 +183,9 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
         });
 
         if (userType === "user") {
-          navigate({ to: "/onboarding/client/location" });
+          navigate({ to: "/onboarding/client" });
         } else {
-          navigate({ to: "/onboarding/lawyer/basics" });
+          navigate({ to: "/onboarding/lawyer" });
         }
       } catch (error: any) {
         console.error("Unexpected error during sign up:", error);

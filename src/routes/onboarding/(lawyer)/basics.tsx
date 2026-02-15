@@ -31,7 +31,7 @@ import { useCountriesWithStates } from "@/hooks/use-countries";
 import { authClient } from "@/lib/auth-client";
 import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
-export const Route = createFileRoute("/onboarding/lawyer/basics")({
+export const Route = createFileRoute("/onboarding/(lawyer)/basics")({
   component: LawyerBasicsStep,
   beforeLoad: () => {
     // Check if application is already submitted or verified
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/onboarding/lawyer/basics")({
     // If application is submitted or approved, redirect to status page
     if (store.applicationStatus === 'submitted' || store.applicationStatus === 'approved') {
       throw redirect({
-        to: '/onboarding/lawyer/status',
+        to: '/onboarding/status',
       });
     }
   },
@@ -183,7 +183,7 @@ function LawyerBasicsStep() {
       type: "success",
     });
 
-    router.navigate({ to: "/onboarding/lawyer/credentials" });
+    router.navigate({ to: "/onboarding/(lawyer)/credentials" });
   };
 
   // Initialize form from store on mount

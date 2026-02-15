@@ -22,7 +22,7 @@ import {
   useEnhancedOnboardingStore 
 } from "@/stores/enhanced-onboarding-store";
 
-export const Route = createFileRoute("/onboarding/lawyer/status")({
+export const Route = createFileRoute("/onboarding/(lawyer)/status")({
   component: LawyerStatusPage,
 });
 
@@ -83,33 +83,33 @@ function StatusPageHeader({ status, referenceNumber, submissionDate }: StatusPag
   return (
     <Card className={cn("border-2", headerContent.borderColor, headerContent.bgColor)}>
       <CardContent className="p-6">
-        <div className="text-center space-y-4">
-          <h1 className={cn("text-2xl font-bold", headerContent.textColor)}>
+        <div className="space-y-4 text-center">
+          <h1 className={cn("font-bold text-2xl", headerContent.textColor)}>
             {headerContent.title}
           </h1>
-          <p className={cn("text-lg max-w-2xl mx-auto", headerContent.textColor)}>
+          <p className={cn("mx-auto max-w-2xl text-lg", headerContent.textColor)}>
             {headerContent.description}
           </p>
           
           {/* Reference Number and Date */}
           {(referenceNumber || submissionDate) && (
-            <div className="flex items-center justify-center gap-6 mt-6">
+            <div className="flex justify-center items-center gap-6 mt-6">
               {referenceNumber && (
                 <div className="text-center">
-                  <p className={cn("text-sm font-medium", headerContent.textColor)}>
+                  <p className={cn("font-medium text-sm", headerContent.textColor)}>
                     Reference Number
                   </p>
-                  <p className={cn("text-xl font-mono font-bold", headerContent.textColor)}>
+                  <p className={cn("font-mono font-bold text-xl", headerContent.textColor)}>
                     {referenceNumber}
                   </p>
                 </div>
               )}
               {submissionDate && (
                 <div className="text-center">
-                  <p className={cn("text-sm font-medium", headerContent.textColor)}>
+                  <p className={cn("font-medium text-sm", headerContent.textColor)}>
                     Submitted On
                   </p>
-                  <p className={cn("text-lg font-semibold", headerContent.textColor)}>
+                  <p className={cn("font-semibold text-lg", headerContent.textColor)}>
                     {new Date(submissionDate).toLocaleDateString('en-US', {
                       weekday: 'long',
                       year: 'numeric',
@@ -198,10 +198,10 @@ function NextStepsCard({ status }: NextStepsCardProps) {
         <ol className="space-y-3">
           {nextSteps.steps.map((step, index) => (
             <li key={`next-step-${step.slice(0, 20)}-${index}`} className="flex items-start gap-3">
-              <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-medium mt-0.5">
+              <div className="flex justify-center items-center bg-blue-100 mt-0.5 rounded-full w-6 h-6 font-medium text-blue-600 text-sm">
                 {index + 1}
               </div>
-              <p className="text-sm text-gray-700 flex-1">{step}</p>
+              <p className="flex-1 text-gray-700 text-sm">{step}</p>
             </li>
           ))}
         </ol>
@@ -246,7 +246,7 @@ function LawyerStatusPage() {
 
   // Navigation handlers
   const handleBackToApplication = () => {
-    router.navigate({ to: "/onboarding/lawyer/review" });
+    router.navigate({ to: "/onboarding/(lawyer)/review" });
   };
 
   const handleGoToDashboard = () => {
@@ -263,7 +263,7 @@ function LawyerStatusPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="mx-auto p-6 max-w-4xl">
       <div className="space-y-8">
         {/* Header with status-specific messaging */}
         <StatusPageHeader 
@@ -273,7 +273,7 @@ function LawyerStatusPage() {
         />
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="gap-8 grid grid-cols-1 lg:grid-cols-3">
           {/* Left Column - Status Tracker */}
           <div className="lg:col-span-2">
             <ApplicationStatusTracker
@@ -285,14 +285,14 @@ function LawyerStatusPage() {
             
             {/* Additional Information for Specific Statuses */}
             {applicationStatus === 'submitted' && (
-              <Alert className="border-blue-200 bg-blue-50">
+              <Alert className="bg-blue-50 border-blue-200">
                 <HugeiconsIcon icon={Tick01Icon} className="w-4 h-4" />
                 <AlertDescription>
                   <div className="space-y-2">
                     <p className="font-medium text-blue-900">
                       Your application is now in our review queue
                     </p>
-                    <p className="text-sm text-blue-700">
+                    <p className="text-blue-700 text-sm">
                       We'll send you email updates at each stage of the review process. 
                       You can also check this page anytime for real-time status updates.
                     </p>
@@ -302,14 +302,14 @@ function LawyerStatusPage() {
             )}
 
             {applicationStatus === 'approved' && (
-              <Alert className="border-green-200 bg-green-50">
+              <Alert className="bg-green-50 border-green-200">
                 <HugeiconsIcon icon={Tick01Icon} className="w-4 h-4" />
                 <AlertDescription>
                   <div className="space-y-3">
                     <p className="font-medium text-green-900">
                       Welcome to our lawyer network!
                     </p>
-                    <p className="text-sm text-green-700">
+                    <p className="text-green-700 text-sm">
                       Your profile is now active and you can start receiving client requests. 
                       Set up your availability and practice preferences in your dashboard.
                     </p>
@@ -338,7 +338,7 @@ function LawyerStatusPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="text-sm space-y-2">
+                <div className="space-y-2 text-sm">
                   <div>
                     <p className="font-medium">Email Support</p>
                     <p className="text-muted-foreground">support@getalawyer.com</p>
@@ -358,8 +358,8 @@ function LawyerStatusPage() {
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-between pt-6 border-t">
-          <div className="text-sm text-muted-foreground">
+        <div className="flex justify-between items-center pt-6 border-t">
+          <div className="text-muted-foreground text-sm">
             Application submitted on {submissionDate ? new Date(submissionDate).toLocaleDateString() : 'Unknown date'}
           </div>
           
@@ -369,7 +369,7 @@ function LawyerStatusPage() {
                 variant="outline"
                 onClick={handleBackToApplication}
               >
-                <HugeiconsIcon icon={ArrowLeft02Icon} className="w-4 h-4 mr-2" />
+                <HugeiconsIcon icon={ArrowLeft02Icon} className="mr-2 w-4 h-4" />
                 Back to Application
               </Button>
             )}
@@ -378,7 +378,7 @@ function LawyerStatusPage() {
               variant="outline"
               onClick={handleGoHome}
             >
-              <HugeiconsIcon icon={HomeIcon} className="w-4 h-4 mr-2" />
+              <HugeiconsIcon icon={HomeIcon} className="mr-2 w-4 h-4" />
               Home
             </Button>
           </div>

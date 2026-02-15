@@ -12,7 +12,7 @@ import { authClient, signOut } from "@/lib/auth-client";
 import { clearEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
 
-export const Route = createFileRoute('/onboarding/client')({
+export const Route = createFileRoute('/onboarding/(client)')({
   component: RouteComponent,
 })
 

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { authClient, signOut } from "@/lib/auth-client";
 import { clearEnhancedOnboardingStore, useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
-export const Route = createFileRoute("/onboarding/lawyer")({
+export const Route = createFileRoute("/onboarding/(lawyer)")({
   component: RouteComponent,
   beforeLoad: ({ location }) => {
     // Redirect to current incomplete step when accessing base onboarding route
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/onboarding/lawyer")({
     const currentPath = location.pathname;
     
     // Only redirect if we're on the exact base route
-    if (currentPath === '/onboarding/lawyer' || currentPath === '/onboarding/lawyer/') {
+    if (currentPath === '/onboarding' || currentPath === '/onboarding/') {
       const targetRoute = getCurrentStepRoute(store);
       
       if (targetRoute !== currentPath) {
@@ -32,21 +32,21 @@ export const Route = createFileRoute("/onboarding/lawyer")({
 function getCurrentStepRoute(store: ReturnType<typeof useEnhancedOnboardingStore.getState>): string {
   // If application is submitted, go to pending page
   if (store.applicationStatus === 'submitted' || store.currentStep === 'pending_approval') {
-    return '/onboarding/lawyer/pending';
+    return '/onboarding/pending';
   }
   
   // If credentials step is completed, go to pending
   if (store.completedSteps.includes('credentials')) {
-    return '/onboarding/lawyer/pending';
+    return '/onboarding/pending';
   }
   
   // If basic_info is completed, go to credentials
   if (store.completedSteps.includes('basic_info')) {
-    return '/onboarding/lawyer/credentials';
+    return '/onboarding/credentials';
   }
   
   // Default: start at basics
-  return '/onboarding/lawyer/basics';
+  return '/onboarding/basics';
 }
 
 function RouteComponent() {

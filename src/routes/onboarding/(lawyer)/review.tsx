@@ -21,7 +21,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/onboarding/lawyer/review")({
+export const Route = createFileRoute("/onboarding/(lawyer)/review")({
   component: LawyerReviewStep,
 });
 
@@ -131,7 +131,7 @@ function LawyerReviewStep() {
 
   // Handle navigation to status page
   const handleViewStatus = () => {
-    router.navigate({ to: "/onboarding/lawyer/status" });
+    router.navigate({ to: "/onboarding/(lawyer)/status" });
   };
 
   return (

@@ -243,7 +243,7 @@ export function useProgressTracker() {
  */
 export function getStepRoute(step: OnboardingStep): string {
   const stepDef = STEP_DEFINITIONS.find(def => def.id === step);
-  return stepDef?.route || '/onboarding/lawyer/basics';
+  return stepDef?.route || '/onboarding/basics';
 }
 
 /**

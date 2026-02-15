@@ -22,7 +22,7 @@ import { getUploadErrorMessage, isRetryableUploadError, uploadPhoto } from "@/se
 import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 import { generateOnboardingPageSEO } from "@/utils/seo";
 
-export const Route = createFileRoute("/onboarding/lawyer/credentials")({
+export const Route = createFileRoute("/onboarding/(lawyer)/credentials")({
   component: LawyerCredentialsStep,
   beforeLoad: () => {
     // Check if user can access credentials step
@@ -31,14 +31,14 @@ export const Route = createFileRoute("/onboarding/lawyer/credentials")({
     // If basic_info is not completed, redirect to basics
     if (!store.completedSteps.includes('basic_info')) {
       throw redirect({
-        to: '/onboarding/lawyer/basics',
+        to: '/onboarding/basics',
       });
     }
     
     // If application is already submitted or approved, redirect to status page
     if (store.applicationStatus === 'submitted' || store.applicationStatus === 'approved') {
       throw redirect({
-        to: '/onboarding/lawyer/status',
+        to: '/onboarding/status',
       });
     }
   },
@@ -308,7 +308,7 @@ function LawyerCredentialsStep() {
         });
 
         // Navigate to review page
-        router.navigate({ to: "/onboarding/lawyer/review" });
+        router.navigate({ to: "/onboarding/(lawyer)/review" });
         return;
       }
 
@@ -337,7 +337,7 @@ function LawyerCredentialsStep() {
       });
 
       // Navigate to review page
-      router.navigate({ to: "/onboarding/lawyer/review" });
+      router.navigate({ to: "/onboarding/(lawyer)/review" });
     } catch (error) {
       const errorMessage = error instanceof Error 
         ? getUploadErrorMessage(error)
@@ -362,7 +362,7 @@ function LawyerCredentialsStep() {
   };
 
   const handleBack = () => {
-    router.navigate({ to: "/onboarding/lawyer/basics" });
+    router.navigate({ to: "/onboarding/(lawyer)/basics" });
   };
 
   // Initialize form from store on mount

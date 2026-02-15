@@ -62,7 +62,7 @@ export function useOnboardingNavigation(options: UseOnboardingNavigationOptions 
         // Check if user is on the wrong step
         const shouldRedirect = autoRedirect && 
           currentRoute !== expectedRoute && 
-          currentRoute.startsWith('/onboarding/lawyer/');
+          currentRoute.startsWith('/onboarding/');
 
         setNavigationState({
           isInitialized: true,
@@ -105,7 +105,7 @@ export function useOnboardingNavigation(options: UseOnboardingNavigationOptions 
     
     const shouldRedirect = autoRedirect && 
       currentRoute !== expectedRoute && 
-      currentRoute.startsWith('/onboarding/lawyer/');
+      currentRoute.startsWith('/onboarding/');
 
     if (shouldRedirect) {
       setNavigationState(prev => ({
@@ -135,7 +135,7 @@ export function useOnboardingNavigation(options: UseOnboardingNavigationOptions 
       
       // Redirect to status page if application is submitted/approved/rejected
       if (['submitted', 'approved', 'rejected'].includes(newStatus)) {
-        router.navigate({ to: '/onboarding/lawyer/status' });
+        router.navigate({ to: '/onboarding/status' });
       }
     };
 

@@ -337,13 +337,13 @@ export function useOnboardingSync() {
 // Utility function to redirect user to correct step based on backend status
 export function redirectToCurrentStep(currentStep: OnboardingStep): string {
   const stepRoutes: Record<OnboardingStep, string> = {
-    practice_info: '/onboarding/lawyer/basics',
-    documents: '/onboarding/lawyer/credentials',
-    specializations: '/onboarding/lawyer/specializations',
-    submitted: '/onboarding/lawyer/status', // Show status page for submitted applications
+    practice_info: '/onboarding/basics',
+    documents: '/onboarding/credentials',
+    specializations: '/onboarding/lawyer-specializations',
+    submitted: '/onboarding/status', // Show status page for submitted applications
   };
 
-  return stepRoutes[currentStep] || '/onboarding/lawyer/basics';
+  return stepRoutes[currentStep] || '/onboarding/basics';
 }
 
 // Function to check if user should be redirected based on their current progress

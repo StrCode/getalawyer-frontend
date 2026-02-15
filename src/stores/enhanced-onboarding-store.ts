@@ -124,7 +124,7 @@ export const STEP_DEFINITIONS: Array<StepDefinition> = [
     description: 'Personal and contact details',
     estimatedMinutes: 5,
     required: true,
-    route: '/onboarding/lawyer/basics'
+    route: '/onboarding/basics'
   },
   {
     id: 'credentials',
@@ -132,7 +132,7 @@ export const STEP_DEFINITIONS: Array<StepDefinition> = [
     description: 'Bar Number, NIN verification, and photograph',
     estimatedMinutes: 10,
     required: true,
-    route: '/onboarding/lawyer/credentials'
+    route: '/onboarding/credentials'
   },
   {
     id: 'pending_approval',
@@ -140,7 +140,7 @@ export const STEP_DEFINITIONS: Array<StepDefinition> = [
     description: 'Application submitted for review',
     estimatedMinutes: 0,
     required: false,
-    route: '/onboarding/lawyer/pending'
+    route: '/onboarding/pending'
   }
 ];
 

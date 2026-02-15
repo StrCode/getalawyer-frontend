@@ -1,5 +1,7 @@
 import { Mail02Icon } from "@hugeicons/core-free-icons";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 import * as z from "zod/v4";
 import {
   Field,
@@ -18,6 +20,7 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
   const navigate = useNavigate({
     from: "/",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const loginSchema = z.object({
     email: z.email({ message: "Please enter a valid email address" }),
@@ -36,34 +39,37 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
       onBlur: loginSchema,
     },
     onSubmit: async ({ value }) => {
-      await authClient.signIn.email(
-        {
-          email: value.email,
-          password: value.password,
-          rememberMe: value.rememberMe,
-        },
-        {
-          onSuccess: async () => {
-            // All users go to /dashboard
-            // The dashboard route will handle role-based rendering
-            navigate({
-              to: "/dashboard",
-            });
-            
-            toastManager.add({
-              title: "Sign in successful",
-              type: "success",
-            });
+      setIsLoading(true);
+      try {
+        await authClient.signIn.email(
+          {
+            email: value.email,
+            password: value.password,
+            rememberMe: value.rememberMe,
           },
-          onError: (error) => {
-            toastManager.add({
-              description: error.error.message,
-              title: "Login unsuccessful",
-              type: "error",
-            });
+          {
+            onSuccess: async () => {
+              toastManager.add({
+                title: "Sign in successful",
+                type: "success",
+              });
+              
+              // Reload the page to refresh the session
+              window.location.href = "/dashboard";
+            },
+            onError: (error) => {
+              toastManager.add({
+                description: error.error.message,
+                title: "Login unsuccessful",
+                type: "error",
+              });
+              setIsLoading(false);
+            },
           },
-        },
-      );
+        );
+      } catch {
+        setIsLoading(false);
+      }
     },
   });
 
@@ -120,8 +126,15 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
           </div>
 
           <Field className="pt-2">
-            <Button size={"lg"} type="submit" className="w-full">
-              Sign in
+            <Button size={"lg"} type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
             </Button>
           </Field>
 

@@ -1,11 +1,23 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { Logo } from "@/components/logo";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { PAGE_SEO_CONFIG } from "@/config/page-seo";
+import { getUser } from "@/functions/get-user";
 import { generateAuthPageSEO } from "@/utils/seo";
 
 export const Route = createFileRoute("/login")({
+  beforeLoad: async () => {
+    // Check if user is already authenticated
+    const session = await getUser();
+    
+    if (session?.user) {
+      // If authenticated, redirect to dashboard
+      throw redirect({
+        to: '/dashboard',
+      });
+    }
+  },
   component: RouteComponent,
 });
 

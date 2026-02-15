@@ -17,7 +17,7 @@ import { api } from "@/lib/api/client";
 import { useEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 import { generateOnboardingPageSEO } from "@/utils/seo";
 
-export const Route = createFileRoute("/onboarding/lawyer/specializations")({
+export const Route = createFileRoute("/onboarding/(lawyer)/lawyer-specializations")({
   component: LawyerSpecializationsStep,
 });
 
@@ -44,7 +44,7 @@ function LawyerSpecializationsStep() {
   const seoMetadata = generateOnboardingPageSEO({
     step: PAGE_SEO_CONFIG.onboarding.lawyerSpecializations.step,
     description: PAGE_SEO_CONFIG.onboarding.lawyerSpecializations.description,
-    path: '/onboarding/lawyer/specializations',
+    path: '/onboarding/lawyer-specializations',
     currentStep: 3,
     totalSteps: 5,
   });
@@ -76,7 +76,7 @@ function LawyerSpecializationsStep() {
       updateLastSaved();
 
       // Navigate to review step (which will now show confirmation)
-      router.navigate({ to: "/onboarding/lawyer/review" });
+      router.navigate({ to: "/onboarding/(lawyer)/review" });
     },
     onError: (error: Error) => {
       console.error("Onboarding completion error:", error);
@@ -117,7 +117,7 @@ function LawyerSpecializationsStep() {
 
   // Handle back navigation
   const handleBack = () => {
-    router.navigate({ to: "/onboarding/lawyer/credentials" });
+    router.navigate({ to: "/onboarding/(lawyer)/credentials" });
   };
 
   // Check if form is valid for submission
