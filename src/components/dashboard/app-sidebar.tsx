@@ -229,7 +229,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   return (
-    <Sidebar className="bg-gray-100 lg:border-r-0!" collapsible="icon" {...props}>
+    <Sidebar className="bg-gray-50 border-0" collapsible="icon" {...props}>
       <SidebarHeader className="bg-gray-100 pb-0">
         <div className="px-4 py-4">
           <div className="flex justify-between items-center mb-4">
@@ -317,12 +317,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         {/* User Profile */}
         <div className="flex items-center gap-3 bg-white hover:bg-gray-200/50 p-3 border border-gray-200 rounded-lg transition-colors cursor-pointer">
-          <div className="flex justify-center items-center bg-linear-to-br from-purple-500 to-pink-500 rounded-full w-10 h-10 font-semibold text-white text-sm">
-            {session?.user?.name?.split(' ').map(n => n[0]).join('') || 'SW'}
+          <div className="flex justify-center items-center bg-gradient-to-br from-purple-500 to-pink-500 rounded-full w-10 h-10 font-semibold text-white text-sm">
+            {session?.user?.name?.split(' ').map(n => n[0]).join('') || 'U'}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-medium text-gray-900 text-sm truncate">{session?.user?.name || 'Sophia Williams'}</p>
-            <p className="text-gray-500 text-xs">Admin</p>
+            <p className="font-medium text-gray-900 text-sm truncate">{session?.user?.name || 'User'}</p>
+            <p className="text-gray-500 text-xs">{isLawyer ? 'Lawyer' : 'Client'}</p>
           </div>
           <ChevronDown className="size-4 text-gray-400" />
         </div>

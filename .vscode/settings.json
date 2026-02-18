@@ -32,5 +32,6 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports.biome": "explicit"
   },
-  "typescript.autoClosingTags": false
+  "typescript.autoClosingTags": false,
+  "kiroAgent.configureMCP": "Disabled"
 }

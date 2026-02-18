@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { PropertyDashboard } from "@/components/dashboard/PropertyDashboard";
+import { LawyerDashboard } from "@/components/dashboard/LawyerDashboard";
+import { ClientDashboard } from "@/components/dashboard/ClientDashboard";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { PAGE_SEO_CONFIG } from "@/config/page-seo";
 import { authClient } from "@/lib/auth-client";
@@ -34,11 +35,14 @@ function RouteComponent() {
   // Safety guard: If no session exists, return null
   if (!session?.user) return null;
 
-  // Render property management dashboard for all users
+  // Determine which dashboard to show based on user role
+  const isLawyer = session.user.role === 'lawyer';
+
+  // Render appropriate dashboard based on user role
   return (
     <>
       <SEOHead metadata={seoMetadata} />
-      <PropertyDashboard />
+      {isLawyer ? <LawyerDashboard /> : <ClientDashboard />}
     </>
   );
 }

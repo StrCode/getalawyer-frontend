@@ -1,25 +1,28 @@
-import { Link, Outlet, createFileRoute, useLocation } from '@tanstack/react-router'
+import { Outlet, createFileRoute } from '@tanstack/react-router'
 import {
   SidebarProvider,
 } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/dashboard/app-sidebar'
-import { Header } from "@/components/dashboard/app-header"
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export const Route = createFileRoute('/(protected)/dashboard')({
   component: DashboardLayout
 })
 
 function DashboardLayout() {
-
   return (
-    <SidebarProvider className="bg-sidebar">
-      <AppSidebar />
-      <div className="h-svh overflow-hidden lg:p-2 w-full">
-        <div className="lg:border lg:rounded-md overflow-hidden flex flex-col justify-start bg-container h-full w-full bg-background">
-          <Header />
-          <Outlet />
+    <SidebarProvider defaultOpen={true}>
+      <div className="flex bg-[#F1F3F5] h-screen">
+        <AppSidebar collapsible="icon" className="border-r-0" />
+        
+        <div className="flex flex-col bg-white my-2 mr-2 border border-gray-200 rounded-2xl w-full">
+          <ScrollArea>
+            <div className="px-8 py-4">
+              <Outlet />
+            </div>
+          </ScrollArea>
         </div>
       </div>
-    </SidebarProvider >
+    </SidebarProvider>
   )
 }
