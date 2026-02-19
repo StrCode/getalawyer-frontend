@@ -35,6 +35,8 @@ import { Route as protectedAdminApplicationsRouteImport } from './routes/(protec
 import { Route as protectedOnboardinglawyerRouteRouteImport } from './routes/(protected)/onboarding/(lawyer)/route'
 import { Route as protectedOnboardingclientRouteRouteImport } from './routes/(protected)/onboarding/(client)/route'
 import { Route as protectedDashboardSettingsRouteRouteImport } from './routes/(protected)/dashboard/settings/route'
+import { Route as protectedLawyerConsultationTypesIndexRouteImport } from './routes/(protected)/lawyer/consultation-types/index'
+import { Route as protectedLawyerAvailabilityIndexRouteImport } from './routes/(protected)/lawyer/availability/index'
 import { Route as protectedDashboardSettingsIndexRouteImport } from './routes/(protected)/dashboard/settings/index'
 import { Route as protectedOnboardinglawyerStatusRouteImport } from './routes/(protected)/onboarding/(lawyer)/status'
 import { Route as protectedOnboardinglawyerReviewRouteImport } from './routes/(protected)/onboarding/(lawyer)/review'
@@ -43,8 +45,11 @@ import { Route as protectedOnboardinglawyerCredentialsRouteImport } from './rout
 import { Route as protectedOnboardinglawyerBasicsRouteImport } from './routes/(protected)/onboarding/(lawyer)/basics'
 import { Route as protectedOnboardingclientClientSpecializationsRouteImport } from './routes/(protected)/onboarding/(client)/client-specializations'
 import { Route as protectedOnboardingclientClientLocationRouteImport } from './routes/(protected)/onboarding/(client)/client-location'
+import { Route as protectedLawyerConsultationTypesNewRouteImport } from './routes/(protected)/lawyer/consultation-types/new'
+import { Route as protectedLawyerAvailabilityExceptionsRouteImport } from './routes/(protected)/lawyer/availability/exceptions'
 import { Route as protectedAdminLawyersIdRouteImport } from './routes/(protected)/admin/lawyers/$id'
 import { Route as protectedAdminClientsIdRouteImport } from './routes/(protected)/admin/clients/$id'
+import { Route as protectedLawyerConsultationTypesIdEditRouteImport } from './routes/(protected)/lawyer/consultation-types/$id.edit'
 
 const SubscriptionSuccessRoute = SubscriptionSuccessRouteImport.update({
   id: '/subscription-success',
@@ -181,6 +186,18 @@ const protectedDashboardSettingsRouteRoute =
     path: '/settings',
     getParentRoute: () => protectedDashboardRoute,
   } as any)
+const protectedLawyerConsultationTypesIndexRoute =
+  protectedLawyerConsultationTypesIndexRouteImport.update({
+    id: '/lawyer/consultation-types/',
+    path: '/lawyer/consultation-types/',
+    getParentRoute: () => protectedRouteRoute,
+  } as any)
+const protectedLawyerAvailabilityIndexRoute =
+  protectedLawyerAvailabilityIndexRouteImport.update({
+    id: '/lawyer/availability/',
+    path: '/lawyer/availability/',
+    getParentRoute: () => protectedRouteRoute,
+  } as any)
 const protectedDashboardSettingsIndexRoute =
   protectedDashboardSettingsIndexRouteImport.update({
     id: '/',
@@ -229,6 +246,18 @@ const protectedOnboardingclientClientLocationRoute =
     path: '/client-location',
     getParentRoute: () => protectedOnboardingclientRouteRoute,
   } as any)
+const protectedLawyerConsultationTypesNewRoute =
+  protectedLawyerConsultationTypesNewRouteImport.update({
+    id: '/lawyer/consultation-types/new',
+    path: '/lawyer/consultation-types/new',
+    getParentRoute: () => protectedRouteRoute,
+  } as any)
+const protectedLawyerAvailabilityExceptionsRoute =
+  protectedLawyerAvailabilityExceptionsRouteImport.update({
+    id: '/lawyer/availability/exceptions',
+    path: '/lawyer/availability/exceptions',
+    getParentRoute: () => protectedRouteRoute,
+  } as any)
 const protectedAdminLawyersIdRoute = protectedAdminLawyersIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -239,6 +268,12 @@ const protectedAdminClientsIdRoute = protectedAdminClientsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => protectedAdminClientsRoute,
 } as any)
+const protectedLawyerConsultationTypesIdEditRoute =
+  protectedLawyerConsultationTypesIdEditRouteImport.update({
+    id: '/lawyer/consultation-types/$id/edit',
+    path: '/lawyer/consultation-types/$id/edit',
+    getParentRoute: () => protectedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -265,6 +300,8 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof protectedDashboardIndexRoute
   '/admin/clients/$id': typeof protectedAdminClientsIdRoute
   '/admin/lawyers/$id': typeof protectedAdminLawyersIdRoute
+  '/lawyer/availability/exceptions': typeof protectedLawyerAvailabilityExceptionsRoute
+  '/lawyer/consultation-types/new': typeof protectedLawyerConsultationTypesNewRoute
   '/onboarding/client-location': typeof protectedOnboardingclientClientLocationRoute
   '/onboarding/client-specializations': typeof protectedOnboardingclientClientSpecializationsRoute
   '/onboarding/basics': typeof protectedOnboardinglawyerBasicsRoute
@@ -273,6 +310,9 @@ export interface FileRoutesByFullPath {
   '/onboarding/review': typeof protectedOnboardinglawyerReviewRoute
   '/onboarding/status': typeof protectedOnboardinglawyerStatusRoute
   '/dashboard/settings/': typeof protectedDashboardSettingsIndexRoute
+  '/lawyer/availability': typeof protectedLawyerAvailabilityIndexRoute
+  '/lawyer/consultation-types': typeof protectedLawyerConsultationTypesIndexRoute
+  '/lawyer/consultation-types/$id/edit': typeof protectedLawyerConsultationTypesIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -296,6 +336,8 @@ export interface FileRoutesByTo {
   '/dashboard': typeof protectedDashboardIndexRoute
   '/admin/clients/$id': typeof protectedAdminClientsIdRoute
   '/admin/lawyers/$id': typeof protectedAdminLawyersIdRoute
+  '/lawyer/availability/exceptions': typeof protectedLawyerAvailabilityExceptionsRoute
+  '/lawyer/consultation-types/new': typeof protectedLawyerConsultationTypesNewRoute
   '/onboarding/client-location': typeof protectedOnboardingclientClientLocationRoute
   '/onboarding/client-specializations': typeof protectedOnboardingclientClientSpecializationsRoute
   '/onboarding/basics': typeof protectedOnboardinglawyerBasicsRoute
@@ -304,6 +346,9 @@ export interface FileRoutesByTo {
   '/onboarding/review': typeof protectedOnboardinglawyerReviewRoute
   '/onboarding/status': typeof protectedOnboardinglawyerStatusRoute
   '/dashboard/settings': typeof protectedDashboardSettingsIndexRoute
+  '/lawyer/availability': typeof protectedLawyerAvailabilityIndexRoute
+  '/lawyer/consultation-types': typeof protectedLawyerConsultationTypesIndexRoute
+  '/lawyer/consultation-types/$id/edit': typeof protectedLawyerConsultationTypesIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -335,6 +380,8 @@ export interface FileRoutesById {
   '/(protected)/onboarding/': typeof protectedOnboardingIndexRoute
   '/(protected)/admin/clients/$id': typeof protectedAdminClientsIdRoute
   '/(protected)/admin/lawyers/$id': typeof protectedAdminLawyersIdRoute
+  '/(protected)/lawyer/availability/exceptions': typeof protectedLawyerAvailabilityExceptionsRoute
+  '/(protected)/lawyer/consultation-types/new': typeof protectedLawyerConsultationTypesNewRoute
   '/(protected)/onboarding/(client)/client-location': typeof protectedOnboardingclientClientLocationRoute
   '/(protected)/onboarding/(client)/client-specializations': typeof protectedOnboardingclientClientSpecializationsRoute
   '/(protected)/onboarding/(lawyer)/basics': typeof protectedOnboardinglawyerBasicsRoute
@@ -343,6 +390,9 @@ export interface FileRoutesById {
   '/(protected)/onboarding/(lawyer)/review': typeof protectedOnboardinglawyerReviewRoute
   '/(protected)/onboarding/(lawyer)/status': typeof protectedOnboardinglawyerStatusRoute
   '/(protected)/dashboard/settings/': typeof protectedDashboardSettingsIndexRoute
+  '/(protected)/lawyer/availability/': typeof protectedLawyerAvailabilityIndexRoute
+  '/(protected)/lawyer/consultation-types/': typeof protectedLawyerConsultationTypesIndexRoute
+  '/(protected)/lawyer/consultation-types/$id/edit': typeof protectedLawyerConsultationTypesIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -371,6 +421,8 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/admin/clients/$id'
     | '/admin/lawyers/$id'
+    | '/lawyer/availability/exceptions'
+    | '/lawyer/consultation-types/new'
     | '/onboarding/client-location'
     | '/onboarding/client-specializations'
     | '/onboarding/basics'
@@ -379,6 +431,9 @@ export interface FileRouteTypes {
     | '/onboarding/review'
     | '/onboarding/status'
     | '/dashboard/settings/'
+    | '/lawyer/availability'
+    | '/lawyer/consultation-types'
+    | '/lawyer/consultation-types/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -402,6 +457,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/admin/clients/$id'
     | '/admin/lawyers/$id'
+    | '/lawyer/availability/exceptions'
+    | '/lawyer/consultation-types/new'
     | '/onboarding/client-location'
     | '/onboarding/client-specializations'
     | '/onboarding/basics'
@@ -410,6 +467,9 @@ export interface FileRouteTypes {
     | '/onboarding/review'
     | '/onboarding/status'
     | '/dashboard/settings'
+    | '/lawyer/availability'
+    | '/lawyer/consultation-types'
+    | '/lawyer/consultation-types/$id/edit'
   id:
     | '__root__'
     | '/'
@@ -440,6 +500,8 @@ export interface FileRouteTypes {
     | '/(protected)/onboarding/'
     | '/(protected)/admin/clients/$id'
     | '/(protected)/admin/lawyers/$id'
+    | '/(protected)/lawyer/availability/exceptions'
+    | '/(protected)/lawyer/consultation-types/new'
     | '/(protected)/onboarding/(client)/client-location'
     | '/(protected)/onboarding/(client)/client-specializations'
     | '/(protected)/onboarding/(lawyer)/basics'
@@ -448,6 +510,9 @@ export interface FileRouteTypes {
     | '/(protected)/onboarding/(lawyer)/review'
     | '/(protected)/onboarding/(lawyer)/status'
     | '/(protected)/dashboard/settings/'
+    | '/(protected)/lawyer/availability/'
+    | '/(protected)/lawyer/consultation-types/'
+    | '/(protected)/lawyer/consultation-types/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -644,6 +709,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof protectedDashboardSettingsRouteRouteImport
       parentRoute: typeof protectedDashboardRoute
     }
+    '/(protected)/lawyer/consultation-types/': {
+      id: '/(protected)/lawyer/consultation-types/'
+      path: '/lawyer/consultation-types'
+      fullPath: '/lawyer/consultation-types'
+      preLoaderRoute: typeof protectedLawyerConsultationTypesIndexRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
+    '/(protected)/lawyer/availability/': {
+      id: '/(protected)/lawyer/availability/'
+      path: '/lawyer/availability'
+      fullPath: '/lawyer/availability'
+      preLoaderRoute: typeof protectedLawyerAvailabilityIndexRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
     '/(protected)/dashboard/settings/': {
       id: '/(protected)/dashboard/settings/'
       path: '/'
@@ -700,6 +779,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof protectedOnboardingclientClientLocationRouteImport
       parentRoute: typeof protectedOnboardingclientRouteRoute
     }
+    '/(protected)/lawyer/consultation-types/new': {
+      id: '/(protected)/lawyer/consultation-types/new'
+      path: '/lawyer/consultation-types/new'
+      fullPath: '/lawyer/consultation-types/new'
+      preLoaderRoute: typeof protectedLawyerConsultationTypesNewRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
+    '/(protected)/lawyer/availability/exceptions': {
+      id: '/(protected)/lawyer/availability/exceptions'
+      path: '/lawyer/availability/exceptions'
+      fullPath: '/lawyer/availability/exceptions'
+      preLoaderRoute: typeof protectedLawyerAvailabilityExceptionsRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
     '/(protected)/admin/lawyers/$id': {
       id: '/(protected)/admin/lawyers/$id'
       path: '/$id'
@@ -713,6 +806,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/clients/$id'
       preLoaderRoute: typeof protectedAdminClientsIdRouteImport
       parentRoute: typeof protectedAdminClientsRoute
+    }
+    '/(protected)/lawyer/consultation-types/$id/edit': {
+      id: '/(protected)/lawyer/consultation-types/$id/edit'
+      path: '/lawyer/consultation-types/$id/edit'
+      fullPath: '/lawyer/consultation-types/$id/edit'
+      preLoaderRoute: typeof protectedLawyerConsultationTypesIdEditRouteImport
+      parentRoute: typeof protectedRouteRoute
     }
   }
 }
@@ -862,6 +962,11 @@ interface protectedRouteRouteChildren {
   protectedOnboardingclientRouteRoute: typeof protectedOnboardingclientRouteRouteWithChildren
   protectedOnboardinglawyerRouteRoute: typeof protectedOnboardinglawyerRouteRouteWithChildren
   protectedOnboardingIndexRoute: typeof protectedOnboardingIndexRoute
+  protectedLawyerAvailabilityExceptionsRoute: typeof protectedLawyerAvailabilityExceptionsRoute
+  protectedLawyerConsultationTypesNewRoute: typeof protectedLawyerConsultationTypesNewRoute
+  protectedLawyerAvailabilityIndexRoute: typeof protectedLawyerAvailabilityIndexRoute
+  protectedLawyerConsultationTypesIndexRoute: typeof protectedLawyerConsultationTypesIndexRoute
+  protectedLawyerConsultationTypesIdEditRoute: typeof protectedLawyerConsultationTypesIdEditRoute
 }
 
 const protectedRouteRouteChildren: protectedRouteRouteChildren = {
@@ -872,6 +977,15 @@ const protectedRouteRouteChildren: protectedRouteRouteChildren = {
   protectedOnboardinglawyerRouteRoute:
     protectedOnboardinglawyerRouteRouteWithChildren,
   protectedOnboardingIndexRoute: protectedOnboardingIndexRoute,
+  protectedLawyerAvailabilityExceptionsRoute:
+    protectedLawyerAvailabilityExceptionsRoute,
+  protectedLawyerConsultationTypesNewRoute:
+    protectedLawyerConsultationTypesNewRoute,
+  protectedLawyerAvailabilityIndexRoute: protectedLawyerAvailabilityIndexRoute,
+  protectedLawyerConsultationTypesIndexRoute:
+    protectedLawyerConsultationTypesIndexRoute,
+  protectedLawyerConsultationTypesIdEditRoute:
+    protectedLawyerConsultationTypesIdEditRoute,
 }
 
 const protectedRouteRouteWithChildren = protectedRouteRoute._addFileChildren(

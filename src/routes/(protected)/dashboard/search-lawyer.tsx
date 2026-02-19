@@ -4,7 +4,6 @@ import { SearchBar } from '@/components/search/SearchBar';
 import { SearchFilters } from '@/components/search/SearchFilters';
 import { SearchResults } from '@/components/search/SearchResults';
 import { SearchSort } from '@/components/search/SearchSort';
-import { SEOHead } from '@/components/seo/SEOHead';
 import { PAGE_SEO_CONFIG } from '@/config/page-seo';
 import { useLawyerSearch } from '@/hooks/use-lawyer-search';
 import type { SearchParams } from '@/types/lawyer-search';
@@ -72,8 +71,6 @@ function SearchLawyerPage() {
   };
 
   return (
-    <>
-      <SEOHead metadata={seoMetadata} />
       <div className="flex-1 overflow-auto">
         <div className="space-y-6 p-4 md:p-6">
           {/* Search Header */}
@@ -111,6 +108,5 @@ function SearchLawyerPage() {
           />
         </div>
       </div>
-    </>
   );
 }
