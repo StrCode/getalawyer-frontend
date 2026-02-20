@@ -76,7 +76,7 @@ function PendingRequestItem({ booking }: { booking: Booking }) {
       <div className="flex justify-between items-start gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <User className="flex-shrink-0 w-4 h-4 text-gray-500" />
+            <User className="shrink-0 w-4 h-4 text-gray-500" />
             <span className="font-medium text-sm truncate">
               {booking.client?.name || 'Unknown Client'}
             </span>
@@ -85,17 +85,17 @@ function PendingRequestItem({ booking }: { booking: Booking }) {
             </Badge>
           </div>
           <div className="flex items-center gap-2 mb-1 text-gray-600 text-sm">
-            <Calendar className="flex-shrink-0 w-4 h-4" />
+            <Calendar className="shrink-0 w-4 h-4" />
             <span>{format(startTime, 'MMM dd, yyyy')}</span>
           </div>
           <div className="flex items-center gap-2 text-gray-600 text-sm">
-            <Clock className="flex-shrink-0 w-4 h-4" />
+            <Clock className="shrink-0 w-4 h-4" />
             <span>
               {format(startTime, 'h:mm a')} - {format(endTime, 'h:mm a')}
             </span>
           </div>
         </div>
-        <div className="flex-shrink-0 text-right">
+        <div className="shrink-0 text-right">
           <div className="max-w-[120px] font-medium text-sm truncate">
             {booking.consultationType?.name || 'Consultation'}
           </div>

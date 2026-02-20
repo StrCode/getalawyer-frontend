@@ -227,31 +227,31 @@ The implementation uses TypeScript, React 19, TanStack Router, TanStack Query, T
 - [ ] 9. Checkpoint - Ensure lawyer features are complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [~] 10. Implement client lawyer discovery
-  - [ ] 10.1 Create TanStack Query hooks for lawyers (useLawyers, useLawyer)
+- [x] 10. Implement client lawyer discovery
+  - [x] 10.1 Create TanStack Query hooks for lawyers (useLawyers, useLawyer)
     - Implement query hook for fetching all lawyers
     - Implement query hook for fetching single lawyer with consultation types
     - Set up stale-while-revalidate caching
     - _Requirements: 6.1, 6.2, 13.6_
 
-  - [ ] 10.2 Build LawyerCard component
+  - [x] 10.2 Build LawyerCard component
     - Display lawyer name, specialty, and brief info
     - Show consultation types offered
     - Add view profile button
     - _Requirements: 6.1, 6.3_
 
-  - [ ] 10.3 Build LawyerList component
+  - [x] 10.3 Build LawyerList component
     - Display all lawyers using LawyerCard
     - Implement search/filter by specialty or consultation type
     - Handle empty states
     - _Requirements: 6.1, 6.4_
 
-  - [ ] 10.4 Build ConsultationTypeCard component for clients
+  - [x] 10.4 Build ConsultationTypeCard component for clients
     - Display consultation type details (name, description, duration, price)
     - Add book button that navigates to booking flow
     - _Requirements: 6.2, 6.3, 6.5_
 
-  - [ ] 10.5 Create routes for lawyer discovery
+  - [x] 10.5 Create routes for lawyer discovery
     - Create /client/lawyers route for browsing lawyers
     - Create /client/lawyers/$id route for lawyer profile
     - Wire up components to routes

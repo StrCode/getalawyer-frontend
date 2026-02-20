@@ -27,6 +27,7 @@ import { Route as protectedAdminIndexRouteImport } from './routes/(protected)/ad
 import { Route as publicLawyerLawyerIdRouteImport } from './routes/(public)/lawyer.$lawyerId'
 import { Route as protectedDashboardSearchLawyerRouteImport } from './routes/(protected)/dashboard/search-lawyer'
 import { Route as protectedDashboardPlansRouteImport } from './routes/(protected)/dashboard/plans'
+import { Route as protectedDashboardLawyerRouteImport } from './routes/(protected)/dashboard/lawyer'
 import { Route as protectedAdminUsersRouteImport } from './routes/(protected)/admin/users'
 import { Route as protectedAdminStatisticsRouteImport } from './routes/(protected)/admin/statistics'
 import { Route as protectedAdminLawyersRouteImport } from './routes/(protected)/admin/lawyers'
@@ -36,8 +37,11 @@ import { Route as protectedOnboardinglawyerRouteRouteImport } from './routes/(pr
 import { Route as protectedOnboardingclientRouteRouteImport } from './routes/(protected)/onboarding/(client)/route'
 import { Route as protectedDashboardSettingsRouteRouteImport } from './routes/(protected)/dashboard/settings/route'
 import { Route as protectedLawyerConsultationTypesIndexRouteImport } from './routes/(protected)/lawyer/consultation-types/index'
+import { Route as protectedLawyerCalendarIndexRouteImport } from './routes/(protected)/lawyer/calendar/index'
+import { Route as protectedLawyerBookingsIndexRouteImport } from './routes/(protected)/lawyer/bookings/index'
 import { Route as protectedLawyerAvailabilityIndexRouteImport } from './routes/(protected)/lawyer/availability/index'
 import { Route as protectedDashboardSettingsIndexRouteImport } from './routes/(protected)/dashboard/settings/index'
+import { Route as protectedClientLawyersIndexRouteImport } from './routes/(protected)/client/lawyers/index'
 import { Route as protectedOnboardinglawyerStatusRouteImport } from './routes/(protected)/onboarding/(lawyer)/status'
 import { Route as protectedOnboardinglawyerReviewRouteImport } from './routes/(protected)/onboarding/(lawyer)/review'
 import { Route as protectedOnboardinglawyerLawyerSpecializationsRouteImport } from './routes/(protected)/onboarding/(lawyer)/lawyer-specializations'
@@ -46,7 +50,9 @@ import { Route as protectedOnboardinglawyerBasicsRouteImport } from './routes/(p
 import { Route as protectedOnboardingclientClientSpecializationsRouteImport } from './routes/(protected)/onboarding/(client)/client-specializations'
 import { Route as protectedOnboardingclientClientLocationRouteImport } from './routes/(protected)/onboarding/(client)/client-location'
 import { Route as protectedLawyerConsultationTypesNewRouteImport } from './routes/(protected)/lawyer/consultation-types/new'
+import { Route as protectedLawyerBookingsIdRouteImport } from './routes/(protected)/lawyer/bookings/$id'
 import { Route as protectedLawyerAvailabilityExceptionsRouteImport } from './routes/(protected)/lawyer/availability/exceptions'
+import { Route as protectedClientLawyersIdRouteImport } from './routes/(protected)/client/lawyers/$id'
 import { Route as protectedAdminLawyersIdRouteImport } from './routes/(protected)/admin/lawyers/$id'
 import { Route as protectedAdminClientsIdRouteImport } from './routes/(protected)/admin/clients/$id'
 import { Route as protectedLawyerConsultationTypesIdEditRouteImport } from './routes/(protected)/lawyer/consultation-types/$id.edit'
@@ -141,6 +147,12 @@ const protectedDashboardPlansRoute = protectedDashboardPlansRouteImport.update({
   path: '/plans',
   getParentRoute: () => protectedDashboardRoute,
 } as any)
+const protectedDashboardLawyerRoute =
+  protectedDashboardLawyerRouteImport.update({
+    id: '/lawyer',
+    path: '/lawyer',
+    getParentRoute: () => protectedDashboardRoute,
+  } as any)
 const protectedAdminUsersRoute = protectedAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -192,6 +204,18 @@ const protectedLawyerConsultationTypesIndexRoute =
     path: '/lawyer/consultation-types/',
     getParentRoute: () => protectedRouteRoute,
   } as any)
+const protectedLawyerCalendarIndexRoute =
+  protectedLawyerCalendarIndexRouteImport.update({
+    id: '/lawyer/calendar/',
+    path: '/lawyer/calendar/',
+    getParentRoute: () => protectedRouteRoute,
+  } as any)
+const protectedLawyerBookingsIndexRoute =
+  protectedLawyerBookingsIndexRouteImport.update({
+    id: '/lawyer/bookings/',
+    path: '/lawyer/bookings/',
+    getParentRoute: () => protectedRouteRoute,
+  } as any)
 const protectedLawyerAvailabilityIndexRoute =
   protectedLawyerAvailabilityIndexRouteImport.update({
     id: '/lawyer/availability/',
@@ -203,6 +227,12 @@ const protectedDashboardSettingsIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => protectedDashboardSettingsRouteRoute,
+  } as any)
+const protectedClientLawyersIndexRoute =
+  protectedClientLawyersIndexRouteImport.update({
+    id: '/client/lawyers/',
+    path: '/client/lawyers/',
+    getParentRoute: () => protectedRouteRoute,
   } as any)
 const protectedOnboardinglawyerStatusRoute =
   protectedOnboardinglawyerStatusRouteImport.update({
@@ -252,10 +282,22 @@ const protectedLawyerConsultationTypesNewRoute =
     path: '/lawyer/consultation-types/new',
     getParentRoute: () => protectedRouteRoute,
   } as any)
+const protectedLawyerBookingsIdRoute =
+  protectedLawyerBookingsIdRouteImport.update({
+    id: '/lawyer/bookings/$id',
+    path: '/lawyer/bookings/$id',
+    getParentRoute: () => protectedRouteRoute,
+  } as any)
 const protectedLawyerAvailabilityExceptionsRoute =
   protectedLawyerAvailabilityExceptionsRouteImport.update({
     id: '/lawyer/availability/exceptions',
     path: '/lawyer/availability/exceptions',
+    getParentRoute: () => protectedRouteRoute,
+  } as any)
+const protectedClientLawyersIdRoute =
+  protectedClientLawyersIdRouteImport.update({
+    id: '/client/lawyers/$id',
+    path: '/client/lawyers/$id',
     getParentRoute: () => protectedRouteRoute,
   } as any)
 const protectedAdminLawyersIdRoute = protectedAdminLawyersIdRouteImport.update({
@@ -293,6 +335,7 @@ export interface FileRoutesByFullPath {
   '/admin/lawyers': typeof protectedAdminLawyersRouteWithChildren
   '/admin/statistics': typeof protectedAdminStatisticsRoute
   '/admin/users': typeof protectedAdminUsersRoute
+  '/dashboard/lawyer': typeof protectedDashboardLawyerRoute
   '/dashboard/plans': typeof protectedDashboardPlansRoute
   '/dashboard/search-lawyer': typeof protectedDashboardSearchLawyerRoute
   '/lawyer/$lawyerId': typeof publicLawyerLawyerIdRoute
@@ -300,7 +343,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof protectedDashboardIndexRoute
   '/admin/clients/$id': typeof protectedAdminClientsIdRoute
   '/admin/lawyers/$id': typeof protectedAdminLawyersIdRoute
+  '/client/lawyers/$id': typeof protectedClientLawyersIdRoute
   '/lawyer/availability/exceptions': typeof protectedLawyerAvailabilityExceptionsRoute
+  '/lawyer/bookings/$id': typeof protectedLawyerBookingsIdRoute
   '/lawyer/consultation-types/new': typeof protectedLawyerConsultationTypesNewRoute
   '/onboarding/client-location': typeof protectedOnboardingclientClientLocationRoute
   '/onboarding/client-specializations': typeof protectedOnboardingclientClientSpecializationsRoute
@@ -309,8 +354,11 @@ export interface FileRoutesByFullPath {
   '/onboarding/lawyer-specializations': typeof protectedOnboardinglawyerLawyerSpecializationsRoute
   '/onboarding/review': typeof protectedOnboardinglawyerReviewRoute
   '/onboarding/status': typeof protectedOnboardinglawyerStatusRoute
+  '/client/lawyers': typeof protectedClientLawyersIndexRoute
   '/dashboard/settings/': typeof protectedDashboardSettingsIndexRoute
   '/lawyer/availability': typeof protectedLawyerAvailabilityIndexRoute
+  '/lawyer/bookings': typeof protectedLawyerBookingsIndexRoute
+  '/lawyer/calendar': typeof protectedLawyerCalendarIndexRoute
   '/lawyer/consultation-types': typeof protectedLawyerConsultationTypesIndexRoute
   '/lawyer/consultation-types/$id/edit': typeof protectedLawyerConsultationTypesIdEditRoute
 }
@@ -329,6 +377,7 @@ export interface FileRoutesByTo {
   '/admin/lawyers': typeof protectedAdminLawyersRouteWithChildren
   '/admin/statistics': typeof protectedAdminStatisticsRoute
   '/admin/users': typeof protectedAdminUsersRoute
+  '/dashboard/lawyer': typeof protectedDashboardLawyerRoute
   '/dashboard/plans': typeof protectedDashboardPlansRoute
   '/dashboard/search-lawyer': typeof protectedDashboardSearchLawyerRoute
   '/lawyer/$lawyerId': typeof publicLawyerLawyerIdRoute
@@ -336,7 +385,9 @@ export interface FileRoutesByTo {
   '/dashboard': typeof protectedDashboardIndexRoute
   '/admin/clients/$id': typeof protectedAdminClientsIdRoute
   '/admin/lawyers/$id': typeof protectedAdminLawyersIdRoute
+  '/client/lawyers/$id': typeof protectedClientLawyersIdRoute
   '/lawyer/availability/exceptions': typeof protectedLawyerAvailabilityExceptionsRoute
+  '/lawyer/bookings/$id': typeof protectedLawyerBookingsIdRoute
   '/lawyer/consultation-types/new': typeof protectedLawyerConsultationTypesNewRoute
   '/onboarding/client-location': typeof protectedOnboardingclientClientLocationRoute
   '/onboarding/client-specializations': typeof protectedOnboardingclientClientSpecializationsRoute
@@ -345,8 +396,11 @@ export interface FileRoutesByTo {
   '/onboarding/lawyer-specializations': typeof protectedOnboardinglawyerLawyerSpecializationsRoute
   '/onboarding/review': typeof protectedOnboardinglawyerReviewRoute
   '/onboarding/status': typeof protectedOnboardinglawyerStatusRoute
+  '/client/lawyers': typeof protectedClientLawyersIndexRoute
   '/dashboard/settings': typeof protectedDashboardSettingsIndexRoute
   '/lawyer/availability': typeof protectedLawyerAvailabilityIndexRoute
+  '/lawyer/bookings': typeof protectedLawyerBookingsIndexRoute
+  '/lawyer/calendar': typeof protectedLawyerCalendarIndexRoute
   '/lawyer/consultation-types': typeof protectedLawyerConsultationTypesIndexRoute
   '/lawyer/consultation-types/$id/edit': typeof protectedLawyerConsultationTypesIdEditRoute
 }
@@ -372,6 +426,7 @@ export interface FileRoutesById {
   '/(protected)/admin/lawyers': typeof protectedAdminLawyersRouteWithChildren
   '/(protected)/admin/statistics': typeof protectedAdminStatisticsRoute
   '/(protected)/admin/users': typeof protectedAdminUsersRoute
+  '/(protected)/dashboard/lawyer': typeof protectedDashboardLawyerRoute
   '/(protected)/dashboard/plans': typeof protectedDashboardPlansRoute
   '/(protected)/dashboard/search-lawyer': typeof protectedDashboardSearchLawyerRoute
   '/(public)/lawyer/$lawyerId': typeof publicLawyerLawyerIdRoute
@@ -380,7 +435,9 @@ export interface FileRoutesById {
   '/(protected)/onboarding/': typeof protectedOnboardingIndexRoute
   '/(protected)/admin/clients/$id': typeof protectedAdminClientsIdRoute
   '/(protected)/admin/lawyers/$id': typeof protectedAdminLawyersIdRoute
+  '/(protected)/client/lawyers/$id': typeof protectedClientLawyersIdRoute
   '/(protected)/lawyer/availability/exceptions': typeof protectedLawyerAvailabilityExceptionsRoute
+  '/(protected)/lawyer/bookings/$id': typeof protectedLawyerBookingsIdRoute
   '/(protected)/lawyer/consultation-types/new': typeof protectedLawyerConsultationTypesNewRoute
   '/(protected)/onboarding/(client)/client-location': typeof protectedOnboardingclientClientLocationRoute
   '/(protected)/onboarding/(client)/client-specializations': typeof protectedOnboardingclientClientSpecializationsRoute
@@ -389,8 +446,11 @@ export interface FileRoutesById {
   '/(protected)/onboarding/(lawyer)/lawyer-specializations': typeof protectedOnboardinglawyerLawyerSpecializationsRoute
   '/(protected)/onboarding/(lawyer)/review': typeof protectedOnboardinglawyerReviewRoute
   '/(protected)/onboarding/(lawyer)/status': typeof protectedOnboardinglawyerStatusRoute
+  '/(protected)/client/lawyers/': typeof protectedClientLawyersIndexRoute
   '/(protected)/dashboard/settings/': typeof protectedDashboardSettingsIndexRoute
   '/(protected)/lawyer/availability/': typeof protectedLawyerAvailabilityIndexRoute
+  '/(protected)/lawyer/bookings/': typeof protectedLawyerBookingsIndexRoute
+  '/(protected)/lawyer/calendar/': typeof protectedLawyerCalendarIndexRoute
   '/(protected)/lawyer/consultation-types/': typeof protectedLawyerConsultationTypesIndexRoute
   '/(protected)/lawyer/consultation-types/$id/edit': typeof protectedLawyerConsultationTypesIdEditRoute
 }
@@ -414,6 +474,7 @@ export interface FileRouteTypes {
     | '/admin/lawyers'
     | '/admin/statistics'
     | '/admin/users'
+    | '/dashboard/lawyer'
     | '/dashboard/plans'
     | '/dashboard/search-lawyer'
     | '/lawyer/$lawyerId'
@@ -421,7 +482,9 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/admin/clients/$id'
     | '/admin/lawyers/$id'
+    | '/client/lawyers/$id'
     | '/lawyer/availability/exceptions'
+    | '/lawyer/bookings/$id'
     | '/lawyer/consultation-types/new'
     | '/onboarding/client-location'
     | '/onboarding/client-specializations'
@@ -430,8 +493,11 @@ export interface FileRouteTypes {
     | '/onboarding/lawyer-specializations'
     | '/onboarding/review'
     | '/onboarding/status'
+    | '/client/lawyers'
     | '/dashboard/settings/'
     | '/lawyer/availability'
+    | '/lawyer/bookings'
+    | '/lawyer/calendar'
     | '/lawyer/consultation-types'
     | '/lawyer/consultation-types/$id/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -450,6 +516,7 @@ export interface FileRouteTypes {
     | '/admin/lawyers'
     | '/admin/statistics'
     | '/admin/users'
+    | '/dashboard/lawyer'
     | '/dashboard/plans'
     | '/dashboard/search-lawyer'
     | '/lawyer/$lawyerId'
@@ -457,7 +524,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/admin/clients/$id'
     | '/admin/lawyers/$id'
+    | '/client/lawyers/$id'
     | '/lawyer/availability/exceptions'
+    | '/lawyer/bookings/$id'
     | '/lawyer/consultation-types/new'
     | '/onboarding/client-location'
     | '/onboarding/client-specializations'
@@ -466,8 +535,11 @@ export interface FileRouteTypes {
     | '/onboarding/lawyer-specializations'
     | '/onboarding/review'
     | '/onboarding/status'
+    | '/client/lawyers'
     | '/dashboard/settings'
     | '/lawyer/availability'
+    | '/lawyer/bookings'
+    | '/lawyer/calendar'
     | '/lawyer/consultation-types'
     | '/lawyer/consultation-types/$id/edit'
   id:
@@ -492,6 +564,7 @@ export interface FileRouteTypes {
     | '/(protected)/admin/lawyers'
     | '/(protected)/admin/statistics'
     | '/(protected)/admin/users'
+    | '/(protected)/dashboard/lawyer'
     | '/(protected)/dashboard/plans'
     | '/(protected)/dashboard/search-lawyer'
     | '/(public)/lawyer/$lawyerId'
@@ -500,7 +573,9 @@ export interface FileRouteTypes {
     | '/(protected)/onboarding/'
     | '/(protected)/admin/clients/$id'
     | '/(protected)/admin/lawyers/$id'
+    | '/(protected)/client/lawyers/$id'
     | '/(protected)/lawyer/availability/exceptions'
+    | '/(protected)/lawyer/bookings/$id'
     | '/(protected)/lawyer/consultation-types/new'
     | '/(protected)/onboarding/(client)/client-location'
     | '/(protected)/onboarding/(client)/client-specializations'
@@ -509,8 +584,11 @@ export interface FileRouteTypes {
     | '/(protected)/onboarding/(lawyer)/lawyer-specializations'
     | '/(protected)/onboarding/(lawyer)/review'
     | '/(protected)/onboarding/(lawyer)/status'
+    | '/(protected)/client/lawyers/'
     | '/(protected)/dashboard/settings/'
     | '/(protected)/lawyer/availability/'
+    | '/(protected)/lawyer/bookings/'
+    | '/(protected)/lawyer/calendar/'
     | '/(protected)/lawyer/consultation-types/'
     | '/(protected)/lawyer/consultation-types/$id/edit'
   fileRoutesById: FileRoutesById
@@ -653,6 +731,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof protectedDashboardPlansRouteImport
       parentRoute: typeof protectedDashboardRoute
     }
+    '/(protected)/dashboard/lawyer': {
+      id: '/(protected)/dashboard/lawyer'
+      path: '/lawyer'
+      fullPath: '/dashboard/lawyer'
+      preLoaderRoute: typeof protectedDashboardLawyerRouteImport
+      parentRoute: typeof protectedDashboardRoute
+    }
     '/(protected)/admin/users': {
       id: '/(protected)/admin/users'
       path: '/users'
@@ -716,6 +801,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof protectedLawyerConsultationTypesIndexRouteImport
       parentRoute: typeof protectedRouteRoute
     }
+    '/(protected)/lawyer/calendar/': {
+      id: '/(protected)/lawyer/calendar/'
+      path: '/lawyer/calendar'
+      fullPath: '/lawyer/calendar'
+      preLoaderRoute: typeof protectedLawyerCalendarIndexRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
+    '/(protected)/lawyer/bookings/': {
+      id: '/(protected)/lawyer/bookings/'
+      path: '/lawyer/bookings'
+      fullPath: '/lawyer/bookings'
+      preLoaderRoute: typeof protectedLawyerBookingsIndexRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
     '/(protected)/lawyer/availability/': {
       id: '/(protected)/lawyer/availability/'
       path: '/lawyer/availability'
@@ -729,6 +828,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/settings/'
       preLoaderRoute: typeof protectedDashboardSettingsIndexRouteImport
       parentRoute: typeof protectedDashboardSettingsRouteRoute
+    }
+    '/(protected)/client/lawyers/': {
+      id: '/(protected)/client/lawyers/'
+      path: '/client/lawyers'
+      fullPath: '/client/lawyers'
+      preLoaderRoute: typeof protectedClientLawyersIndexRouteImport
+      parentRoute: typeof protectedRouteRoute
     }
     '/(protected)/onboarding/(lawyer)/status': {
       id: '/(protected)/onboarding/(lawyer)/status'
@@ -786,11 +892,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof protectedLawyerConsultationTypesNewRouteImport
       parentRoute: typeof protectedRouteRoute
     }
+    '/(protected)/lawyer/bookings/$id': {
+      id: '/(protected)/lawyer/bookings/$id'
+      path: '/lawyer/bookings/$id'
+      fullPath: '/lawyer/bookings/$id'
+      preLoaderRoute: typeof protectedLawyerBookingsIdRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
     '/(protected)/lawyer/availability/exceptions': {
       id: '/(protected)/lawyer/availability/exceptions'
       path: '/lawyer/availability/exceptions'
       fullPath: '/lawyer/availability/exceptions'
       preLoaderRoute: typeof protectedLawyerAvailabilityExceptionsRouteImport
+      parentRoute: typeof protectedRouteRoute
+    }
+    '/(protected)/client/lawyers/$id': {
+      id: '/(protected)/client/lawyers/$id'
+      path: '/client/lawyers/$id'
+      fullPath: '/client/lawyers/$id'
+      preLoaderRoute: typeof protectedClientLawyersIdRouteImport
       parentRoute: typeof protectedRouteRoute
     }
     '/(protected)/admin/lawyers/$id': {
@@ -898,6 +1018,7 @@ const protectedDashboardSettingsRouteRouteWithChildren =
 
 interface protectedDashboardRouteChildren {
   protectedDashboardSettingsRouteRoute: typeof protectedDashboardSettingsRouteRouteWithChildren
+  protectedDashboardLawyerRoute: typeof protectedDashboardLawyerRoute
   protectedDashboardPlansRoute: typeof protectedDashboardPlansRoute
   protectedDashboardSearchLawyerRoute: typeof protectedDashboardSearchLawyerRoute
   protectedDashboardIndexRoute: typeof protectedDashboardIndexRoute
@@ -906,6 +1027,7 @@ interface protectedDashboardRouteChildren {
 const protectedDashboardRouteChildren: protectedDashboardRouteChildren = {
   protectedDashboardSettingsRouteRoute:
     protectedDashboardSettingsRouteRouteWithChildren,
+  protectedDashboardLawyerRoute: protectedDashboardLawyerRoute,
   protectedDashboardPlansRoute: protectedDashboardPlansRoute,
   protectedDashboardSearchLawyerRoute: protectedDashboardSearchLawyerRoute,
   protectedDashboardIndexRoute: protectedDashboardIndexRoute,
@@ -962,9 +1084,14 @@ interface protectedRouteRouteChildren {
   protectedOnboardingclientRouteRoute: typeof protectedOnboardingclientRouteRouteWithChildren
   protectedOnboardinglawyerRouteRoute: typeof protectedOnboardinglawyerRouteRouteWithChildren
   protectedOnboardingIndexRoute: typeof protectedOnboardingIndexRoute
+  protectedClientLawyersIdRoute: typeof protectedClientLawyersIdRoute
   protectedLawyerAvailabilityExceptionsRoute: typeof protectedLawyerAvailabilityExceptionsRoute
+  protectedLawyerBookingsIdRoute: typeof protectedLawyerBookingsIdRoute
   protectedLawyerConsultationTypesNewRoute: typeof protectedLawyerConsultationTypesNewRoute
+  protectedClientLawyersIndexRoute: typeof protectedClientLawyersIndexRoute
   protectedLawyerAvailabilityIndexRoute: typeof protectedLawyerAvailabilityIndexRoute
+  protectedLawyerBookingsIndexRoute: typeof protectedLawyerBookingsIndexRoute
+  protectedLawyerCalendarIndexRoute: typeof protectedLawyerCalendarIndexRoute
   protectedLawyerConsultationTypesIndexRoute: typeof protectedLawyerConsultationTypesIndexRoute
   protectedLawyerConsultationTypesIdEditRoute: typeof protectedLawyerConsultationTypesIdEditRoute
 }
@@ -977,11 +1104,16 @@ const protectedRouteRouteChildren: protectedRouteRouteChildren = {
   protectedOnboardinglawyerRouteRoute:
     protectedOnboardinglawyerRouteRouteWithChildren,
   protectedOnboardingIndexRoute: protectedOnboardingIndexRoute,
+  protectedClientLawyersIdRoute: protectedClientLawyersIdRoute,
   protectedLawyerAvailabilityExceptionsRoute:
     protectedLawyerAvailabilityExceptionsRoute,
+  protectedLawyerBookingsIdRoute: protectedLawyerBookingsIdRoute,
   protectedLawyerConsultationTypesNewRoute:
     protectedLawyerConsultationTypesNewRoute,
+  protectedClientLawyersIndexRoute: protectedClientLawyersIndexRoute,
   protectedLawyerAvailabilityIndexRoute: protectedLawyerAvailabilityIndexRoute,
+  protectedLawyerBookingsIndexRoute: protectedLawyerBookingsIndexRoute,
+  protectedLawyerCalendarIndexRoute: protectedLawyerCalendarIndexRoute,
   protectedLawyerConsultationTypesIndexRoute:
     protectedLawyerConsultationTypesIndexRoute,
   protectedLawyerConsultationTypesIdEditRoute:
