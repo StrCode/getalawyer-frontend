@@ -2,18 +2,42 @@ import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { RegisterSpecializations } from "@/components/onboarding/specializations";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useSpecializations } from "@/hooks/use-specializations";
 import type {
 	OnBoardingRequest,
 	OnboardingStatusResponse,
 } from "@/lib/api/client";
 import { api } from "@/lib/api/client";
-import {
-	clearOnboardingStore,
-	useOnboardingClientStore,
-} from "@/stores/onBoardingClient";
+
+// Local storage key for client onboarding data
+const STORAGE_KEY = 'client-onboarding-data';
+
+interface OnboardingData {
+	country: string;
+	state: string;
+	specializations: string[];
+}
+
+// Helper functions for localStorage
+const getOnboardingData = (): OnboardingData => {
+	try {
+		const data = localStorage.getItem(STORAGE_KEY);
+		return data ? JSON.parse(data) : { country: '', state: '', specializations: [] };
+	} catch {
+		return { country: '', state: '', specializations: [] };
+	}
+};
+
+const setOnboardingData = (data: Partial<OnboardingData>) => {
+	try {
+		const current = getOnboardingData();
+		localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...current, ...data }));
+	} catch (error) {
+		console.error('Failed to save onboarding data:', error);
+	}
+};
 
 export const Route = createFileRoute("/(protected)/onboarding/(client)/client-specializations")({
 	component: RouteComponent,
@@ -22,9 +46,41 @@ export const Route = createFileRoute("/(protected)/onboarding/(client)/client-sp
 function RouteComponent() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
-	const { country, state, specializations, resetForm } =
-		useOnboardingClientStore();
+	const [onboardingData, setOnboardingData] = useState<OnboardingData>({
+		country: '',
+		state: '',
+		specializations: []
+	});
 	const [error, setError] = useState<string | null>(null);
+	
+	const { data: specializationsData, isLoading: isLoadingSpecs } = useSpecializations();
+	const specializations = specializationsData?.specializations || [];
+
+	// Load saved data on mount
+	useEffect(() => {
+		const saved = getOnboardingData();
+		setOnboardingData(saved);
+	}, []);
+	
+	const toggleSpecialization = (id: string) => {
+		setOnboardingData(prev => {
+			const newSpecs = prev.specializations.includes(id)
+				? prev.specializations.filter(s => s !== id)
+				: prev.specializations.length < 3
+					? [...prev.specializations, id]
+					: prev.specializations;
+			
+			const updated = { ...prev, specializations: newSpecs };
+			// Save to localStorage
+			try {
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+			} catch (error) {
+				console.error('Failed to save:', error);
+			}
+			return updated;
+		});
+		setError(null);
+	};
 
 	const completeMutation = useMutation({
 		mutationFn: async (data: OnBoardingRequest) => {
@@ -32,13 +88,14 @@ function RouteComponent() {
 		},
 		onSuccess: (updatedUser) => {
 			queryClient.setQueryData(["user", "session"], updatedUser);
-			queryClient.setQueryData<OnboardingStatusResponse>(["boarding"], {
-				success: true,
-				onboarding_completed: true,
-			})
-
-			resetForm();
-			clearOnboardingStore();
+			
+			// Clear onboarding data
+			try {
+				localStorage.removeItem(STORAGE_KEY);
+			} catch (error) {
+				console.error('Failed to clear onboarding data:', error);
+			}
+			
 			navigate({ to: "/dashboard" });
 		},
 		onError: (error) => {
@@ -47,12 +104,12 @@ function RouteComponent() {
 	})
 
 	const handleSubmit = async () => {
-		if (specializations.length === 0) {
+		if (onboardingData.specializations.length === 0) {
 			setError("Please select at least one specialization");
 			return
 		}
 
-		if (specializations.length > 3) {
+		if (onboardingData.specializations.length > 3) {
 			setError("Please select a maximum of 3 specializations");
 			return
 		}
@@ -60,9 +117,9 @@ function RouteComponent() {
 		setError(null);
 
 		completeMutation.mutate({
-			country,
-			state,
-			specializationIds: specializations,
+			country: onboardingData.country,
+			state: onboardingData.state,
+			specializationIds: onboardingData.specializations,
 		})
 	}
 
@@ -139,8 +196,8 @@ function RouteComponent() {
 						<div>
 							<p className="text-muted-foreground text-xs">Your Location</p>
 							<p className="font-medium text-gray-900 text-sm">
-								{country}
-								{state ? `, ${state}` : ""}
+								{onboardingData.country}
+								{onboardingData.state ? `, ${onboardingData.state}` : ""}
 							</p>
 						</div>
 					</div>
@@ -156,7 +213,81 @@ function RouteComponent() {
 
 				{/* Main Content Card */}
 				<div className="bg-white shadow-sm mb-4 p-4 border rounded-3xl corner-squircle">
-					<RegisterSpecializations />
+					{/* Specializations Grid */}
+					{isLoadingSpecs ? (
+						<div className="py-8 text-center">
+							<div className="inline-flex justify-center items-center bg-primary/10 mb-3 rounded-full w-12 h-12">
+								<svg
+									className="w-5 h-5 text-primary animate-spin"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+									/>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									/>
+								</svg>
+							</div>
+							<p className="text-gray-600 text-sm">Loading specializations...</p>
+						</div>
+					) : (
+						<div className="gap-3 grid grid-cols-1 md:grid-cols-2">
+							{specializations.map((spec) => {
+								const isSelected = onboardingData.specializations.includes(spec.id);
+								const isDisabled = !isSelected && onboardingData.specializations.length >= 3;
+								
+								return (
+									<button
+										key={spec.id}
+										type="button"
+										onClick={() => !isDisabled && toggleSpecialization(spec.id)}
+										disabled={isDisabled}
+										className={`
+											p-4 rounded-lg border-2 text-left transition-all
+											${isSelected 
+												? 'border-primary bg-primary/5' 
+												: isDisabled
+													? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed'
+													: 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
+											}
+										`}
+									>
+										<div className="flex justify-between items-start gap-2">
+											<div className="flex-1">
+												<h3 className="mb-1 font-medium text-gray-900 text-sm">
+													{spec.name}
+												</h3>
+												{spec.description && (
+													<p className="text-gray-600 text-xs line-clamp-2">
+														{spec.description}
+													</p>
+												)}
+											</div>
+											<div className={`
+												flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center
+												${isSelected ? 'border-primary bg-primary' : 'border-gray-300'}
+											`}>
+												{isSelected && (
+													<svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+													</svg>
+												)}
+											</div>
+										</div>
+									</button>
+								);
+							})}
+						</div>
+					)}
 
 					{/* Error Messages */}
 					{error && (
@@ -201,21 +332,21 @@ function RouteComponent() {
 							Selection Progress
 						</span>
 						<span className="font-semibold text-primary text-xs">
-							{specializations.length} / 3
+							{onboardingData.specializations.length} / 3
 						</span>
 					</div>
 					<div className="bg-gray-200 rounded-full w-full h-1.5">
 						<div
 							className="bg-primary rounded-full h-1.5 transition-all duration-300"
-							style={{ width: `${(specializations.length / 3) * 100}%` }}
+							style={{ width: `${(onboardingData.specializations.length / 3) * 100}%` }}
 						/>
 					</div>
 					<p className="mt-1.5 text-muted-foreground text-xs">
-						{specializations.length === 0
+						{onboardingData.specializations.length === 0
 							? "Select at least one to continue"
-							: specializations.length === 3
+							: onboardingData.specializations.length === 3
 								? "Maximum reached"
-								: `${3 - specializations.length} more available`}
+								: `${3 - onboardingData.specializations.length} more available`}
 					</p>
 				</div>
 
@@ -237,7 +368,7 @@ function RouteComponent() {
 						size="default"
 						onClick={handleSubmit}
 						disabled={
-							completeMutation.isPending || specializations.length === 0
+							completeMutation.isPending || onboardingData.specializations.length === 0
 						}
 					>
 						{completeMutation.isPending ? (

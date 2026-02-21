@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import {
@@ -10,7 +10,34 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { useCountriesWithStates } from "@/hooks/use-countries";
-import { useOnboardingClientStore } from "@/stores/onBoardingClient";
+
+// Local storage key for client onboarding data
+const STORAGE_KEY = 'client-onboarding-data';
+
+interface OnboardingData {
+	country: string;
+	state: string;
+	specializations: string[];
+}
+
+// Helper functions for localStorage
+const getOnboardingData = (): OnboardingData => {
+	try {
+		const data = localStorage.getItem(STORAGE_KEY);
+		return data ? JSON.parse(data) : { country: '', state: '', specializations: [] };
+	} catch {
+		return { country: '', state: '', specializations: [] };
+	}
+};
+
+const setOnboardingData = (data: Partial<OnboardingData>) => {
+	try {
+		const current = getOnboardingData();
+		localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...current, ...data }));
+	} catch (error) {
+		console.error('Failed to save onboarding data:', error);
+	}
+};
 
 export const Route = createFileRoute("/(protected)/onboarding/(client)/client-location")({
 	component: OnboardingStep1,
@@ -18,8 +45,16 @@ export const Route = createFileRoute("/(protected)/onboarding/(client)/client-lo
 
 function OnboardingStep1() {
 	const router = useRouter();
-	const { country, state, setCountry, setState } = useOnboardingClientStore();
+	const [country, setCountry] = useState('');
+	const [state, setState] = useState('');
 	const [errors, setErrors] = useState<Record<string, string>>({});
+
+	// Load saved data on mount
+	useEffect(() => {
+		const saved = getOnboardingData();
+		if (saved.country) setCountry(saved.country);
+		if (saved.state) setState(saved.state);
+	}, []);
 
 	const { data, isLoading, isError } = useCountriesWithStates();
 
@@ -27,14 +62,18 @@ function OnboardingStep1() {
 	const statesByCountry = data?.statesByCountry || {};
 	const availableStates = country ? statesByCountry[country] : [];
 
-	const handleCountryChange = (value: string) => {
+	const handleCountryChange = (value: string | null) => {
+		if (!value) return;
 		setCountry(value);
 		setState("");
+		setOnboardingData({ country: value, state: '' });
 		setErrors({});
 	}
 
-	const handleStateChange = (value: string) => {
+	const handleStateChange = (value: string | null) => {
+		if (!value) return;
 		setState(value);
+		setOnboardingData({ state: value });
 		setErrors({});
 	}
 

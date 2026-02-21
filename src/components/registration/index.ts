@@ -1,6 +1,6 @@
 // Registration Components
 export { AccountCreationForm } from './AccountCreationForm';
-export { DocumentUploadForm } from './DocumentUploadForm';
+// export { DocumentUploadForm } from './DocumentUploadForm'; // Removed - Step 6 document upload removed from flow
 export { NINVerificationForm } from './NINVerificationForm';
 export { PendingApprovalDashboard } from './PendingApprovalDashboard';
 export { PersonalInfoForm } from './PersonalInfoForm';

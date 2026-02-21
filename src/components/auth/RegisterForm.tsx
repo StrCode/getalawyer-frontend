@@ -4,7 +4,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { use, useState } from "react";
+import { useState } from "react";
 import * as z from "zod/v4";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,9 +22,10 @@ import {
 import { Separator } from "@/components/ui/separator-extended";
 import { useAppForm } from "@/hooks/form";
 import { httpClient } from "@/lib/api/client";
-import { authClient, useSession } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { toastManager } from "../ui/toast";
+
 
 // Step 1: Email and Name validation
 const emailSchema = z.object({
@@ -146,12 +147,12 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
       try {
         setIsLoading(true);
 
-        const { data, error } = await authClient.signUp.email({
+        const { error } = await authClient.signUp.email({
           name: registrationData.name,
           email: registrationData.email,
           password: value.password,
           userType,
-          // onboarding_completed removed - handled by new registration system
+          onboarding_completed: false,
         });
 
         if (error) {
@@ -175,29 +176,8 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
           return;
         }
         
-        console.log("[RegisterForm] Registration successful, data:", data);
-        console.log("[RegisterForm] User role from signup:", data.user?.role);
+        console.log("[RegisterForm] Registration successful");
         console.log("[RegisterForm] User type param:", userType);
-
-        // Fetch fresh session to verify - with retries
-        console.log("[RegisterForm] Fetching fresh session...");
-        let fresh = await authClient.getSession({ 
-          fetchOptions: { cache: "no-cache" } 
-        });
-
-        console.log("[RegisterForm] Fresh session after signup:", fresh);
-        console.log("[RegisterForm] Fresh session user:", fresh.data?.user);
-        console.log("[RegisterForm] Fresh session role:", fresh.data?.user?.role);
-
-        // If no session, wait a bit and retry
-        if (!fresh.data?.user) {
-          console.log("[RegisterForm] No session found, waiting 500ms and retrying...");
-          await new Promise(resolve => setTimeout(resolve, 500));
-          fresh = await authClient.getSession({ 
-            fetchOptions: { cache: "no-cache" } 
-          });
-          console.log("[RegisterForm] Retry session result:", fresh);
-        }
 
         // Success
         toastManager.add({
@@ -206,16 +186,15 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
           type: "success",
         });
 
-        // TEMPORARY: Bypass role check, use userType param instead
-        console.log("[RegisterForm] BYPASSING role check - using userType param:", userType);
-        const targetRoute = userType === "user" ? "/onboarding/" : "/register/step2";
+        // Navigate based on user type
+        const targetRoute = userType === "user" ? "/dashboard" : "/register/step2";
         console.log("[RegisterForm] Navigating to:", targetRoute);
         
         // Small delay to ensure session is fully set
         await new Promise(resolve => setTimeout(resolve, 100));
         
         if (userType === "user") {
-          navigate({ to: "/dashboard" });
+          navigate({ to: "/onboarding/client-location" });
         } else {
           navigate({ to: "/register/step2" });
         }
@@ -235,7 +214,7 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
   const handleSocialAuth = async (provider: "google" | "apple") => {
     setIsLoading(true);
 
-    const { data, error } = await authClient.signIn.social({
+    const { error } = await authClient.signIn.social({
       provider,
       callbackURL: handleRegistrationComplete(userType),
     });

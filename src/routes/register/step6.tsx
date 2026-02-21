@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { DocumentUploadForm } from "@/components/registration/DocumentUploadForm";
+// import { DocumentUploadForm } from "@/components/registration/DocumentUploadForm"; // Removed - Step 6 document upload removed from flow
 import { RegistrationLayout } from "@/components/registration/shared/RegistrationLayout";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { TOTAL_STEPS } from "@/constants/registration";
@@ -8,6 +8,10 @@ import { generateAuthPageSEO } from "@/utils/seo";
 
 /**
  * Step 6: Document Upload Route
+ * 
+ * NOTE: This step has been removed from the registration flow.
+ * Step 5 (Practice Info) now goes directly to Step 7 (Review & Submit).
+ * This route is kept for backward compatibility but should not be accessed.
  *
  * Sixth step in the 7-step lawyer registration process.
  * Requires authentication and proper registration status.
@@ -44,7 +48,12 @@ function RouteComponent() {
     <>
       <SEOHead metadata={seoMetadata} />
       <RegistrationLayout currentStep={5} totalSteps={TOTAL_STEPS}>
-        <DocumentUploadForm />
+        <div className="p-8 text-center">
+          <p className="text-muted-foreground">
+            Document upload step has been removed. Redirecting...
+          </p>
+        </div>
+        {/* <DocumentUploadForm /> */}
       </RegistrationLayout>
     </>
   );

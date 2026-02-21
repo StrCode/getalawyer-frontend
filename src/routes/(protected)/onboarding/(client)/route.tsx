@@ -4,14 +4,12 @@ import {
   createFileRoute,
   Link,
   Outlet,
-  redirect,
   useNavigate
 } from '@tanstack/react-router'
 import { useEffect } from 'react';
 import { Logo } from '@/components/logo';
 import { Button } from "@/components/ui/button";
 import { authClient, signOut } from "@/lib/auth-client";
-import { clearEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
 
 export const Route = createFileRoute('/(protected)/onboarding/(client)')({
@@ -29,20 +27,17 @@ function RouteComponent() {
     }
   }, [session, isPending, navigate]);
 
-  // Redirect lawyers to lawyer onboarding
+  // Redirect lawyers to lawyer registration
   useEffect(() => {
     if (!isPending && session?.user?.role === "lawyer") {
-      navigate({ to: "/onboarding/basics", replace: true });
+      navigate({ to: "/register/step2", replace: true });
     }
   }, [session, isPending, navigate]);
 
   // Custom signOut function that also clears onboarding data
   const handleSignOut = () => {
-    // Clear onboarding store data before signing out
-    clearEnhancedOnboardingStore();
-    localStorage.removeItem('onboarding-form-draft');
-    localStorage.removeItem('onboarding-progress');
-    localStorage.removeItem('offline-operation-queue');
+    // Clear onboarding data from localStorage
+    localStorage.removeItem('client-onboarding-data');
     
     // Then sign out
     signOut({}, { onSuccess: () => navigate({ to: "/" }) });
