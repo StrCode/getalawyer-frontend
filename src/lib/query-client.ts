@@ -73,4 +73,13 @@ export const queryKeys = {
   calendar: {
     connection: ['calendar', 'connection'] as const,
   },
+  
+  // Registration
+  registration: {
+    status: ['registration', 'status'] as const,
+    step2: ['registration', 'step2'] as const,
+    step4: ['registration', 'step4'] as const,
+    step5: ['registration', 'step5'] as const,
+    summary: ['registration', 'summary'] as const,
+  },
 };

@@ -8,15 +8,22 @@ import { generateAuthPageSEO } from "@/utils/seo";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async () => {
+    console.log("[LoginRoute] beforeLoad triggered");
+    
     // Check if user is already authenticated
     const session = await getUser();
+    console.log("[LoginRoute] Session check result:", session);
+    console.log("[LoginRoute] User from session:", session?.user);
     
     if (session?.user) {
       // If authenticated, redirect to dashboard
+      console.log("[LoginRoute] User authenticated, redirecting to dashboard");
       throw redirect({
         to: '/dashboard',
       });
     }
+    
+    console.log("[LoginRoute] No user found, showing login form");
   },
   component: RouteComponent,
 });

@@ -1,13 +1,13 @@
 # GetALawyer Frontend
 
-A modern, full-featured legal services platform frontend built with React, TypeScript, and TanStack technologies. This application provides a comprehensive onboarding system for lawyers, an admin dashboard for platform management, and a client interface for finding and connecting with legal professionals.
+A modern, full-featured legal services platform frontend built with React, TypeScript, and TanStack technologies. This application provides a comprehensive onboarding system for lawyers and a client interface for finding and connecting with legal professionals.
 
 ## 🎯 Project Overview
 
 GetALawyer is a lawyer-client matching platform that streamlines the process of connecting clients with qualified legal professionals. The frontend handles:
 
 - **Lawyer Onboarding**: A sophisticated 3-step registration process with document verification and specialization selection
-- **Admin Dashboard**: Comprehensive management tools for reviewing applications, managing users, and monitoring platform analytics
+- **Client Portal**: Interface for clients to find lawyers, manage their profiles, and track their legal needs
 - **Client Portal**: Interface for clients to find lawyers, manage their profiles, and track their legal needs
 - **Real-time Synchronization**: Draft management and offline-first capabilities for seamless user experience
 
@@ -32,12 +32,6 @@ GetALawyer is a lawyer-client matching platform that streamlines the process of 
 ```
 src/
 ├── components/
-│   ├── admin/              # Admin dashboard components
-│   │   ├── AdminLayout.tsx
-│   │   ├── ApplicationManagement.tsx
-│   │   ├── UserManagement.tsx
-│   │   ├── DashboardOverview.tsx
-│   │   └── ...
 │   ├── auth/               # Authentication components
 │   │   ├── LoginForm.tsx
 │   │   ├── RegisterForm.tsx
@@ -54,7 +48,6 @@ src/
 ├── hooks/                  # Custom React hooks
 │   ├── use-draft-manager.ts
 │   ├── use-onboarding-status.ts
-│   ├── use-admin-queries.ts
 │   └── ...
 ├── lib/
 │   ├── api/
@@ -90,15 +83,6 @@ src/
 - **Draft Management** - Auto-save functionality with offline support
 - **Progress Tracking** - Visual progress indicators and step validation
 - **Application Status** - Real-time status updates and notifications
-
-### Admin Dashboard
-- **Application Management** - Review, approve, or reject lawyer applications
-- **User Management** - Manage lawyers and clients with advanced filtering
-- **Analytics & Statistics** - Platform metrics, trends, and performance data
-- **Bulk Operations** - Perform actions on multiple users/applications
-- **Filter Presets** - Save and reuse custom filter configurations
-- **Data Export** - Export data in multiple formats (CSV, Excel, PDF)
-- **Communication Tools** - Send notifications and manage communications
 
 ### Client Portal
 - **Profile Management** - Update personal and company information
@@ -194,13 +178,6 @@ The frontend integrates with a comprehensive backend API. Key endpoints include:
 - `PATCH /api/lawyers/onboarding/documents` - Save documents
 - `POST /api/lawyers/onboarding/complete` - Complete onboarding
 
-### Admin Routes
-- `GET /api/admin/applications` - List applications with filtering
-- `GET /api/admin/users` - List users with advanced search
-- `PATCH /api/admin/applications/:id/approve` - Approve application
-- `PATCH /api/admin/applications/:id/reject` - Reject application
-- `GET /api/admin/statistics` - Platform analytics
-
 ### Client Routes
 - `GET /api/clients/me` - Get current user profile
 - `PATCH /api/clients/me` - Update profile
@@ -266,7 +243,7 @@ Built with Better Auth:
 - Email/password authentication
 - Social login (Google, Facebook)
 - Session management
-- Role-based access control (User, Reviewer, Admin, Super Admin)
+- Role-based access control (User, Lawyer)
 - Automatic token refresh
 
 ## 📱 Responsive Design

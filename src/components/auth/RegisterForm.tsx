@@ -4,7 +4,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { use, useState } from "react";
 import * as z from "zod/v4";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +22,7 @@ import {
 import { Separator } from "@/components/ui/separator-extended";
 import { useAppForm } from "@/hooks/form";
 import { httpClient } from "@/lib/api/client";
-import { authClient } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { toastManager } from "../ui/toast";
 
@@ -82,9 +82,9 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
 
   const handleRegistrationComplete = (userType: "user" | "lawyer") => {
     if (userType === "user") {
-      return "/onboarding/client-location";
+      return "/dashboard"; // Client users go directly to dashboard
     } else {
-      return "/onboarding/basics";
+      return "/register/step2"; // Lawyers start at step 2 (Personal Information)
     }
   };
 
@@ -151,7 +151,7 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
           email: registrationData.email,
           password: value.password,
           userType,
-          onboarding_completed: false,
+          // onboarding_completed removed - handled by new registration system
         });
 
         if (error) {
@@ -166,6 +166,7 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
             errorMessage = error.message;
           }
 
+          console.error("[RegisterForm] Registration error:", error);
           toastManager.add({
             title: "Registration failed",
             description: errorMessage,
@@ -174,21 +175,49 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
           return;
         }
         
-        const session = await authClient.getSession();
+        console.log("[RegisterForm] Registration successful, data:", data);
+        console.log("[RegisterForm] User role from signup:", data.user?.role);
+        console.log("[RegisterForm] User type param:", userType);
+
+        // Fetch fresh session to verify - with retries
+        console.log("[RegisterForm] Fetching fresh session...");
+        let fresh = await authClient.getSession({ 
+          fetchOptions: { cache: "no-cache" } 
+        });
+
+        console.log("[RegisterForm] Fresh session after signup:", fresh);
+        console.log("[RegisterForm] Fresh session user:", fresh.data?.user);
+        console.log("[RegisterForm] Fresh session role:", fresh.data?.user?.role);
+
+        // If no session, wait a bit and retry
+        if (!fresh.data?.user) {
+          console.log("[RegisterForm] No session found, waiting 500ms and retrying...");
+          await new Promise(resolve => setTimeout(resolve, 500));
+          fresh = await authClient.getSession({ 
+            fetchOptions: { cache: "no-cache" } 
+          });
+          console.log("[RegisterForm] Retry session result:", fresh);
+        }
 
         // Success
-        console.log("User created:", data);
-
         toastManager.add({
           title: "Thank you for signing up",
           description: "Your account has been created successfully",
           type: "success",
         });
 
+        // TEMPORARY: Bypass role check, use userType param instead
+        console.log("[RegisterForm] BYPASSING role check - using userType param:", userType);
+        const targetRoute = userType === "user" ? "/onboarding/" : "/register/step2";
+        console.log("[RegisterForm] Navigating to:", targetRoute);
+        
+        // Small delay to ensure session is fully set
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         if (userType === "user") {
-          navigate({ to: "/onboarding/client-location" });
+          navigate({ to: "/dashboard" });
         } else {
-          navigate({ to: "/onboarding/basics" });
+          navigate({ to: "/register/step2" });
         }
       } catch (error: any) {
         console.error("Unexpected error during sign up:", error);

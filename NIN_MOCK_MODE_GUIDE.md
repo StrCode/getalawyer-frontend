@@ -95,7 +95,7 @@ These NINs will simulate failed verification:
 
 ### Files Modified
 - `src/services/nin-verification.ts` - Added mock mode logic
-- `src/routes/onboarding/lawyer/credentials.tsx` - Added mock mode UI notice
+- `src/components/registration/NINVerificationForm.tsx` - NIN verification in new registration system
 - `.env` - Added `VITE_USE_MOCK_NIN` variable
 
 ### Mock Mode Features

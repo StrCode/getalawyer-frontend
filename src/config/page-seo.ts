@@ -42,30 +42,6 @@ export const PAGE_SEO_CONFIG = {
     title: 'Settings',
     description: 'Manage your account settings, preferences, and profile information.',
   },
-  adminDashboard: {
-    title: 'Admin Dashboard',
-    description: 'Manage GetALawyer platform operations, users, and applications.',
-  },
-  adminApplications: {
-    title: 'Application Management',
-    description: 'Review and manage lawyer applications and verifications.',
-  },
-  adminClients: {
-    title: 'Client Management',
-    description: 'Manage client accounts and support requests.',
-  },
-  adminLawyers: {
-    title: 'Lawyer Management',
-    description: 'Manage lawyer profiles, credentials, and account status.',
-  },
-  adminUsers: {
-    title: 'User Management',
-    description: 'Manage all platform users, roles, and permissions.',
-  },
-  adminStatistics: {
-    title: 'Platform Statistics',
-    description: 'View analytics and insights for the GetALawyer platform.',
-  },
   subscriptionSuccess: {
     title: 'Subscription Confirmed',
     description: 'Your subscription has been successfully activated. Welcome to GetALawyer premium services.',

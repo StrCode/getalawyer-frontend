@@ -26,7 +26,7 @@ export const Route = createFileRoute("/(protected)/onboarding/")({
 		if (userRole === "lawyer") {
 			// Redirect to lawyer onboarding (route groups with parentheses are pathless)
 			throw redirect({
-				to: "/onboarding/basics",
+				to: "/register/step2",
 			});
 		} else {
 			// Default to client onboarding for 'user' role or any other role

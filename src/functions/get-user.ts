@@ -13,16 +13,18 @@ export const getUser = createServerFn({ method: "GET" }).handler(async () => {
     const request = getRequest();
     const cookieHeader = request.headers.get("cookie") || "";
     
-    console.log("Cookie header:", cookieHeader);
+    console.log("[getUser] Cookie header:", cookieHeader);
     
     // Check if auth token exists in cookies
     const hasAuthToken = cookieHeader.includes("auth.token=");
+    console.log("[getUser] Has auth token:", hasAuthToken);
     
     if (!hasAuthToken) {
-      console.log("No auth token found in cookies");
+      console.log("[getUser] No auth token found in cookies, returning null");
       return null;
     }
 
+    console.log("[getUser] Fetching session from Better Auth API");
     // Try to get session from Better Auth API
     const session = await authClient.getSession({
       fetchOptions: {
@@ -32,11 +34,14 @@ export const getUser = createServerFn({ method: "GET" }).handler(async () => {
       },
     });
     
-    console.log("Session from Better Auth:", session);
+    console.log("[getUser] Session from Better Auth:", session);
+    console.log("[getUser] Session data:", session.data);
+    console.log("[getUser] Session user:", session.data?.user);
+    console.log("[getUser] Session user role:", session.data?.user?.role);
 
     return session.data || null;
   } catch (error) {
-    console.error("Error fetching user session:", error);
+    console.error("[getUser] Error fetching user session:", error);
     return null;
   }
 });

@@ -1,0 +1,6 @@
+# Registration Components Directory
+
+This directory will contain all registration-related React components:
+- Step form components (AccountCreationForm, PersonalInfoForm, etc.)
+- Shared components (RegistrationLayout, FormActions, ProgressIndicator)
+- Utility components specific to registration flow

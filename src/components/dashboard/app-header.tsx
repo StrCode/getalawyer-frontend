@@ -4,16 +4,13 @@ import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
-import { clearEnhancedOnboardingStore } from "@/stores/enhanced-onboarding-store";
 
 export function Header() {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
-    // Clear all onboarding-related cache before signing out
-    clearEnhancedOnboardingStore();
-    localStorage.removeItem('onboarding-form-draft');
-    localStorage.removeItem('onboarding-progress');
+    // Clear registration-related cache before signing out
+    localStorage.removeItem('registration-draft');
     localStorage.removeItem('offline-operation-queue');
     
     await authClient.signOut({

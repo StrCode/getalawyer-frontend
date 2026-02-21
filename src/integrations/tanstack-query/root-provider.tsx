@@ -4,7 +4,7 @@ export function getContext() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        // Admin dashboard needs fresh data
+        // Dashboard needs fresh data
         staleTime: 5 * 60 * 1000, // 5 minutes
         gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
         retry: (failureCount, error: any) => {
@@ -19,14 +19,9 @@ export function getContext() {
         refetchOnMount: true,
       },
       mutations: {
-        retry: (failureCount, error: any) => {
-          // Don't retry mutations on client errors
-          if (error?.status >= 400 && error?.status < 500) {
-            return false;
-          }
-          // Retry up to 2 times for server errors
-          return failureCount < 2;
-        },
+        // Disable retries by default for mutations
+        // Individual mutations can override this if needed
+        retry: false,
       },
     },
   })
