@@ -173,6 +173,8 @@ export function RegisterForm({ userType }: { userType: "user" | "lawyer" }) {
           });
           return;
         }
+        
+        const session = await authClient.getSession();
 
         // Success
         console.log("User created:", data);
